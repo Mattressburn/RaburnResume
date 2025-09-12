@@ -1,0 +1,424 @@
+/* Tailwind v4 core */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+:root {
+  --accent: #39ff14;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Retro palette */
+/* Retro palette (expanded) */
+:root {
+  --accent: #39ff14; /* used elsewhere; leave it be */
+
+  /* Core retro */
+  --retro-ink: #0b0b0c;       /* near-black text */
+  --retro-cream: #f8f3e1;     /* slightly warmer than before for full-page bg */
+  --retro-paper: #fffdf5;     /* card/panel background */
+  --retro-line: #d9cfaf;      /* borders */
+  --retro-grid: #e6dcb8;      /* chart gridlines */
+
+  /* Accents */
+  --retro-mustard: #e6b800;
+  --retro-avocado: #2db38b;
+  --retro-teal:    #1aa0a4;
+  --retro-orange:  #ff7a3d;
+
+  /* Extra accents (new) */
+  --retro-cherry: #d84654;
+  --retro-plum:   #6e417a;
+  --retro-sky:    #4aa9d9;
+  --retro-sun:    #ffbf3f;
+  --retro-mint:   #55c2a1;
+  --retro-brown:  #7a5130;
+  --retro-navy:   #1f3a5b;
+}
+
+/* Page shell: go light */
+.retro-page {
+  background: var(--retro-cream);
+  color: var(--retro-ink);
+}
+
+/* Use Rubik for body, Shrikhand for big headings */
+body {
+  font-family: "Rubik", system-ui, -apple-system, sans-serif;
+}
+
+/* Cards: paper with hard, offset shadow */
+.retro-card {
+  background: var(--retro-paper);
+  border: 1px solid var(--retro-line);
+  border-radius: 12px;
+  box-shadow: 4px 4px 0px #0000001c; /* subtle, chunky */
+  transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
+}
+
+.retro-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #00000024;
+}
+
+.retro-title {
+  font-family: "Shrikhand", system-ui;
+  letter-spacing: .3px;
+  color: var(--retro-brown);
+}
+
+/* Retro palette (expanded) */
+:root {
+  --accent: #39ff14; /* used elsewhere; leave it be */
+
+  /* Core retro */
+  --retro-ink: #0b0b0c;       /* near-black text */
+  --retro-cream: #f8f3e1;     /* slightly warmer than before for full-page bg */
+  --retro-paper: #fffdf5;     /* card/panel background */
+  --retro-line: #d9cfaf;      /* borders */
+  --retro-grid: #e6dcb8;      /* chart gridlines */
+
+  /* Accents */
+  --retro-mustard: #e6b800;
+  --retro-avocado: #2db38b;
+  --retro-teal:    #1aa0a4;
+  --retro-orange:  #ff7a3d;
+
+  /* Extra accents (new) */
+  --retro-cherry: #d84654;
+  --retro-plum:   #6e417a;
+  --retro-sky:    #4aa9d9;
+  --retro-sun:    #ffbf3f;
+  --retro-mint:   #55c2a1;
+  --retro-brown:  #7a5130;
+  --retro-navy:   #1f3a5b;
+}
+
+/* Page shell: go light */
+.retro-page {
+  background: var(--retro-cream);
+  color: var(--retro-ink);
+}
+
+/* Cards: paper with hard, offset shadow */
+.retro-card {
+  background: var(--retro-paper);
+  border: 1px solid var(--retro-line);
+  border-radius: 12px;
+  box-shadow: 4px 4px 0px #0000001c; /* subtle, chunky */
+  transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
+}
+.retro-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #00000024;
+}
+
+.retro-title {
+  font-family: "Shrikhand", system-ui;
+  letter-spacing: .3px;
+  color: var(--retro-brown);
+}
+
+/* Small preset chips */
+.retro-chip {
+  background: #fffaf0;
+  border: 1px solid var(--retro-line);
+  color: var(--retro-ink);
+  border-radius: 999px;
+  padding: .25rem .6rem;
+  font-size: .75rem;
+}
+.retro-chip.active {
+  background: var(--retro-orange);
+  border-color: var(--retro-orange);
+  color: var(--retro-ink);
+  font-weight: 600;
+}
+
+/* Numeric “pills” */
+.retro-num {
+  width: 7rem;
+  text-align: center;
+  background: #fffaf0;
+  color: var(--retro-ink);
+  border: 1px solid var(--retro-line);
+  padding: .5rem .75rem;
+  border-radius: 999px;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* Step buttons */
+.retro-step {
+  width: 2.25rem; height: 2.25rem;
+  border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #fff6e2;
+  border: 1px solid var(--retro-line);
+  color: var(--retro-ink);
+  font-weight: 800; cursor: pointer;
+}
+.retro-step:hover { background: #ffefd0; }
+
+/* Track: multi-accent gradient so it isn't all teal */
+.vinyl-range {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 12px; border-radius: 999px; outline: none;
+  background: linear-gradient(
+    90deg,
+    var(--retro-teal) 0%,
+    var(--retro-avocado) 20%,
+    var(--retro-sun) 40%,
+    var(--retro-orange) 60%,
+    var(--retro-plum) 80%,
+    var(--retro-sky) 100%
+  );
+  box-shadow: inset 0 0 0 2px var(--retro-line), 0 1px 0 #fff2;
+}
+
+/* --- VINYL THUMB: clean label (no shine), grooves masked from label --- */
+
+/* Chrome / Edge / Safari */
+.vinyl-range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 30px; height: 30px; border-radius: 50%;
+  cursor: grab;
+  border: 2px solid #0a0a0a;                 /* outer rim */
+  box-shadow: 0 0 0 2px #111, 0 4px 10px #0005;
+
+  /* Layer order: top → bottom (topmost first) */
+  background:
+    /* 1) Spindle hole (tiny center dot) */
+    radial-gradient(circle at 50% 50%, var(--retro-ink) 0 1.2px, transparent 1.3px),
+
+    /* 2) Circular mask to crop the label to a clean circle.
+          Transparent inside <= 8px, then record body color outside.
+          This hides any label colors outside the circle AND blocks grooves over the label. */
+    radial-gradient(circle at 50% 50%, transparent 0 8px, #0b0b0c 9px 30px),
+
+    /* 3) The label bands (cropped by the mask above): 
+          top avocado green → thin white stripe → bottom orange/red */
+    linear-gradient(
+      to bottom,
+      var(--retro-avocado) 0%,
+      var(--retro-avocado) 46%,
+      #ffffff 46%,
+      #ffffff 54%,
+      var(--retro-orange) 54%,
+      var(--retro-orange) 100%
+    ),
+
+    /* 4) Grooves: start just outside the label (≈9px) so they never cross it */
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 9px, rgba(0,0,0,.20) 9.5px 10.5px),
+
+    /* 5) Record body */
+    radial-gradient(circle at 50% 50%, #151515 0 14px, #0b0b0c 15px 30px);
+}
+
+.vinyl-range:active::-webkit-slider-thumb { cursor: grabbing; }
+
+/* Firefox */
+.vinyl-range::-moz-range-thumb {
+  width: 30px; height: 30px; border-radius: 50%;
+  cursor: grab;
+  border: 2px solid #0a0a0a;
+  box-shadow: 0 0 0 2px #111, 0 4px 10px #0005;
+  background:
+    radial-gradient(circle at 50% 50%, var(--retro-ink) 0 1.2px, transparent 1.3px),
+    radial-gradient(circle at 50% 50%, transparent 0 8px, #0b0b0c 9px 30px),
+    linear-gradient(
+      to bottom,
+      var(--retro-avocado) 0%,
+      var(--retro-avocado) 46%,
+      #ffffff 46%,
+      #ffffff 54%,
+      var(--retro-orange) 54%,
+      var(--retro-orange) 100%
+    ),
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 9px, rgba(0,0,0,.20) 9.5px 10.5px),
+    radial-gradient(circle at 50% 50%, #151515 0 14px, #0b0b0c 15px 30px);
+}
+
+.vinyl-range:active::-moz-range-thumb { cursor: grabbing; }
+
+
+/* NEW: Light-table styling for the tracks list (fix dark-on-dark) */
+.retro-table {
+  background: var(--retro-paper);
+  border: 1px solid var(--retro-line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.retro-table thead th {
+  background: #fff5db;
+  color: var(--retro-ink);
+  border-bottom: 1px solid var(--retro-line);
+  font-weight: 700;
+}
+.retro-table tbody tr {
+  border-bottom: 1px solid #eadfbd;
+}
+.retro-table tbody tr:nth-child(odd) {
+  background: #fffdf5;
+}
+.retro-table tbody tr:hover {
+  background: #fff0d6; /* soft highlight */
+}
+.retro-link-blue { color: var(--retro-sky); }
+.retro-link-green { color: var(--retro-avocado); }
+
+/* Retro Knob - Styled like a bakelite stereo knob */
+.retro-knob {
+  --size: 56px;
+  --accent: var(--retro-cream); /* Cream indicator on a dark knob */
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: radial-gradient(circle at 65% 35%, #5a4f3a, #1a1610 80%);
+  border: 2px solid #1a1610;
+  box-shadow: inset 0 2px 2px #98856a88, 0 4px 6px #00000066;
+  position: relative;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.retro-knob:active {
+  cursor: grabbing;
+}
+.retro-knob::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  width: 3px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 2px;
+  transform-origin: 50% calc(var(--size) / 2 - 8px); /* Rotate from center */
+  transform: translateX(-50%) rotate(var(--angle, 0deg));
+  box-shadow: 0 0 5px #000;
+}
+.retro-knob::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #0000 60%, #0e0e0e 61% 62%, #0000 63%);
+}
+.retro-knob-label {
+  font-size: 11px;
+  color: #5a4a2f;
+  text-align: center;
+  margin-top: 6px;
+}
+
+/* Light retro pills for selected filters */
+.retro-pill {
+  background: var(--retro-paper);
+  border: 1px solid var(--retro-line);
+  border-radius: 999px;
+  padding: .35rem .7rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  color: var(--retro-ink);
+  font-weight: 700;
+  box-shadow: 2px 2px 0 #00000012;
+}
+.retro-pill-dot {
+  width: .65rem; height: .65rem; border-radius: 999px; flex: 0 0 auto;
+  outline: 1px solid #00000010;
+}
+
+/* Retro headline */
+.retro-headline {
+  font-family: "Shrikhand", system-ui;
+  color: var(--retro-ink);
+  letter-spacing: .2px;
+  line-height: 1.1;
+  display: inline-block;
+  /* paper/ink offset vibe */
+  text-shadow:
+    0 1px 0 #fff,
+    2.5px 2.5px 0 var(--retro-line);
+}
+
+/* Smaller “kicker” after the title with a cream underline band */
+.retro-headline .kicker {
+  font-weight: 800;
+  color: var(--retro-brown);
+  padding: 0 .35rem;
+  border-radius: 6px;
+  background:
+    linear-gradient(transparent 62%, #fff5db 62%); /* soft band */
+  box-shadow: inset 0 -1px 0 var(--retro-line);
+}
+
+/* Optional: make the JSON link match the palette */
+.retro-link-blue { color: var(--retro-sky); }
+
+/* Reusable Atlantic record icon */
+.record-icon {
+  --size: 30px;                 /* change per usage */
+  width: var(--size);
+  height: var(--size);
+  display: inline-block;
+  border-radius: 50%;
+  vertical-align: -2px;
+  border: 2px solid #0a0a0a;    /* outer rim */
+  box-shadow: 0 0 0 2px #111, 0 2px 6px #0005;
+  background:
+    /* 1) spindle hole */
+    radial-gradient(circle at 50% 50%, var(--retro-ink) 0 1.2px, transparent 1.3px),
+    /* 2) mask outside label (keeps label perfectly circular) */
+    radial-gradient(circle at 50% 50%, transparent 0 8px, #0b0b0c 9px 30px),
+    /* 3) label bands (Atlantic-style) */
+    linear-gradient(
+      to bottom,
+      var(--retro-avocado) 0%,
+      var(--retro-avocado) 46%,
+      #ffffff 46%,
+      #ffffff 54%,
+      var(--retro-orange) 54%,
+      var(--retro-orange) 100%
+    ),
+    /* 4) grooves (begin just outside label) */
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 9px, rgba(0,0,0,.20) 9.5px 10.5px),
+    /* 5) record body */
+    radial-gradient(circle at 50% 50%, #151515 0 14px, #0b0b0c 15px 30px);
+  background-clip: padding-box;
+}
+
+/* Retro buttons */
+.retro-btn {
+  background: var(--retro-orange);
+  color: var(--retro-ink);
+  border: 1px solid var(--retro-line);
+  border-radius: 10px;
+  padding: .45rem .75rem;
+  font-weight: 700;
+  box-shadow: 3px 3px 0 #00000022;
+}
+.retro-btn:hover { filter: brightness(1.05); transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #00000026; }
+
+.retro-btn-outline {
+  background: var(--retro-paper);
+  color: var(--retro-ink);
+  border: 1px solid var(--retro-line);
+  border-radius: 10px;
+  padding: .45rem .75rem;
+  font-weight: 700;
+  box-shadow: 3px 3px 0 #00000012;
+}
+.retro-btn-outline:hover { background: #fff5db; transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #00000018; }

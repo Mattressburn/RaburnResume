@@ -1,0 +1,31 @@
+﻿# Node / tooling
+node_modules/
+npm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+
+# Builds
+build/
+dist/
+.cache/
+*.cache
+
+# Env & local configs
+.env
+.env.*
+!.env.example
+.netlify/
+
+# Editors / OS
+.vscode/
+*.code-workspace
+.DS_Store
+Thumbs.db
+
+# Tests & coverage
+coverage/
+*.lcov
+
+# Logs & temp
+*.log
+*.tmp
