@@ -1,3 +1,4 @@
+// src/components/DiscogsCollectionPanel.jsx
 import React, { useMemo, useState } from "react";
 import Papa from "papaparse";
 import {
@@ -8,35 +9,17 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  PieChart,
-  Pie,
-  Legend,
   Cell,
 } from "recharts";
 
-/**
- * DiscogsCollectionPanel (JSX version)
- * - Drag-and-drop a Discogs collection CSV OR load via Netlify function (/.netlify/functions/discogs-collection?username=YOURNAME)
- * - Aggregates your collection into charts: by year, decade, format, label, country, and top artists
- * - Designed to drop into the existing retro dashboard (uses .retro-card, .retro-title, etc.)
- */
+// shared chart theme (colors, tick, tooltip)
+import { RC, colorByIndex, tooltipStyle, LeftTick } from "../charts/theme";
+
 export default function DiscogsCollectionPanel() {
   const [items, setItems] = useState([]);
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  // Palette that works with your retro theme; falls back gracefully.
-  const palette = [
-    "#ffd166",
-    "#06d6a0",
-    "#118ab2",
-    "#ef476f",
-    "#8338ec",
-    "#8ecae6",
-    "#fb8500",
-    "#a8dadc",
-  ];
 
   async function handleFetchFromAPI() {
     if (!username) {
@@ -90,7 +73,6 @@ export default function DiscogsCollectionPanel() {
 
   return (
     <div className="space-y-6">
-      {/* Loader / errors */}
       {error && (
         <div className="retro-card p-3 border border-red-500/50 text-red-300">
           <div className="retro-title mb-1">Error</div>
@@ -102,13 +84,13 @@ export default function DiscogsCollectionPanel() {
       <div className="retro-card p-4">
         <div className="retro-title mb-2">Load your Discogs collection</div>
         <div className="grid md:grid-cols-2 gap-4">
-          {/* CSV uploader */}
           <div className="border border-dashed border-zinc-600 rounded-2xl p-4">
             <div className="text-sm opacity-80 mb-2">Option A · CSV export</div>
             <p className="text-xs opacity-70 mb-3">
-              In Discogs: Collection ➜ Export ➜ Collection CSV. Then drop it here.
+              In Discogs: Collection ➜ Export ➜ Collection CSV. Then drop it
+              here.
             </p>
-            <label className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 cursor-pointer select-none">
+            <label className="retro-btn">
               <input
                 type="file"
                 accept=".csv,text/csv"
@@ -122,11 +104,13 @@ export default function DiscogsCollectionPanel() {
             </label>
           </div>
 
-          {/* API loader */}
           <div className="border border-dashed border-zinc-600 rounded-2xl p-4">
-            <div className="text-sm opacity-80 mb-2">Option B · Live from Discogs API</div>
+            <div className="text-sm opacity-80 mb-2">
+              Option B · Live from Discogs API
+            </div>
             <p className="text-xs opacity-70 mb-3">
-              Requires a Netlify function with a Discogs token set (DISCOGS_TOKEN).
+              Requires a Netlify function with a Discogs token set
+              (DISCOGS_TOKEN).
             </p>
             <div className="flex items-center gap-2">
               <input
@@ -150,8 +134,8 @@ export default function DiscogsCollectionPanel() {
       {/* Summary tiles */}
       {items.length > 0 && (
         <div className="grid md:grid-cols-3 gap-4">
-          <SummaryTile title="Total records" value={numberFormat(stats.total)} />
-          <SummaryTile title="Unique artists" value={numberFormat(stats.uniqueArtists)} />
+          <SummaryTile title="Total records" value={stats.total} />
+          <SummaryTile title="Unique artists" value={stats.uniqueArtists} />
           <SummaryTile
             title="Median • Average year"
             value={`${stats.medianYear ?? "—"} • ${stats.avgYear ?? "—"}`}
@@ -162,76 +146,125 @@ export default function DiscogsCollectionPanel() {
       {/* Charts */}
       {items.length > 0 && (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          {/* By year */}
           <ChartCard title="By year (count)">
             <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={toChart(stats.byYear)} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} interval={0} angle={-45} textAnchor="end" height={60} />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Bar dataKey="value" />
+              <BarChart
+                data={toChart(stats.byYear)}
+                margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke={RC.grid} />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fontSize: 12, fill: RC.ink }}
+                  interval={0}
+                  angle={-45}
+                  textAnchor="end"
+                  height={60}
+                  axisLine={{ stroke: RC.line }}
+                  tickLine={{ stroke: RC.line }}
+                />
+                <YAxis
+                  allowDecimals={false}
+                  stroke={RC.ink}
+                  axisLine={{ stroke: RC.line }}
+                  tickLine={{ stroke: RC.line }}
+                  tick={{ fill: RC.ink }}
+                />
+                <Tooltip cursor={{ fill: "#00000008" }} contentStyle={tooltipStyle} />
+                <Bar dataKey="value">
+                  {toChart(stats.byYear).map((d, i) => (
+                    <Cell key={d.name} fill={colorByIndex(i)} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>
 
+          {/* By decade */}
           <ChartCard title="By decade">
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={toChart(stats.byDecade)}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Bar dataKey="value" />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartCard>
-
-          <ChartCard title="Formats">
-            <ResponsiveContainer width="100%" height={280}>
-              <PieChart>
-                <Pie data={toChart(stats.byFormat)} dataKey="value" nameKey="name" outerRadius={100}>
-                  {toChart(stats.byFormat).map((_, i) => (
-                    <Cell key={i} fill={palette[i % palette.length]} />
+                <CartesianGrid strokeDasharray="3 3" stroke={RC.grid} />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fill: RC.ink }}
+                  axisLine={{ stroke: RC.line }}
+                  tickLine={{ stroke: RC.line }}
+                />
+                <YAxis
+                  allowDecimals={false}
+                  stroke={RC.ink}
+                  axisLine={{ stroke: RC.line }}
+                  tickLine={{ stroke: RC.line }}
+                  tick={{ fill: RC.ink }}
+                />
+                <Tooltip cursor={{ fill: "#00000008" }} contentStyle={tooltipStyle} />
+                <Bar dataKey="value">
+                  {toChart(stats.byDecade).map((d, i) => (
+                    <Cell key={d.name} fill={colorByIndex(i)} />
                   ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
+                </Bar>
+              </BarChart>
             </ResponsiveContainer>
           </ChartCard>
 
+          {/* Top labels (vertical) */}
           <ChartCard title="Top labels">
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={toChart(stats.topLabels)}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" interval={0} angle={-30} textAnchor="end" height={60} />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Bar dataKey="value" />
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={toChart(stats.topLabels)}
+                layout="vertical"
+                margin={{ left: 28, right: 12, top: 8, bottom: 8 }}
+                barCategoryGap={10}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke={RC.grid} />
+                <XAxis type="number" stroke={RC.ink} />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  width={240}
+                  interval={0}
+                  tickLine={false}
+                  axisLine={false}
+                  tick={<LeftTick maxChars={22} lines={3} shift={26} />}
+                />
+                <Tooltip cursor={{ fill: "#00000008" }} contentStyle={tooltipStyle} />
+                <Bar dataKey="value" barSize={14}>
+                  {toChart(stats.topLabels).map((d, i) => (
+                    <Cell key={d.name} fill={colorByIndex(i)} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>
 
-          <ChartCard title="Countries">
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={toChart(stats.byCountry)}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" interval={0} angle={-30} textAnchor="end" height={60} />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Bar dataKey="value" />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartCard>
-
+          {/* Top artists (vertical) */}
           <ChartCard title="Top artists">
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={toChart(stats.topArtists)}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" interval={0} angle={-30} textAnchor="end" height={60} />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Bar dataKey="value" />
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={toChart(stats.topArtists)}
+                layout="vertical"
+                margin={{ left: 28, right: 12, top: 8, bottom: 8 }}
+                barCategoryGap={10}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke={RC.grid} />
+                <XAxis type="number" stroke={RC.ink} />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  width={240}
+                  interval={0}
+                  tickLine={false}
+                  axisLine={false}
+                  tick={<LeftTick maxChars={22} lines={3} shift={26} />}
+                />
+                <Tooltip cursor={{ fill: "#00000008" }} contentStyle={tooltipStyle} />
+                <Bar dataKey="value" barSize={14}>
+                  {toChart(stats.topArtists).map((d, i) => (
+                    <Cell key={d.name} fill={colorByIndex(i)} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -241,11 +274,7 @@ export default function DiscogsCollectionPanel() {
   );
 }
 
-/* ========================= Helpers ========================= */
-
-function numberFormat(n) {
-  try { return n.toLocaleString(); } catch { return String(n); }
-}
+/* ========================= Helpers (plain JS) ========================= */
 
 function normalizeFromApi(r) {
   const bi = (r && r.basic_information) || {};
@@ -258,14 +287,13 @@ function normalizeFromApi(r) {
       .flatMap((f) => [f.name, ...(f.descriptions || [])])
       .map((s) => normalizeFormat(s))
       .filter(Boolean),
-    country: undefined, // Discogs collection endpoint doesn't reliably include country
+    country: undefined,
     artists: (bi.artists || []).map((a) => clean(a.name)).filter(Boolean),
     title: bi.title,
   };
 }
 
 function normalizeFromCsv(row) {
-  // Discogs CSV headers can vary slightly; we try common variants.
   const artist = pick(row, ["Artist", "Artists", "artist"]);
   const title = pick(row, ["Title", "Release Title", "title"]);
   const label = pick(row, ["Label", "Labels", "label"]);
@@ -278,7 +306,7 @@ function normalizeFromCsv(row) {
   const formats = splitMulti(format).map(normalizeFormat).filter(Boolean);
   const artists = splitMulti(artist).map(clean).filter(Boolean);
 
-  if (!artist && !title && !label) return null; // Likely header junk
+  if (!artist && !title && !label) return null;
 
   return {
     year,
@@ -301,18 +329,15 @@ function toYear(value) {
   if (y < 1900 || y > 2100) return undefined;
   return y;
 }
-
 function clean(s) {
   return s.replace(/\s+/g, " ").replace(/\s*\(.*?\)\s*/g, "").trim();
 }
-
 function pick(obj, keys) {
   for (const k of keys) {
     if (obj && obj[k] != null && obj[k] !== "") return obj[k];
   }
   return undefined;
 }
-
 function splitMulti(v) {
   if (!v) return [];
   const s = String(v);
@@ -321,14 +346,13 @@ function splitMulti(v) {
     .map((x) => x.trim())
     .filter(Boolean);
 }
-
 function normalizeFormat(s) {
   if (!s) return null;
   const t = String(s).toLowerCase().trim();
   if (/(^|\W)lp(\W|$)/.test(t)) return "LP";
-  if (/(^|\W)12\"?(\W|$)/.test(t)) return "12\"";
-  if (/(^|\W)7\"?(\W|$)/.test(t)) return "7\"";
-  if (/(^|\W)10\"?(\W|$)/.test(t)) return "10\"";
+  if (/(^|\W)12"?(\W|$)/.test(t)) return '12"';
+  if (/(^|\W)7"?(\W|$)/.test(t))  return '7"';
+  if (/(^|\W)10"?(\W|$)/.test(t)) return '10"';
   if (/cd/.test(t)) return "CD";
   if (/cassette|tape/.test(t)) return "Cassette";
   if (/file|digital/.test(t)) return "Digital";
@@ -388,12 +412,10 @@ function sortMap(map, cmp) {
   if (cmp) arr.sort((x, y) => cmp(x[0], y[0]));
   return new Map(arr);
 }
-
 function topN(map, n = 10) {
   const arr = Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
   return new Map(arr.slice(0, n));
 }
-
 function toChart(map) {
   return Array.from(map.entries()).map(([name, value]) => ({ name, value }));
 }
@@ -408,7 +430,6 @@ function SummaryTile({ title, value }) {
     </div>
   );
 }
-
 function ChartCard({ title, children }) {
   return (
     <div className="retro-card p-4">

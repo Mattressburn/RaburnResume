@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build"
+  publish = "build"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# SPA deep-links fix (optional if you already have a _redirects file)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
