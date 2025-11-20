@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import RetroKnob from "../RetroKnob";
 import DiscogsCollectionPanel from "../components/DiscogsCollectionPanel";
+import BootSequence from "../components/BootSequence";
 
 // Shared chart theme
 import { RC, colorByIndex, tooltipStyle, LeftTick } from "../charts/theme";
@@ -96,7 +97,9 @@ function CoverMosaic({ items }) {
 
 export default function VinylDashboard() {
   const [data, setData] = useState([]);
-  const [ready, setReady] = useState(false);
+  const [dataReady, setDataReady] = useState(false);
+  const [animationDone, setAnimationDone] = useState(false);
+  const isFullyReady = dataReady && animationDone;
 
   useEffect(() => {
     loadData()
@@ -121,7 +124,7 @@ export default function VinylDashboard() {
         });
 
         setData(cleaned);
-        setReady(true);
+        setDataReady(true);
       })
       .catch((e) => console.error(e));
   }, []);
@@ -272,15 +275,13 @@ export default function VinylDashboard() {
     return [...labels, name];
   };
 
-  
-
-  if (!ready)
+  if (!isFullyReady) {
     return (
-      <div className="min-h-screen bg-black text-zinc-100 flex items-center justify-center">
-        Loading…
-      </div>
+      <BootSequence
+        onComplete={() => setAnimationDone(true)}
+      />
     );
-
+  }
   return (
     <div className="min-h-screen relative retro-page">
       <CoverMosaic items={filtered.length ? filtered : data} />
