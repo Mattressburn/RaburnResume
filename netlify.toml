@@ -1,13 +1,15 @@
 [build]
-  command = "npm run build"
-  publish = "build"
+  # "npm run build" now runs "vite build" because we updated package.json
+  command = "npm run build" 
+  
+  # This must match the "outDir" we set in vite.config.js
+  publish = "build" 
+  
+  # Where your server-side functions live
+  functions = "netlify/functions"
 
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
-
-# SPA deep-links fix (optional if you already have a _redirects file)
 [[redirects]]
+  # This is needed for React Router to work on refresh
   from = "/*"
   to = "/index.html"
   status = 200
