@@ -27,8 +27,26 @@ export const resumeData = {
     { name: "Fusion Lifecycle", percent: 97.5 },
     { name: "Kubernetes", percent: 60.0, learning: true },
     { name: "VM", percent: 95.6 },
+    { name: "Linux", percent: 93.5 },
+    { name: "macOS", percent: 91.8 },
+    { name: "C CURE 9000", percent: 95.0 },
+    { name: "Active Directory", percent: 97.2 },
   ],
   experience: [
+    {
+      id: "johnson-controls",
+      title: "L3 Technical Support Engineer Security Products",
+      company: "Johnson Controls",
+      period: "09/2025 - Present",
+      location: "Westford, MA",
+      achievements: [
+        "Resolve high-priority L3 escalations for C CURE 9000 access control environments, interfacing directly with software engineering to identify bugs and implement hotfixes.",
+        "Troubleshoot complex integration issues between C CURE 9000 software and iSTAR controllers, readers, and third-party security hardware across diverse network topologies.",
+        "Engineered custom PowerShell and Python utilities to streamline the extraction and formatting of system diagnostic data, reducing the mean time to resolution (MTTR) for critical site outages.",
+        "Authored advanced technical advisories and 'Tier 3' internal documentation to empower L1/L2 teams, significantly reducing the volume of repeat escalations.",
+        "Developed tools utilizing AI to automate log and crash dump analysis.",
+      ],
+    },
     {
       id: "pall",
       title: "Senior Engineering Systems Analyst",

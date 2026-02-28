@@ -12,6 +12,7 @@ import {
 import resumePDF from "./assets/Matthew_Raburn_Resume.pdf";
 import LogTicker from "./LogTicker";
 import SkillsStatus from "./SkillsStatus";
+import BootSequence from "./components/BootSequence";
 import VinylDashboard from "./pages/VinylDashboard";
 import { Routes, Route, Link } from "react-router-dom";
 import { resumeData } from "./data/resumeData";
@@ -109,8 +110,9 @@ const MatrixBackground = ({ opacity = 0.18, fontSize = 16, charset = "01", fadeA
 
 /* =============== Presentational bits =============== */
 const NetworkNode = ({ job, isActive, onClick }) => {
-  const startYear = job.period.split(" - ")[0].split("/")[2];
-  const endYear = job.period.split(" - ")[1].split("/")[2];
+  const startYear = job.period.split(" - ")[0].split("/")[1];
+  const endPart = job.period.split(" - ")[1];
+  const endYear = endPart === "Present" ? "Present" : endPart.split("/")[1];
 
   return (
     <button
@@ -226,7 +228,8 @@ const useHackerMode = () => {
 
 /* =============== Resume Home Page =============== */
 function ResumeHome() {
-  const [activeJob, setActiveJob] = useState("pall");
+  const [hasBooted, setHasBooted] = useState(false);
+  const [activeJob, setActiveJob] = useState("johnson-controls");
   const [hackerMode, setHackerMode] = useHackerMode();
 
   // Mobile gesture handling
@@ -252,6 +255,10 @@ function ResumeHome() {
   const onHeaderTouchEnd = useCallback(() => {
     clearTimeout(tapRef.current.pressTimer);
   }, []);
+
+  if (!hasBooted) {
+    return <BootSequence onComplete={() => setHasBooted(true)} />;
+  }
 
   return (
     <div className="min-h-screen relative bg-black text-green-400 font-mono overflow-x-hidden">
@@ -345,7 +352,7 @@ function ResumeHome() {
                 <span className="text-yellow-500">matthew@resume:~$</span>
                 <span className="text-green-300 ml-2">ls -la skills/</span>
               </div>
-              <div className="text-gray-300 space-y-1 text-xs">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1 text-gray-300 text-xs">
                 {resumeData.skills.map((skill, index) => (
                   <div key={index}>drwxr-xr-x {skill.name.replace(" ", "_")}</div>
                 ))}
