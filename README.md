@@ -1,33 +1,16 @@
-# Matthew Raburn - Interactive Resume & Vinyl Dashboard
+# [RESTRICTED ACCESS] // DOSSIER: M. RABURN & EVIDENCE ARCHIVE
 
-A Matrix-themed interactive resume and data visualization dashboard built with **React 19** and **Vite**.
+A highly classified, React-based intelligence dossier detailing the operational tradecraft of Matthew Raburn. Includes the "Evidence Archive" (formerly known as the Vinyl Dashboard) powered by Netlify edge functions.
 
-## 🚀 Features
+## 🚀 OVERVIEW
+* **The Dossier:** A physical manilla folder UI detailing core IT competencies, field reports, and anomalous capabilities.
+* **Evidence Archive:** A data visualization of 500 audio surveillance records (Recharts).
+* **Hardware Workbench:** Pure CSS and SVG environmental storytelling (Flipper Zero, CAC Card, Rubber Ducky, etc.).
 
-* **Interactive Resume:** Terminal-style interface with "Hacker Mode" (Konami Code easter egg).
-* **Vinyl Dashboard:** A data visualization of my top 500 records, built with Recharts.
-* **Performance:**
-    * Migrated from CRA to **Vite** for instant HMR and optimized builds.
-    * **Parallelized API Fetching:** Custom Netlify Function fetches Discogs data in concurrent batches (respecting rate limits) to reduce load time by ~80%.
-* **Cyberpunk UI:** Custom "Boot Sequence" loader and Matrix rain canvas effects.
+## 🛠️ TECH STACK
+* React 19, Tailwind CSS, Recharts
+* Vite, Netlify Edge Functions
 
-## 🛠️ Tech Stack
-
-* **Frontend:** React 19, Tailwind CSS, Framer Motion, Recharts
-* **Backend:** Netlify Functions (TypeScript) for API proxying and caching
-* **Tooling:** Vite, ESLint
-
-## 🏃‍♂️ Running Locally
-
-1.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
-2.  **Start the dev server:**
-    ```bash
-    npm start
-    ```
-3.  **Build for production:**
-    ```bash
-    npm run build
-    ```
+## 🏃‍♂️ LOCAL DEPLOYMENT
+1. `npm install`
+2. `npm start`
