@@ -105,7 +105,7 @@ export default function RetroKnob({ value, min, max, step = 1, onChange, label }
     <div className="inline-flex flex-col items-center">
       <div
         ref={el}
-        className="retro-knob"
+        className="knob-dial"
         role="slider"
         aria-valuemin={lo}
         aria-valuemax={hi}
@@ -116,7 +116,7 @@ export default function RetroKnob({ value, min, max, step = 1, onChange, label }
         onKeyDown={onKeyDown}
         onWheel={onWheel}
       />
-      {label && <div className="retro-knob-label">{label}</div>}
+      {label && <div className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">{label}</div>}
     </div>
   );
 }

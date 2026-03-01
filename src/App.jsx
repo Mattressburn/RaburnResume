@@ -1,433 +1,366 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState } from "react";
 import {
   Download,
-  Terminal,
-  Activity,
-  Network,
-  FileText,
-  Code,
-  User,
+  Eye,
   ExternalLink,
 } from "lucide-react";
 import resumePDF from "./assets/Matthew_Raburn_Resume.pdf";
-import LogTicker from "./LogTicker";
-import SkillsStatus from "./SkillsStatus";
-import BootSequence from "./components/BootSequence";
 import VinylDashboard from "./pages/VinylDashboard";
 import { Routes, Route, Link } from "react-router-dom";
 import { resumeData } from "./data/resumeData";
 
-/* =============== Matrix background (canvas) =============== */
-const MatrixBackground = ({ opacity = 0.18, fontSize = 16, charset = "01", fadeAlpha = 0.08 }) => {
-  const canvasRef = useRef(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d", { alpha: true });
-
-    const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-    if (prefersReduced) return;
-
-    const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-
-    const resize = () => {
-      const w = window.innerWidth,
-        h = window.innerHeight;
-      canvas.width = Math.floor(w * DPR);
-      canvas.height = Math.floor(h * DPR);
-      canvas.style.width = w + "px";
-      canvas.style.height = h + "px";
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      ctx.font = `${fontSize}px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`;
-    };
-
-    resize();
-    window.addEventListener("resize", resize);
-
-    const cols = () => Math.ceil(canvas.width / DPR / fontSize);
-    let drops = Array.from({ length: cols() }, () => Math.floor(Math.random() * 50));
-    const accent =
-      getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#39ff14";
-
-    let raf = 0,
-      running = true;
-    const step = () => {
-      if (!running) return;
-      ctx.fillStyle = `rgba(0,0,0,${fadeAlpha})`;
-      ctx.fillRect(0, 0, canvas.width / DPR, canvas.height / DPR);
-
-      ctx.fillStyle = accent;
-      for (let i = 0; i < drops.length; i++) {
-        const ch = charset[Math.floor(Math.random() * charset.length)];
-        const x = i * fontSize,
-          y = drops[i] * fontSize;
-        ctx.fillText(ch, x, y);
-        const bottom = canvas.height / DPR;
-        if (y > bottom && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-      }
-      raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-
-    const onVisibility = () => {
-      if (document.hidden) {
-        running = false;
-        cancelAnimationFrame(raf);
-      } else {
-        running = true;
-        raf = requestAnimationFrame(step);
-      }
-    };
-
-    const onResize = () => {
-      drops = Array.from({ length: cols() }, () => Math.floor(Math.random() * 50));
-    };
-
-    document.addEventListener("visibilitychange", onVisibility);
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      running = false;
-      cancelAnimationFrame(raf);
-      document.removeEventListener("visibilitychange", onVisibility);
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("resize", onResize);
-    };
-  }, [opacity, fontSize, charset, fadeAlpha]);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 z-0 pointer-events-none"
-      style={{ opacity }}
-      aria-hidden="true"
-    />
-  );
-};
-
-/* =============== Presentational bits =============== */
-const NetworkNode = ({ job, isActive, onClick }) => {
-  const startYear = job.period.split(" - ")[0].split("/")[1];
-  const endPart = job.period.split(" - ")[1];
-  const endYear = endPart === "Present" ? "Present" : endPart.split("/")[1];
-
-  return (
-    <button
-      onClick={onClick}
-      className={`inline-block m-2 px-3 py-2 sm:px-4 sm:py-3 rounded-full border-2 transition-all duration-300 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[--accent] focus:ring-offset-2 focus:ring-offset-gray-800 ${
-        isActive
-          ? "bg-yellow-500 border-yellow-500 text-black scale-110"
-          : "bg-gray-800 border-[--accent] text-[--accent] hover:bg-[--accent] hover:text-black hover:scale-105"
-      }`}
-      aria-label={`View details for ${job.company} position from ${startYear} to ${endYear}`}
-    >
-      {job.company} ({startYear}-{endYear})
-    </button>
-  );
-};
-
-const JobDetails = ({ job, isActive }) => (
-  <div className={`mt-4 transition-all duration-500 ${isActive ? "block" : "hidden"}`}>
-    <div className="bg-gray-900/80 backdrop-blur-[2px] border-l-4 border-[--accent] p-4 rounded-r">
-      <h3 className="text-yellow-500 text-lg font-bold mb-2">
-        {job.title} - {job.company}
-      </h3>
-      <p className="text-gray-400 text-sm mb-3">
-        {job.period} | {job.location}
-      </p>
-      <ul className="space-y-2">
-        {job.achievements.map((achievement, i) => (
-          <li key={i} className="text-green-300 text-sm leading-relaxed pl-4 relative">
-            <span className="absolute left-0 text-yellow-500" aria-hidden="true">
-              →
-            </span>
-            {achievement}
-          </li>
-        ))}
-      </ul>
-    </div>
-  </div>
+/* =============== Redacted Span Helper =============== */
+const Redacted = ({ children }) => (
+  <span className="redacted" title="HOVER TO DECLASSIFY">
+    {children}
+  </span>
 );
 
-const Panel = ({ icon: Icon, title, children, className = "", ...rest }) => (
+/* =============== Classified Stamp (red ink) =============== */
+const ClassifiedStamp = ({ children, className = "" }) => (
   <div
-    {...rest}
-    className={`bg-gradient-to-br from-gray-800/70 to-gray-900/70 backdrop-blur-[2px] border border-gray-600 rounded-lg p-4 sm:p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[rgba(57,255,20,0.2)] hover:shadow-xl ${className}`}
+    className={`ink-stamp inline-block -rotate-2 select-none ${className}`}
+    aria-hidden="true"
   >
-    <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-600">
-      <div className="w-3 h-3 bg-[--accent] rounded-full animate-pulse" aria-hidden="true" />
-      <Icon className="w-5 h-5 text-yellow-500" aria-hidden="true" />
-      <h2 className="text-yellow-500 font-bold text-base sm:text-lg">{title}</h2>
-    </div>
     {children}
   </div>
 );
 
+/* =============== Section Header (typewriter) =============== */
+const SectionHeader = ({ children }) => (
+  <h2 className="section-header">{children}</h2>
+);
 
-/* =============== Custom Hooks =============== */
-const useHackerMode = () => {
-  const [hackerMode, setHackerMode] = useState(false);
+/* =============== Experience Tab (manilla folder tab) =============== */
+const FolderTab = ({ job, isActive, onClick }) => {
+  const startYear = job.period.split(" - ")[0].split("/")[1];
+  const endPart = job.period.split(" - ")[1];
+  const endYear = endPart === "Present" ? "Now" : endPart.split("/")[1];
 
-  // Konami code detection
-  useEffect(() => {
-    const seq = [
-      "ArrowUp",
-      "ArrowUp",
-      "ArrowDown",
-      "ArrowDown",
-      "ArrowLeft",
-      "ArrowRight",
-      "ArrowLeft",
-      "ArrowRight",
-      "b",
-      "a",
-    ];
-    let i = 0;
-    const onKey = (e) => {
-      const key = e.key.toLowerCase();
-      const expected = seq[i].toLowerCase();
-      if (key === expected) {
-        i++;
-        if (i === seq.length) {
-          setHackerMode((v) => !v);
-          i = 0;
-        }
-      } else {
-        i = key === seq[0].toLowerCase() ? 1 : 0;
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  // URL and localStorage persistence
-  useEffect(() => {
-    const q = new URLSearchParams(window.location.search);
-    if (q.get("hack") === "1" || window.location.hash.includes("hack")) {
-      setHackerMode(true);
-    } else {
-      const saved = localStorage.getItem("hackerMode");
-      if (saved) setHackerMode(saved === "1");
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("hackerMode", hackerMode ? "1" : "0");
-  }, [hackerMode]);
-
-  // Update CSS accent color
-  useEffect(() => {
-    document.documentElement.style.setProperty("--accent", hackerMode ? "#00e5ff" : "#39ff14");
-  }, [hackerMode]);
-
-  return [hackerMode, setHackerMode];
+  return (
+    <button
+      onClick={onClick}
+      className={`folder-tab ${isActive ? "active" : ""}`}
+      aria-label={`View details for ${job.company} position from ${startYear} to ${endYear}`}
+    >
+      {job.company} ({startYear}–{endYear})
+    </button>
+  );
 };
+
+/* =============== Job Details =============== */
+const JobDetails = ({ job, isActive }) => (
+  <div className={`transition-all duration-300 ${isActive ? "block page-enter" : "hidden"}`}>
+    <div className="border-l-4 border-[#c4b078] pl-4 py-2 mb-4">
+      <h3 className="text-slate-800 text-sm sm:text-base font-bold font-mono">
+        {job.title} — <span className="text-red-800">{job.company}</span>
+      </h3>
+      <p className="text-slate-500 text-xs mt-0.5 font-mono">
+        {job.period} | {job.location}
+      </p>
+    </div>
+    <ul className="space-y-2.5 ml-2">
+      {job.achievements.map((a, i) => (
+        <li
+          key={i}
+          className="text-slate-700 text-xs sm:text-sm leading-relaxed pl-5 relative font-mono"
+        >
+          <span className="absolute left-0 top-0 text-red-700/50 font-bold text-xs" aria-hidden="true">
+            {String(i + 1).padStart(2, "0")}.
+          </span>
+          {a}
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 
 /* =============== Resume Home Page =============== */
 function ResumeHome() {
-  const [hasBooted, setHasBooted] = useState(false);
   const [activeJob, setActiveJob] = useState("johnson-controls");
-  const [hackerMode, setHackerMode] = useHackerMode();
-
-  // Mobile gesture handling
-  const tapRef = useRef({ count: 0, last: 0, pressTimer: null });
-
-  const toggleHacker = useCallback(() => setHackerMode((v) => !v), [setHackerMode]);
-
-  const onHeaderTouchStart = useCallback(() => {
-    const now = Date.now();
-    const gap = now - tapRef.current.last;
-    tapRef.current.count = gap < 400 ? tapRef.current.count + 1 : 1;
-    tapRef.current.last = now;
-
-    if (tapRef.current.count >= 3) {
-      toggleHacker();
-      tapRef.current.count = 0;
-    }
-
-    clearTimeout(tapRef.current.pressTimer);
-    tapRef.current.pressTimer = setTimeout(() => toggleHacker(), 1200);
-  }, [toggleHacker]);
-
-  const onHeaderTouchEnd = useCallback(() => {
-    clearTimeout(tapRef.current.pressTimer);
-  }, []);
-
-  if (!hasBooted) {
-    return <BootSequence onComplete={() => setHasBooted(true)} />;
-  }
 
   return (
-    <div className="min-h-screen relative bg-black text-green-400 font-mono overflow-x-hidden">
-      <MatrixBackground
-        opacity={hackerMode ? 0.28 : 0.18}
-        fontSize={hackerMode ? 14 : 16}
-        charset={hackerMode ? "アカサタナハマヤラワ0123456789" : "01"}
-        fadeAlpha={hackerMode ? 0.04 : 0.08}
-      />
+    <div className="min-h-screen bg-stone-900 font-mono overflow-x-hidden">
+      {/* Dark desk background with subtle grain */}
 
-      {hackerMode && (
-        <div className="fixed top-2 right-2 z-20 text-xs bg-[--accent] text-black px-2 py-1 rounded">
-          Hacker Mode ON
-        </div>
-      )}
+      {/* ── Desk surface wrapper ── */}
+      <div className="flex justify-center px-2 sm:px-6 lg:px-8 py-6 sm:py-10">
 
-      {/* CONTENT */}
-      <div className="relative z-10">
-        {/* Header */}
-        <header
-          className="bg-gradient-to-r from-gray-800/70 to-gray-700/70 backdrop-blur-[2px] border-b-2 border-[--accent] p-4 sm:p-8 text-center"
-          onTouchStart={onHeaderTouchStart}
-          onTouchEnd={onHeaderTouchEnd}
-        >
-          <div className="text-yellow-500 text-base sm:text-xl mb-2">admin@resume:~$ whoami</div>
-          <h1 className="text-2xl sm:text-3xl md:text-5xl text-[--accent] font-bold mb-2">
-            {resumeData.personal.name}
-          </h1>
-          <p className="text-gray-400 text-sm sm:text-lg mb-4">{resumeData.personal.title}</p>
+        {/* ══ Manilla Folder ══ */}
+        <div className="w-full max-w-5xl bg-[#E6D5AA] desk-shadow rounded-sm relative">
 
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-4">
-            <a
-              href={`mailto:${resumeData.personal.contact.email}`}
-              className="inline-flex items-center gap-2 px-3 py-2 border border-[--accent] rounded text-green-300 hover:bg-[--accent] hover:text-black transition"
-              aria-label={`Send email to ${resumeData.personal.contact.email}`}
-            >
-              📧 {resumeData.personal.contact.email}
-            </a>
-            <a
-              href={`https://${resumeData.personal.contact.linkedin}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3 py-2 border border-[--accent] rounded text-green-300 hover:bg-[--accent] hover:text-black transition"
-              aria-label="Open LinkedIn profile in new window"
-            >
-              🔗 LinkedIn
-              <ExternalLink className="w-3 h-3" aria-hidden="true" />
-            </a>
-            <span className="px-3 py-2 border border-[--accent] rounded text-green-300">
-              📍 {resumeData.personal.contact.location}
-            </span>
+          {/* Decorative coffee stain */}
+          <div className="coffee-stain" style={{ bottom: '-20px', right: '60px', opacity: 0.5 }} />
+
+          {/* Folder padding wrapper */}
+          <div className="p-3 sm:p-5 lg:p-8">
+
+            {/* ══ Top Secret Stamp (overlapping folder) ══ */}
+            <div className="flex justify-between items-start mb-4">
+              <div className="text-[10px] sm:text-xs text-stone-500 font-mono tracking-wider">
+                DOSSIER FILE No. <Redacted>MR-4782</Redacted>
+              </div>
+              <ClassifiedStamp className="text-xs sm:text-sm">
+                TOP SECRET // EYES ONLY
+              </ClassifiedStamp>
+            </div>
+
+            {/* ══ The Paper ══ */}
+            <div className="bg-[#FDFBF7] border border-stone-300 rounded-sm relative paper-texture page-enter">
+
+              {/* Paperclip decoration */}
+              <div className="paperclip hidden sm:block" />
+
+              {/* Large watermark stamp */}
+              <div
+                className="dossier-stamp absolute top-1/3 left-1/2 text-red-700 font-mono text-5xl sm:text-7xl lg:text-8xl font-black border-4 border-red-700 px-4 sm:px-6 py-1 sm:py-2 pointer-events-none select-none whitespace-nowrap"
+                aria-hidden="true"
+              >
+                CLASSIFIED
+              </div>
+
+              {/* Paper inner padding */}
+              <div className="relative z-[2] p-4 sm:p-8 lg:p-12">
+
+                {/* ── HEADER ── */}
+                <header className="mb-8 pb-6 border-b-2 border-dashed border-[#c4b078]">
+                  <div className="flex flex-col sm:flex-row gap-6 items-start">
+
+                    {/* Dossier Photo (Polaroid) */}
+                    <div className="polaroid w-[130px] h-[150px] sm:w-[150px] sm:h-[170px] flex-shrink-0 flex flex-col items-center justify-center bg-stone-100 mx-auto sm:mx-0">
+                      <div className="w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] bg-stone-800 flex items-center justify-center">
+                        <span className="text-stone-400 font-mono text-[10px] sm:text-xs text-center font-bold tracking-wider leading-tight px-2">
+                          [ HEADSHOT<br/>REDACTED ]
+                        </span>
+                      </div>
+                      <span className="text-[9px] text-stone-400 mt-1.5 font-mono tracking-wider">SUBJ. RABURN, M.</span>
+                    </div>
+
+                    {/* Name + Info Block */}
+                    <div className="flex-1 text-center sm:text-left">
+                      <p className="text-stone-400 text-[10px] sm:text-xs mb-1 tracking-widest font-mono">
+                        CLEARANCE: <span className="text-red-700 font-bold">BLACK</span>
+                      </p>
+                      <h1 className="text-2xl sm:text-3xl md:text-4xl text-slate-800 font-black mb-1 tracking-tight font-mono">
+                        {resumeData.personal.name}
+                      </h1>
+                      <p className="text-slate-500 text-xs sm:text-sm mb-4 tracking-wider font-mono">
+                        {resumeData.personal.title}
+                      </p>
+
+                      {/* Contact row */}
+                      <div className="flex flex-wrap justify-center sm:justify-start gap-2 mb-4">
+                        <a
+                          href={`mailto:${resumeData.personal.contact.email}`}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FDFBF7] border border-stone-300 text-slate-600 hover:border-red-700 hover:text-red-800 transition text-[11px] sm:text-xs font-mono"
+                          aria-label={`Send email to ${resumeData.personal.contact.email}`}
+                        >
+                          📧 {resumeData.personal.contact.email}
+                        </a>
+                        <a
+                          href={`https://${resumeData.personal.contact.linkedin}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FDFBF7] border border-stone-300 text-slate-600 hover:border-red-700 hover:text-red-800 transition text-[11px] sm:text-xs font-mono"
+                          aria-label="Open LinkedIn profile in new window"
+                        >
+                          🔗 LinkedIn
+                          <ExternalLink className="w-3 h-3" aria-hidden="true" />
+                        </a>
+                        <span className="inline-flex items-center px-3 py-1.5 bg-[#FDFBF7] border border-stone-300 text-slate-600 text-[11px] sm:text-xs font-mono">
+                          📍 {resumeData.personal.contact.location}
+                        </span>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex flex-wrap justify-center sm:justify-start gap-3">
+                        <a
+                          href={resumePDF}
+                          download="Matthew_Raburn_Resume.pdf"
+                          className="inline-flex items-center gap-2 bg-red-800 text-white px-4 py-2 font-bold transition-all hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 text-[11px] sm:text-xs tracking-wider font-mono"
+                          aria-label="Download PDF version of resume"
+                        >
+                          <Download className="w-3.5 h-3.5" aria-hidden="true" />
+                          DOWNLOAD DOSSIER (PDF)
+                        </a>
+                        <Link
+                          to="/dashboard"
+                          className="inline-flex items-center gap-2 px-3 py-2 border border-stone-400 text-slate-500 hover:text-red-800 hover:border-red-700 transition text-[11px] sm:text-xs font-mono"
+                        >
+                          <Eye className="w-3.5 h-3.5" aria-hidden="true" />
+                          VINYL RECON DASHBOARD
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </header>
+
+                {/* ── SUBJECT BRIEFING ── */}
+                <section className="mb-8">
+                  <SectionHeader>SUBJECT BRIEFING</SectionHeader>
+                  <div className="bg-amber-50/50 border border-stone-200 p-4">
+                    <p className="text-slate-700 text-xs sm:text-sm leading-relaxed italic font-mono">
+                      "<Redacted>Subject</Redacted> {resumeData.personal.summary}"
+                    </p>
+                  </div>
+                </section>
+
+                {/* ── OPERATIONAL TRADECRAFT ── */}
+                <section className="mb-8">
+                  <SectionHeader>OPERATIONAL TRADECRAFT (CLEARED FOR RELEASE)</SectionHeader>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                    {resumeData.operationalTradecraft.map((skill, i) => (
+                      <div
+                        key={i}
+                        className="bg-amber-50/50 border border-stone-200 px-3 py-2 text-[11px] sm:text-xs text-slate-700 font-mono hover:border-red-700/40 hover:bg-red-50/30 transition-colors"
+                      >
+                        <span className="text-red-700/50 mr-1">▪</span>
+                        {skill}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                {/* ── MISSION HISTORY (Tabbed Experience) ── */}
+                <section className="mb-8">
+                  <SectionHeader>MISSION HISTORY</SectionHeader>
+
+                  {/* Folder tabs row */}
+                  <div className="flex flex-wrap items-end gap-0.5 -mb-px relative z-[4]" role="tablist" aria-label="Mission history timeline">
+                    {resumeData.experience.map((job) => (
+                      <FolderTab
+                        key={job.id}
+                        job={job}
+                        isActive={activeJob === job.id}
+                        onClick={() => setActiveJob(job.id)}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Tab panel (paper sheet inside folder) */}
+                  <div className="bg-[#FDFBF7] border border-[#c4b078] rounded-b-sm p-4 sm:p-6 relative z-[3]">
+                    {resumeData.experience.map((job) => (
+                      <div key={job.id} role="tabpanel" aria-labelledby={`tab-${job.id}`}>
+                        <JobDetails job={job} isActive={activeJob === job.id} />
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                {/* ── ANOMALOUS CAPABILITIES ── */}
+                <section className="mb-8">
+                  <div className="flex items-center gap-4 mb-4">
+                    <SectionHeader>ANOMALOUS CAPABILITIES</SectionHeader>
+                    <ClassifiedStamp className="text-[9px] sm:text-[10px] -mt-2">
+                      UNVERIFIED
+                    </ClassifiedStamp>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {resumeData.anomalousCapabilities.map((cap, i) => (
+                      <div
+                        key={i}
+                        className="bg-amber-50/40 border border-stone-200 p-3 text-slate-700 text-xs sm:text-sm leading-relaxed font-mono relative"
+                      >
+                        <span className="absolute top-2 left-3 text-red-700/30 text-sm font-black" aria-hidden="true">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <span className="pl-8 block">{cap}</span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                {/* ── FIELD REPORTS ── */}
+                <section className="mb-8">
+                  <SectionHeader>FIELD REPORTS // DEBRIEFING TRANSCRIPTS</SectionHeader>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {resumeData.fieldReports.map((report, i) => (
+                      <div
+                        key={i}
+                        className="bg-amber-50/40 border border-stone-200 p-4 relative"
+                      >
+                        <div className="absolute top-2 right-3 text-red-700/25 text-[10px] font-bold tracking-wider font-mono">
+                          EXHIBIT {String.fromCharCode(65 + i)}
+                        </div>
+                        <blockquote className="text-slate-700 text-xs sm:text-sm leading-relaxed italic mb-3 font-mono">
+                          "{report.quote}"
+                        </blockquote>
+                        <cite className="text-red-800/70 text-[11px] not-italic block border-t border-stone-200 pt-2 tracking-wider font-mono">
+                          — {report.author}
+                        </cite>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                {/* ── Two-column bottom row ── */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+
+                  {/* TARGET DEPLOYMENTS */}
+                  <section>
+                    <SectionHeader>TARGET DEPLOYMENTS</SectionHeader>
+                    <div className="bg-amber-50/40 border border-stone-200 p-4">
+                      <p className="text-red-700/60 mb-3 text-[10px] font-mono tracking-wider font-bold">
+                        ▸ Subject is cleared for deployment in the following configurations:
+                      </p>
+                      <div className="space-y-1.5 text-xs sm:text-sm font-mono">
+                        {resumeData.targetRoles.map((role, i) => (
+                          <div key={i} className="text-slate-700">
+                            <span className="text-stone-400 mr-2">[{String(i + 1).padStart(2, "0")}]</span>
+                            {role}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* CIVILIAN COVER */}
+                  <section>
+                    <SectionHeader>SURVEILLANCE NOTES: CIVILIAN COVER</SectionHeader>
+                    <div className="bg-amber-50/40 border border-stone-200 p-4">
+                      <p className="text-red-700/60 mb-3 text-[10px] font-mono tracking-wider font-bold">
+                        ▸ Background activities detected:
+                      </p>
+                      <div className="space-y-2 text-xs sm:text-sm font-mono">
+                        {resumeData.civilianCover.map((item, i) => (
+                          <div key={i} className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 text-slate-700">
+                            <span className="font-bold">{item.name}</span>
+                            <span className="text-stone-400 text-[11px]">{item.category}</span>
+                            <span className="hidden sm:inline text-stone-300">—</span>
+                            <span className="text-red-800/70 text-[11px] tracking-wider">{item.status}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </section>
+
+                </div>
+
+              </div>
+              {/* end paper inner padding */}
+            </div>
+            {/* end paper */}
+
+            {/* ── Footer line on folder ── */}
+            <div className="text-stone-500 text-[9px] sm:text-[10px] tracking-widest text-center pt-4 pb-1 font-mono">
+              DOCUMENT CLASSIFICATION: <span className="text-red-700 font-bold">TOP SECRET</span> // DISTRIBUTION: <Redacted>EYES ONLY</Redacted> // REF: DR-{new Date().getFullYear()}-RABURN
+            </div>
           </div>
-
-          {/* PDF download */}
-          <a
-            href={resumePDF}
-            download="Matthew_Raburn_Resume.pdf"
-            className="inline-flex items-center gap-2 bg-[--accent] text-black px-4 py-2 rounded font-bold transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[--accent] focus:ring-offset-2 focus:ring-offset-gray-800"
-            aria-label="Download PDF version of resume"
-          >
-            <Download className="w-4 h-4" aria-hidden="true" />
-            Download PDF Resume
-          </a>
-
-          {/* Dashboard link */}
-          <p className="mt-4">
-            <Link to="/dashboard" className="inline-flex items-center gap-2 px-3 py-2 border rounded">
-              <span className="record-icon" style={{ '--size': '18px' }} aria-hidden />
-              <span>Open Vinyl Dashboard</span>
-            </Link>
-
-          </p>
-        </header>
-
-        {/* Dashboard */}
-        <main className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 p-4 sm:p-8 max-w-7xl mx-auto">
-          <Panel icon={Activity} title="SYSTEM STATUS">
-            <SkillsStatus skills={resumeData.skills} />
-          </Panel>
-
-          <Panel icon={Terminal} title="TERMINAL INTERFACE">
-            <div className="bg-black/70 border border-gray-600 rounded p-3 sm:p-4 max-h-72 overflow-y-auto text-xs sm:text-sm">
-              <div className="mb-2">
-                <span className="text-yellow-500">matthew@resume:~$</span>
-                <span className="text-green-300 ml-2">cat summary.txt</span>
-              </div>
-              <div className="text-gray-300 mb-4 leading-relaxed text-xs sm:text-sm">
-                {resumeData.personal.summary}
-              </div>
-              <div className="mb-2">
-                <span className="text-yellow-500">matthew@resume:~$</span>
-                <span className="text-green-300 ml-2">ls -la skills/</span>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1 text-gray-300 text-xs">
-                {resumeData.skills.map((skill, index) => (
-                  <div key={index}>drwxr-xr-x {skill.name.replace(" ", "_")}</div>
-                ))}
-              </div>
-              <div className="mt-4 text-yellow-500">
-                matthew@resume:~$ <span className="opacity-70">_</span>
-              </div>
-            </div>
-          </Panel>
-
-          <Panel icon={Network} title="NETWORK TOPOLOGY" className="lg:col-span-2">
-            <div className="mb-4" role="tablist" aria-label="Job experience timeline">
-              {resumeData.experience.map((job) => (
-                <NetworkNode
-                  key={job.id}
-                  job={job}
-                  isActive={activeJob === job.id}
-                  onClick={() => setActiveJob(job.id)}
-                />
-              ))}
-            </div>
-            {resumeData.experience.map((job) => (
-              <div key={job.id} role="tabpanel" aria-labelledby={`tab-${job.id}`}>
-                <JobDetails job={job} isActive={activeJob === job.id} />
-              </div>
-            ))}
-          </Panel>
-
-          <Panel icon={FileText} title="SYSTEM LOGS">
-            <div className="bg-black/70 border border-gray-600 rounded p-3 max-h-64 overflow-y-auto text-xs sm:text-sm">
-              <LogTicker intervalMs={3000} />
-            </div>
-          </Panel>
-
-          <Panel icon={Code} title="TARGET DEPLOYMENTS">
-            <div className="bg-gray-900/70 p-4 rounded">
-              <div className="text-yellow-500 mb-3 text-sm sm:text-base">
-                ▸ Available for the following system configurations:
-              </div>
-              <div className="space-y-2 text-sm">
-                {resumeData.targetRoles.map((role, index) => (
-                  <div key={index} className="text-green-300">
-                    • {role}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Panel>
-
-          <Panel icon={User} title="BACKGROUND PROCESSES" className="lg:col-span-2">
-            <div className="bg-gray-900/70 p-4 rounded">
-              <div className="text-yellow-500 mb-3 text-sm sm:text-base">▸ Running in background:</div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-                {resumeData.interests.map((interest, index) => (
-                  <div key={index} className="text-green-300">
-                    <span aria-hidden="true">{interest.icon}</span> {interest.name}.exe - Status:{" "}
-                    {interest.status}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Panel>
-        </main>
+          {/* end folder padding */}
+        </div>
+        {/* end manilla folder */}
       </div>
+      {/* end desk surface */}
     </div>
   );
 }
 
 /* =============== App (Router) =============== */
 export default function App() {
-  // If your index.js already wraps <App/> in <BrowserRouter>, remove the <BrowserRouter> here
   return (
-      <Routes>
-        <Route path="/" element={<ResumeHome />} />
-        <Route path="/dashboard" element={<VinylDashboard />} />
-      </Routes>
+    <Routes>
+      <Route path="/" element={<ResumeHome />} />
+      <Route path="/dashboard" element={<VinylDashboard />} />
+    </Routes>
   );
 }

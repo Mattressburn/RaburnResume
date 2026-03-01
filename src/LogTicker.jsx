@@ -23,7 +23,7 @@ const ALL_MESSAGES = [
 ];
 
 /* helpers */
-const levelColor = { INFO: "text-green-400", WARN: "text-yellow-400", ERROR: "text-red-400" };
+const levelColor = { INFO: "text-cyan-400", WARN: "text-amber-400", ERROR: "text-red-400" };
 const ts = () => new Date().toISOString().slice(0, 19).replace("T", " ");
 const uid = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 

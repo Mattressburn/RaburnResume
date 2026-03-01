@@ -1,17 +1,17 @@
-// Shared Recharts theme for the retro dashboard
+// Shared Recharts theme for the classified dossier dashboard
 import React from "react";
 
 export const RC = {
-  paper: "var(--retro-paper)",
-  line: "var(--retro-line)",
-  ink: "var(--retro-ink)",
-  grid: "var(--retro-grid)",
+  paper: "#18181b",
+  line: "#3f3f46",
+  ink: "#d4d4d8",
+  grid: "#27272a",
 };
 
-// Palette with a spread so neighbors aren't similar
+// Tactical muted palette: ambers, reds, slate blues, olive greens, purples
 const BASE_PALETTE = [
-  "#9ce626ff", "#6e417a", "#ef6a6a", "#c77dff", "#72c38f",
-  "#ee6415ff", "#5fa8ff", "#43aa8b", "#ff6b6b", "#bdb2ff",
+  "#f59e0b", "#ef4444", "#3b82f6", "#10b981", "#8b5cf6",
+  "#64748b", "#d97706", "#b91c1c",
 ];
 // 0,5,1,6,2,7… => maximizes separation between neighbors
 const SPREAD = (() => {

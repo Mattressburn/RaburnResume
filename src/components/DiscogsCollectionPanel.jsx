@@ -74,23 +74,23 @@ export default function DiscogsCollectionPanel() {
   return (
     <div className="space-y-6">
       {error && (
-        <div className="retro-card p-3 border border-red-500/50 text-red-300">
-          <div className="retro-title mb-1">Error</div>
+        <div className="bg-zinc-900 border-2 border-red-700/50 p-3 rounded-none text-red-300">
+          <div className="text-xs text-amber-500 font-bold tracking-widest uppercase mb-1">Error</div>
           <p className="text-sm">{error}</p>
         </div>
       )}
 
       {/* Controls */}
-      <div className="retro-card p-4">
-        <div className="retro-title mb-2">Load your Discogs collection</div>
+      <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+        <div className="text-sm text-amber-500 font-bold tracking-widest uppercase mb-2">Load your Discogs collection</div>
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="border border-dashed border-zinc-600 rounded-2xl p-4">
-            <div className="text-sm opacity-80 mb-2">Option A · CSV export</div>
-            <p className="text-xs opacity-70 mb-3">
+          <div className="border border-dashed border-zinc-600 p-4">
+            <div className="text-sm text-zinc-400 mb-2">Option A · CSV export</div>
+            <p className="text-xs text-zinc-500 mb-3">
               In Discogs: Collection ➜ Export ➜ Collection CSV. Then drop it
               here.
             </p>
-            <label className="retro-btn">
+            <label className="border border-zinc-600 px-3 py-1 text-xs uppercase hover:bg-zinc-800 hover:text-amber-500 transition-colors text-zinc-400 cursor-pointer inline-block">
               <input
                 type="file"
                 accept=".csv,text/csv"
@@ -104,11 +104,11 @@ export default function DiscogsCollectionPanel() {
             </label>
           </div>
 
-          <div className="border border-dashed border-zinc-600 rounded-2xl p-4">
-            <div className="text-sm opacity-80 mb-2">
+          <div className="border border-dashed border-zinc-600 p-4">
+            <div className="text-sm text-zinc-400 mb-2">
               Option B · Live from Discogs API
             </div>
-            <p className="text-xs opacity-70 mb-3">
+            <p className="text-xs text-zinc-500 mb-3">
               Requires a Netlify function with a Discogs token set
               (DISCOGS_TOKEN).
             </p>
@@ -117,11 +117,11 @@ export default function DiscogsCollectionPanel() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Discogs username"
-                className="retro-input flex-1"
+                className="flex-1 bg-zinc-800 border border-zinc-600 px-3 py-1.5 text-sm text-zinc-200 placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
               />
               <button
                 onClick={handleFetchFromAPI}
-                className="retro-btn"
+                className="border border-zinc-600 px-3 py-1.5 text-xs uppercase hover:bg-zinc-800 hover:text-amber-500 transition-colors text-zinc-400"
                 disabled={loading}
               >
                 {loading ? "Loading…" : "Load"}
@@ -424,16 +424,16 @@ function toChart(map) {
 
 function SummaryTile({ title, value }) {
   return (
-    <div className="retro-card p-4">
-      <div className="retro-title mb-1">{title}</div>
-      <div className="text-2xl font-semibold tracking-tight">{value}</div>
+    <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+      <div className="text-xs text-amber-500 font-bold tracking-widest uppercase mb-1">{title}</div>
+      <div className="text-2xl font-semibold tracking-tight text-zinc-100">{value}</div>
     </div>
   );
 }
 function ChartCard({ title, children }) {
   return (
-    <div className="retro-card p-4">
-      <div className="retro-title mb-3">{title}</div>
+    <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+      <div className="text-sm text-amber-500 font-bold tracking-widest uppercase mb-3">{title}</div>
       {children}
     </div>
   );

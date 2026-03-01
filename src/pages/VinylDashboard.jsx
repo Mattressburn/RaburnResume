@@ -83,14 +83,14 @@ function CoverMosaic({ items }) {
   const covers = (items || []).map((d) => d.cover).filter(Boolean).slice(0, 100);
   return (
     <div className="absolute inset-0 -z-10 overflow-hidden">
-      <div className="opacity-30 blur-xl scale-110">
+      <div className="opacity-15 blur-xl scale-110">
         <div className="grid grid-cols-10 gap-1">
           {covers.map((src, i) => (
             <img key={i} src={src} alt="cover" className="w-full h-24 object-cover" loading="lazy" />
           ))}
         </div>
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-[var(--retro-cream)]/60 via-[var(--retro-cream)]/80 to-[var(--retro-cream)]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/80 via-zinc-950/95 to-zinc-950" />
     </div>
   );
 }
@@ -258,13 +258,13 @@ export default function VinylDashboard() {
     yearsMax = defaults.ymax;
 
   const pillColors = [
-    "var(--retro-orange)",
-    "var(--retro-teal)",
-    "var(--retro-mustard)",
-    "var(--retro-plum)",
-    "var(--retro-sky)",
-    "var(--retro-mint)",
-    "var(--retro-cherry)",
+    "#f59e0b",
+    "#3b82f6",
+    "#d97706",
+    "#8b5cf6",
+    "#64748b",
+    "#10b981",
+    "#ef4444",
   ];
 
   // Helpers for Labels
@@ -283,20 +283,20 @@ export default function VinylDashboard() {
     );
   }
   return (
-    <div className="min-h-screen relative retro-page">
+    <div className="min-h-screen relative bg-zinc-950 text-zinc-300 font-mono">
       <CoverMosaic items={filtered.length ? filtered : data} />
-      <div className="mx-auto max-w-7xl px-4 py-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="retro-headline text-2xl md:text-3xl tracking-tight">
-            <span className="kicker">Classic Vinyl Top 500</span>
+      <div className="mx-auto max-w-7xl px-4 py-6 space-y-6 relative z-10">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <h1 className="text-amber-500 font-bold tracking-widest text-base sm:text-xl border-b-2 border-zinc-700 pb-2 font-mono uppercase">
+            [ EVIDENCE ARCHIVE: AUDIO SURVEILLANCE LOGS ]
           </h1>
 
           <div className="flex items-center gap-2">
-            <Link to="/" className="retro-btn-outline inline-flex items-center gap-2">
+            <Link to="/" className="border border-zinc-600 px-3 py-1 text-xs uppercase hover:bg-zinc-800 hover:text-amber-500 transition-colors inline-flex items-center gap-2 text-zinc-400">
               <span aria-hidden>←</span>
-              <span>Back to Resume</span>
+              <span>Back to Dossier</span>
             </Link>
-            <a href="/fan500.json" className="retro-btn">
+            <a href="/fan500.json" className="border border-zinc-600 px-3 py-1 text-xs uppercase hover:bg-zinc-800 hover:text-amber-500 transition-colors text-zinc-400">
               Download JSON
             </a>
           </div>
@@ -304,16 +304,16 @@ export default function VinylDashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Year range */}
-          <div className="retro-card p-4">
-            <div className="text-sm retro-title mb-3">Year range</div>
+          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+            <div className="text-sm text-amber-500 font-bold tracking-widest uppercase mb-3">Year range</div>
             <div className="flex items-center justify-around flex-wrap gap-4">
               {/* Start Year Control */}
               <div className="flex flex-col items-center">
-                <div className="retro-num mb-2">{qs.ymin}</div>
+                <div className="text-2xl font-bold text-zinc-100 tabular-nums mb-2">{qs.ymin}</div>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setQS({ ymin: clamp(qs.ymin - 1, defaults.ymin, qs.ymax) })}
-                    className="retro-step"
+                    className="w-8 h-8 border border-zinc-600 text-zinc-400 hover:bg-zinc-800 hover:text-amber-500 transition-colors text-sm font-bold"
                   >
                     -
                   </button>
@@ -325,22 +325,22 @@ export default function VinylDashboard() {
                   />
                   <button
                     onClick={() => setQS({ ymin: clamp(qs.ymin + 1, defaults.ymin, qs.ymax) })}
-                    className="retro-step"
+                    className="w-8 h-8 border border-zinc-600 text-zinc-400 hover:bg-zinc-800 hover:text-amber-500 transition-colors text-sm font-bold"
                   >
                     +
                   </button>
                 </div>
-                <div className="retro-knob-label mt-0">Start</div>
+                <div className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Start</div>
               </div>
               <span className="text-zinc-400 font-medium self-end pb-5">to</span>
 
               {/* End Year Control */}
               <div className="flex flex-col items-center">
-                <div className="retro-num mb-2">{qs.ymax}</div>
+                <div className="text-2xl font-bold text-zinc-100 tabular-nums mb-2">{qs.ymax}</div>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setQS({ ymax: clamp(qs.ymax - 1, qs.ymin, defaults.ymax) })}
-                    className="retro-step"
+                    className="w-8 h-8 border border-zinc-600 text-zinc-400 hover:bg-zinc-800 hover:text-amber-500 transition-colors text-sm font-bold"
                   >
                     -
                   </button>
@@ -352,12 +352,12 @@ export default function VinylDashboard() {
                   />
                   <button
                     onClick={() => setQS({ ymax: clamp(qs.ymax + 1, qs.ymin, defaults.ymax) })}
-                    className="retro-step"
+                    className="w-8 h-8 border border-zinc-600 text-zinc-400 hover:bg-zinc-800 hover:text-amber-500 transition-colors text-sm font-bold"
                   >
                     +
                   </button>
                 </div>
-                <div className="retro-knob-label mt-0">End</div>
+                <div className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">End</div>
               </div>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -371,7 +371,11 @@ export default function VinylDashboard() {
                 return (
                   <button
                     key={label}
-                    className={`retro-chip ${active ? "active" : ""}`}
+                    className={`border px-2 py-1 text-xs font-mono transition-colors ${
+                      active
+                        ? "border-amber-500 text-amber-500 bg-amber-500/10"
+                        : "border-zinc-700 text-zinc-400 hover:border-amber-500 hover:text-amber-500"
+                    }`}
                     onClick={() => setQS({ ymin: a, ymax: b })}
                   >
                     {label}
@@ -382,13 +386,12 @@ export default function VinylDashboard() {
           </div>
 
           {/* Duration */}
-          <div className="retro-card p-4">
+          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
             <div className="flex items-center justify-between mb-2">
-              <div className="text-sm retro-title retro-title">Max duration (min)</div>
-              <div className="text-xs text-zinc-400">
+              <div className="text-sm text-amber-500 font-bold tracking-widest uppercase">Max duration (min)</div>
+              <div className="text-xs">
                 <span
-                  className="inline-block px-2 py-1 rounded-full"
-                  style={{ background: "var(--retro-cream)", color: "var(--retro-ink)" }}
+                  className="inline-block px-2 py-1 bg-zinc-800 border border-zinc-700 text-zinc-300"
                 >
                   ≤ {qs.dmax} min
                 </span>
@@ -400,9 +403,9 @@ export default function VinylDashboard() {
               max={31}
               value={qs.dmax}
               onChange={(e) => setQS({ dmax: parseInt(e.target.value, 10) })}
-              className="vinyl-range"
+              className="vinyl-range w-full"
             />
-            <div className="mt-2 flex justify-between text-[11px] text-zinc-400">
+            <div className="mt-2 flex justify-between text-[11px] text-zinc-500">
               <span>Single</span>
               <span>Album-cut</span>
               <span>Epic</span>
@@ -412,20 +415,21 @@ export default function VinylDashboard() {
           {/* LABELS + ARTISTS ROW */}
           <div className="grid grid gap-4 md:col-span-2 grid-cols-1 md:grid-cols-[280px_minmax(0,1fr)]">
             {/* Labels */}
-            <div className="retro-card p-4">
-              <div className="text-sm mb-2 font-medium">Labels</div>
-              <div className="h-48 overflow-y-auto space-y-1 pr-1 filter-list">
+            <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+              <div className="text-sm mb-2 font-bold text-amber-500 tracking-widest uppercase">Labels</div>
+              <div className="h-48 overflow-y-auto space-y-1 pr-1">
                 {labelCounts.map(({ name, count }) => {
                   const active = isLabelActive(name, qs.lab);
                   return (
-                    <label key={name} className="flex items-center gap-2 text-xs">
+                    <label key={name} className="flex items-center gap-2 text-xs text-zinc-400 hover:text-zinc-200 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={active}
                         onChange={() => setQS({ lab: toggleLabel(name, qs.lab) })}
+                        className="accent-amber-500"
                       />
                       <span className="truncate">{name}</span>
-                      <span className="opacity-60">({count})</span>
+                      <span className="text-zinc-600">({count})</span>
                     </label>
                   );
                 })}
@@ -433,8 +437,8 @@ export default function VinylDashboard() {
             </div>
 
             {/* Artists */}
-            <div className="retro-card p-4">
-              <div className="text-sm mb-2 font-medium">Artists</div>
+            <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+              <div className="text-sm mb-2 font-bold text-amber-500 tracking-widest uppercase">Artists</div>
 
               {/* Top pills */}
               <div className="flex flex-wrap gap-2 mb-2">
@@ -445,15 +449,14 @@ export default function VinylDashboard() {
                     <button
                       key={norm}
                       onClick={() => setQS({ art: toggleArtist(norm, name, qs.art) })}
-                      className="retro-pill"
-                      style={
+                      className={`inline-flex items-center gap-1.5 border px-2 py-1 text-xs font-mono transition-colors ${
                         active
-                          ? { background: "var(--retro-sun)", borderColor: "var(--retro-sun)" }
-                          : {}
-                      }
+                          ? "border-amber-500 text-amber-500 bg-amber-500/10"
+                          : "border-zinc-700 text-zinc-400 hover:border-amber-500 hover:text-amber-500"
+                      }`}
                       aria-pressed={active}
                     >
-                      <span className="retro-pill-dot" style={{ background: c }} />
+                      <span className="w-2 h-2 rounded-full inline-block" style={{ background: c }} />
                       {name}
                     </button>
                   );
@@ -461,18 +464,19 @@ export default function VinylDashboard() {
               </div>
 
               {/* Scrollable checkbox list */}
-              <div className="h-28 overflow-y-auto space-y-1 pr-1 filter-list">
+              <div className="h-28 overflow-y-auto space-y-1 pr-1">
                 {artistCounts.slice(10).map(({ norm, name, count }) => {
                   const active = isArtistActive(norm, qs.art);
                   return (
-                    <label key={norm} className="flex items-center gap-2 text-xs">
+                    <label key={norm} className="flex items-center gap-2 text-xs text-zinc-400 hover:text-zinc-200 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={active}
                         onChange={() => setQS({ art: toggleArtist(norm, name, qs.art) })}
+                        className="accent-amber-500"
                       />
                       <span className="truncate">{name}</span>
-                      <span className="opacity-60">({count})</span>
+                      <span className="text-zinc-600">({count})</span>
                     </label>
                   );
                 })}
@@ -483,25 +487,25 @@ export default function VinylDashboard() {
 
         {/* Summary cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="retro-card p-4">
-            <div className="text-xs" style={{ color: "#6a5a37" }}>
+          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+            <div className="text-xs text-zinc-400">
               Tracks
             </div>
-            <div className="text-2xl font-semibold">{filtered.length}</div>
+            <div className="text-2xl font-semibold text-zinc-100">{filtered.length}</div>
           </div>
-          <div className="retro-card p-4">
-            <div className="text-xs" style={{ color: "#6a5a37" }}>
+          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+            <div className="text-xs text-zinc-400">
               Artists
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="text-2xl font-semibold text-zinc-100">
               {new Set(filtered.map((d) => normalizeArtist(d.artist))).size}
             </div>
           </div>
-          <div className="retro-card p-4">
-            <div className="text-xs" style={{ color: "#6a5a37" }}>
+          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+            <div className="text-xs text-zinc-400">
               Total playtime
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="text-2xl font-semibold text-zinc-100">
               {(() => {
                 const s = filtered.reduce((a, b) => a + (b.secs || 0), 0);
                 const h = Math.floor(s / 3600),
@@ -510,11 +514,11 @@ export default function VinylDashboard() {
               })()}
             </div>
           </div>
-          <div className="retro-card p-4">
-            <div className="text-xs" style={{ color: "#6a5a37" }}>
+          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+            <div className="text-xs text-zinc-400">
               Avg length
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="text-2xl font-semibold text-zinc-100">
               {(() => {
                 const arr = filtered.filter((d) => d.secs != null).map((d) => d.secs);
                 if (!arr.length) return "-";
@@ -535,10 +539,10 @@ export default function VinylDashboard() {
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Songs by Year */}
-          <div className="retro-card p-4 lg:col-span-2">
-            <div className="text-sm mb-2 font-medium">Songs by Year (click bar to filter)</div>
+          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none lg:col-span-2">
+            <div className="text-sm mb-2 font-bold text-amber-500 tracking-widest uppercase">Songs by Year (click bar to filter)</div>
             <button
-              className="text-xs px-2 py-1 border border-zinc-800 rounded hover:bg-zinc-800"
+              className="text-xs px-2 py-1 border border-zinc-600 text-zinc-400 hover:bg-zinc-800 hover:text-amber-500 transition-colors mb-2"
               onClick={() => setQS({ ymin: defaults.ymin, ymax: defaults.ymax })}
               disabled={qs.ymin === defaults.ymin && qs.ymax === defaults.ymax}
               title="Clear year filter"
@@ -572,8 +576,8 @@ export default function VinylDashboard() {
           </div>
 
           {/* Top Artists (filtered) */}
-          <div className="retro-card p-4">
-            <div className="text-sm mb-2 font-medium">Top Artists (filtered)</div>
+          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+            <div className="text-sm mb-2 font-bold text-amber-500 tracking-widest uppercase">Top Artists (filtered)</div>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
@@ -615,14 +619,13 @@ export default function VinylDashboard() {
         </div>
 
         {/* Longest tracks */}
-        <div className="retro-card p-4">
-          <div className="text-sm mb-3 font-medium">Top 10 Longest Tracks (filtered)</div>
+        <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+          <div className="text-sm mb-3 font-bold text-amber-500 tracking-widest uppercase">Top 10 Longest Tracks (filtered)</div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {longest.map((d, i) => (
               <div
                 key={d.n ?? `${d.artist}|${d.title}|${d.year}|${i}`}
-                className="flex gap-3 p-3 rounded-xl"
-                style={{ background: "var(--retro-paper)", border: "1px solid var(--retro-line)" }}
+                className="bg-zinc-900 border border-zinc-700 flex gap-3 p-3"
               >
                 <img
                   src={d.cover || "https://placehold.co/80x80?text=No+Art"}
@@ -631,11 +634,11 @@ export default function VinylDashboard() {
                   loading="lazy"
                 />
                 <div className="min-w-0">
-                  <div className="text-sm font-medium truncate">{d.title}</div>
-                  <div className="text-xs text-zinc-400 truncate">
+                  <div className="text-sm font-medium truncate text-zinc-200">{d.title}</div>
+                  <div className="text-xs text-zinc-500 truncate">
                     {d.artist} • {d.album || "—"} • {d.year || "—"}
                   </div>
-                  <div className="text-xs mt-1">
+                  <div className="text-xs mt-1 text-zinc-400">
                     {(() => {
                       if (d.secs == null) return "—";
                       const mm = Math.floor(d.secs / 60),
@@ -650,13 +653,13 @@ export default function VinylDashboard() {
         </div>
 
         {/* Tracks table */}
-        <div className="retro-card p-4">
-          <div className="text-sm mb-3 font-medium">Tracks ({filtered.length})</div>
+        <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+          <div className="text-sm mb-3 font-bold text-amber-500 tracking-widest uppercase">Tracks ({filtered.length})</div>
 
-          <div className="overflow-x-auto retro-table">
+          <div className="overflow-x-auto">
             <table className="min-w-full text-sm font-mono">
               <thead>
-                <tr className="text-left">
+                <tr className="border-b-2 border-zinc-700 text-amber-500 text-left">
                   <th className="py-2 pr-3">#</th>
                   <th className="py-2 pr-3">Cover</th>
                   <th className="py-2 pr-3">Title</th>
@@ -671,8 +674,8 @@ export default function VinylDashboard() {
 
               <tbody>
                 {filtered.map((d, i) => (
-                  <tr key={i}>
-                    <td className="py-2 pr-3 text-[color:var(--retro-ink)]">{d.n ?? ""}</td>
+                  <tr key={i} className="border-b border-zinc-800 hover:bg-zinc-800/50">
+                    <td className="py-2 pr-3 text-zinc-400">{d.n ?? ""}</td>
                     <td className="py-2 pr-3">
                       <img
                         src={d.cover || "https://placehold.co/48x48?text=—"}
@@ -681,12 +684,12 @@ export default function VinylDashboard() {
                         loading="lazy"
                       />
                     </td>
-                    <td className="py-2 pr-3">{d.title}</td>
-                    <td className="py-2 pr-3">{d.artist}</td>
-                    <td className="py-2 pr-3">{d.album || "—"}</td>
-                    <td className="py-2 pr-3">{d.year || "—"}</td>
-                    <td className="py-2 pr-3 max-w-[240px] truncate">{(d.labels || []).join(", ")}</td>
-                    <td className="py-2 pr-3">
+                    <td className="py-2 pr-3 text-zinc-200">{d.title}</td>
+                    <td className="py-2 pr-3 text-zinc-300">{d.artist}</td>
+                    <td className="py-2 pr-3 text-zinc-400">{d.album || "—"}</td>
+                    <td className="py-2 pr-3 text-zinc-400">{d.year || "—"}</td>
+                    <td className="py-2 pr-3 max-w-[240px] truncate text-zinc-500">{(d.labels || []).join(", ")}</td>
+                    <td className="py-2 pr-3 text-zinc-400">
                       {(() => {
                         if (d.secs == null) return "—";
                         const mm = Math.floor(d.secs / 60);
@@ -700,7 +703,7 @@ export default function VinylDashboard() {
                           href={d.discogs_release}
                           target="_blank"
                           rel="noreferrer"
-                          className="retro-link-blue hover:underline"
+                          className="text-amber-500 hover:underline text-xs"
                         >
                           Discogs
                         </a>
@@ -710,7 +713,7 @@ export default function VinylDashboard() {
                           href={d.spotify}
                           target="_blank"
                           rel="noreferrer"
-                          className="retro-link-green hover:underline"
+                          className="text-emerald-500 hover:underline text-xs"
                         >
                           Spotify
                         </a>

@@ -8,29 +8,25 @@ export const resumeData = {
       location: "Lowell, MA 01852",
     },
     summary:
-      "I'm the fixer who is called in for complex, high-maintenance systems, transforming them into calm, reliable workhorses. I stabilize, document, and fine-tune processes so they run smoothly and scale effortlessly. My approach combines rock-solid fundamentals with AI applied strategically, not for hype, turning every system I touch into a dependable business asset.",
+      "I don't always fix high-maintenance, business-critical systems... but when I do, I transform them into calm, reliable workhorses. Stay automated, my friends.",
   },
-  skills: [
-    { name: "PowerShell", percent: 99.5 },
-    { name: "Python", percent: 98.2 },
-    { name: "SCCM", percent: 99.1 },
-    { name: "Windows Server", percent: 99.8 },
-    { name: "MongoDB", percent: 92.9 },
-    { name: "JavaScript", percent: 97.8 },
-    { name: "React", percent: 96.5 },
-    { name: "AI Prompting", percent: 98.7 },
-    { name: "Containers", percent: 90.2, },
-    { name: "Intune", percent: 91.7 },
-    { name: "GIT", percent: 95.2 },
-    { name: "AWS", percent: 94.4 },
-    { name: "ERP", percent: 93.1 },
-    { name: "Fusion Lifecycle", percent: 97.5 },
-    { name: "Kubernetes", percent: 60.0, learning: true },
-    { name: "VM", percent: 95.6 },
-    { name: "Linux", percent: 93.5 },
-    { name: "macOS", percent: 91.8 },
-    { name: "C CURE 9000", percent: 95.0 },
-    { name: "Active Directory", percent: 97.2 },
+  operationalTradecraft: [
+    "PowerShell",
+    "Python",
+    "C CURE 9000",
+    "iSTAR",
+    "Active Directory",
+    "SCCM & Intune",
+    "AI Prompting & Automation",
+    "REST APIs",
+    "Windows Server",
+    "Linux & macOS",
+  ],
+  anomalousCapabilities: [
+    "Maintains a 100% success rate of plugging in USB-A cables correctly on the first attempt, even in zero-visibility conditions.",
+    "Can accurately calculate the exact millisecond to stop petting a feline asset before it deploys lethal claws.",
+    "His ping requests never time out; packets are simply too intimidated to drop.",
+    "Spam emails actively unsubscribe from him.",
   ],
   experience: [
     {
@@ -79,6 +75,28 @@ export const resumeData = {
       ],
     },
   ],
+  fieldReports: [
+    {
+      quote: "He doesn't always test in production, but when he does, production thanks him.",
+      author: "Former VP of Operations",
+    },
+    {
+      quote: "When he types sudo, the server doesn't ask for a password. It just complies out of respect.",
+      author: "Former Lead Developer",
+    },
+    {
+      quote: "He doesn't need a ticketing system. He can determine the root cause of an outage entirely based on the frequency and volume of a user's heavy sigh.",
+      author: "Former Manager",
+    },
+    {
+      quote: "I asked him to automate a tedious weekly report. By Friday, the script had automated my job, my manager's job, and successfully negotiated a vendor discount.",
+      author: "Former IT Director",
+    },
+    {
+      quote: "Phishing campaigns actively bypass his inbox. The malicious payloads simply self-quarantine out of sheer self-preservation.",
+      author: "Former CISO",
+    },
+  ],
   targetRoles: [
     "Senior Systems Administrator",
     "Systems Engineer",
@@ -87,10 +105,10 @@ export const resumeData = {
     "IT Automation Engineer",
     "Technical Project Lead",
   ],
-  interests: [
-    { name: "3D Printing", icon: "🖨️", status: "Active" },
-    { name: "Vintage HIFI", icon: "🎵", status: "Running" },
-    { name: "Tinkering", icon: "🔧", status: "Always On" },
-    { name: "College Football", icon: "🏈", status: "Seasonal" },
+  civilianCover: [
+    { name: "Analog Acoustic Forensics", category: "(Vintage HiFi)", status: "Signal Acquired" },
+    { name: "Rapid Prototyping", category: "(3D Printing)", status: "Fabrication Active" },
+    { name: "Hardware Reverse Engineering", category: "(Tinkering)", status: "Ongoing Observation" },
+    { name: "Tactical Gridiron Analysis", category: "(College Football)", status: "Seasonal Deployment" },
   ],
 };

@@ -3,422 +3,278 @@
 @tailwind components;
 @tailwind utilities;
 
-
+/* ═══════════════════════════════════════════════════
+   PHYSICAL MANILLA DOSSIER THEME
+   ═══════════════════════════════════════════════════ */
 
 :root {
-  --accent: #39ff14;
+  --desk:        #1c1917;     /* stone-900 dark wood desk */
+  --manilla:     #E6D5AA;     /* folder tab color */
+  --paper:       #FDFBF7;     /* off-white typing paper */
+  --ink:         #1e293b;     /* slate-800 typewriter ink */
+  --ink-light:   #475569;     /* slate-600 faded ink */
+  --stamp-red:   #b91c1c;     /* red-700 stamp ink */
+  --tab-active:  var(--paper);
+  --tab-inactive:#d6c48f;
 }
 
+/* ─── Global reset & typewriter font ─── */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Courier New', Courier, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: var(--desk);
+  color: var(--ink);
 }
 
-/* Retro palette */
-/* Retro palette (expanded) */
-:root {
-  --accent: #39ff14; /* used elsewhere; leave it be */
-
-  /* Core retro */
-  --retro-ink: #0b0b0c;       /* near-black text */
-  --retro-cream: #f8f3e1;     /* slightly warmer than before for full-page bg */
-  --retro-paper: #fffdf5;     /* card/panel background */
-  --retro-line: #d9cfaf;      /* borders */
-  --retro-grid: #e6dcb8;      /* chart gridlines */
-
-  /* Accents */
-  --retro-mustard: #e6b800;
-  --retro-avocado: #2db38b;
-  --retro-teal:    #1aa0a4;
-  --retro-orange:  #ff7a3d;
-
-  /* Extra accents (new) */
-  --retro-cherry: #d84654;
-  --retro-plum:   #6e417a;
-  --retro-sky:    #4aa9d9;
-  --retro-sun:    #ffbf3f;
-  --retro-mint:   #55c2a1;
-  --retro-brown:  #7a5130;
-  --retro-navy:   #1f3a5b;
+/* ─── Paper texture noise (subtle) ─── */
+.paper-texture {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
 }
 
-/* Page shell: go light */
-.retro-page {
-  background: var(--retro-cream);
-  color: var(--retro-ink);
+/* ─── Redacted text (black bar → reveal on hover) ─── */
+.redacted {
+  background: #1e293b;
+  color: #1e293b;
+  padding: 0 0.25em;
+  user-select: none;
+  transition: background 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  border-radius: 1px;
+}
+.redacted:hover {
+  background: transparent;
+  color: var(--stamp-red);
 }
 
-/* Use Rubik for body, Shrikhand for big headings */
-body {
-  font-family: "Rubik", system-ui, -apple-system, sans-serif;
+/* ─── Classified stamp animation ─── */
+@keyframes stamp-in {
+  0% {
+    transform: translate(-50%, -50%) scale(2.5) rotate(-8deg);
+    opacity: 0;
+  }
+  60% {
+    transform: translate(-50%, -50%) scale(0.95) rotate(-8deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) rotate(-8deg);
+    opacity: 0.18;
+  }
 }
 
-/* Cards: paper with hard, offset shadow */
-.retro-card {
-  background: var(--retro-paper);
-  border: 1px solid var(--retro-line);
-  border-radius: 12px;
-  box-shadow: 4px 4px 0px #0000001c; /* subtle, chunky */
-  transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
+.dossier-stamp {
+  animation: stamp-in 0.6s ease-out forwards;
+  mix-blend-mode: multiply;
 }
 
-.retro-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px #00000024;
+/* ─── Ink stamp class (for section headers) ─── */
+.ink-stamp {
+  display: inline-block;
+  color: var(--stamp-red);
+  border: 3px solid var(--stamp-red);
+  padding: 2px 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: 'Courier New', Courier, monospace;
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+  position: relative;
 }
-
-.retro-title {
-  font-family: "Shrikhand", system-ui;
-  letter-spacing: .3px;
-  color: var(--retro-brown);
-}
-
-/* Retro palette (expanded) */
-:root {
-  --accent: #39ff14; /* used elsewhere; leave it be */
-
-  /* Core retro */
-  --retro-ink: #0b0b0c;       /* near-black text */
-  --retro-cream: #f8f3e1;     /* slightly warmer than before for full-page bg */
-  --retro-paper: #fffdf5;     /* card/panel background */
-  --retro-line: #d9cfaf;      /* borders */
-  --retro-grid: #e6dcb8;      /* chart gridlines */
-
-  /* Accents */
-  --retro-mustard: #e6b800;
-  --retro-avocado: #2db38b;
-  --retro-teal:    #1aa0a4;
-  --retro-orange:  #ff7a3d;
-
-  /* Extra accents (new) */
-  --retro-cherry: #d84654;
-  --retro-plum:   #6e417a;
-  --retro-sky:    #4aa9d9;
-  --retro-sun:    #ffbf3f;
-  --retro-mint:   #55c2a1;
-  --retro-brown:  #7a5130;
-  --retro-navy:   #1f3a5b;
-}
-
-/* Page shell: go light */
-.retro-page {
-  background: var(--retro-cream);
-  color: var(--retro-ink);
-}
-
-/* Cards: paper with hard, offset shadow */
-.retro-card {
-  background: var(--retro-paper);
-  border: 1px solid var(--retro-line);
-  border-radius: 12px;
-  box-shadow: 4px 4px 0px #0000001c; /* subtle, chunky */
-  transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
-}
-.retro-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px #00000024;
-}
-
-.retro-title {
-  font-family: "Shrikhand", system-ui;
-  letter-spacing: .3px;
-  color: var(--retro-brown);
-}
-
-/* Small preset chips */
-.retro-chip {
-  background: #fffaf0;
-  border: 1px solid var(--retro-line);
-  color: var(--retro-ink);
-  border-radius: 999px;
-  padding: .25rem .6rem;
-  font-size: .75rem;
-}
-.retro-chip.active {
-  background: var(--retro-orange);
-  border-color: var(--retro-orange);
-  color: var(--retro-ink);
-  font-weight: 600;
-}
-
-/* Numeric “pills” */
-.retro-num {
-  width: 7rem;
-  text-align: center;
-  background: #fffaf0;
-  color: var(--retro-ink);
-  border: 1px solid var(--retro-line);
-  padding: .5rem .75rem;
-  border-radius: 999px;
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-/* Step buttons */
-.retro-step {
-  width: 2.25rem; height: 2.25rem;
-  border-radius: 999px;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: #fff6e2;
-  border: 1px solid var(--retro-line);
-  color: var(--retro-ink);
-  font-weight: 800; cursor: pointer;
-}
-.retro-step:hover { background: #ffefd0; }
-
-/* Track: multi-accent gradient so it isn't all teal */
-.vinyl-range {
-  -webkit-appearance: none; appearance: none;
-  width: 100%; height: 12px; border-radius: 999px; outline: none;
-  background: linear-gradient(
+.ink-stamp::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
     90deg,
-    var(--retro-teal) 0%,
-    var(--retro-avocado) 20%,
-    var(--retro-sun) 40%,
-    var(--retro-orange) 60%,
-    var(--retro-plum) 80%,
-    var(--retro-sky) 100%
+    transparent,
+    transparent 3px,
+    rgba(185, 28, 28, 0.04) 3px,
+    rgba(185, 28, 28, 0.04) 6px
   );
-  box-shadow: inset 0 0 0 2px var(--retro-line), 0 1px 0 #fff2;
+  pointer-events: none;
 }
 
-/* --- VINYL THUMB: clean label (no shine), grooves masked from label --- */
-
-/* Chrome / Edge / Safari */
-.vinyl-range::-webkit-slider-thumb {
-  -webkit-appearance: none; appearance: none;
-  width: 30px; height: 30px; border-radius: 50%;
-  cursor: grab;
-  border: 2px solid #0a0a0a;                 /* outer rim */
-  box-shadow: 0 0 0 2px #111, 0 4px 10px #0005;
-
-  /* Layer order: top → bottom (topmost first) */
-  background:
-    /* 1) Spindle hole (tiny center dot) */
-    radial-gradient(circle at 50% 50%, var(--retro-ink) 0 1.2px, transparent 1.3px),
-
-    /* 2) Circular mask to crop the label to a clean circle.
-          Transparent inside <= 8px, then record body color outside.
-          This hides any label colors outside the circle AND blocks grooves over the label. */
-    radial-gradient(circle at 50% 50%, transparent 0 8px, #0b0b0c 9px 30px),
-
-    /* 3) The label bands (cropped by the mask above): 
-          top avocado green → thin white stripe → bottom orange/red */
-    linear-gradient(
-      to bottom,
-      var(--retro-avocado) 0%,
-      var(--retro-avocado) 46%,
-      #ffffff 46%,
-      #ffffff 54%,
-      var(--retro-orange) 54%,
-      var(--retro-orange) 100%
-    ),
-
-    /* 4) Grooves: start just outside the label (≈9px) so they never cross it */
-    repeating-radial-gradient(circle at 50% 50%, transparent 0 9px, rgba(0,0,0,.20) 9.5px 10.5px),
-
-    /* 5) Record body */
-    radial-gradient(circle at 50% 50%, #151515 0 14px, #0b0b0c 15px 30px);
-}
-
-.vinyl-range:active::-webkit-slider-thumb { cursor: grabbing; }
-
-/* Firefox */
-.vinyl-range::-moz-range-thumb {
-  width: 30px; height: 30px; border-radius: 50%;
-  cursor: grab;
-  border: 2px solid #0a0a0a;
-  box-shadow: 0 0 0 2px #111, 0 4px 10px #0005;
-  background:
-    radial-gradient(circle at 50% 50%, var(--retro-ink) 0 1.2px, transparent 1.3px),
-    radial-gradient(circle at 50% 50%, transparent 0 8px, #0b0b0c 9px 30px),
-    linear-gradient(
-      to bottom,
-      var(--retro-avocado) 0%,
-      var(--retro-avocado) 46%,
-      #ffffff 46%,
-      #ffffff 54%,
-      var(--retro-orange) 54%,
-      var(--retro-orange) 100%
-    ),
-    repeating-radial-gradient(circle at 50% 50%, transparent 0 9px, rgba(0,0,0,.20) 9.5px 10.5px),
-    radial-gradient(circle at 50% 50%, #151515 0 14px, #0b0b0c 15px 30px);
-}
-
-.vinyl-range:active::-moz-range-thumb { cursor: grabbing; }
-
-
-/* NEW: Light-table styling for the tracks list (fix dark-on-dark) */
-.retro-table {
-  background: var(--retro-paper);
-  border: 1px solid var(--retro-line);
-  border-radius: 10px;
-  overflow: hidden;
-}
-.retro-table thead th {
-  background: #fff5db;
-  color: var(--retro-ink);
-  border-bottom: 1px solid var(--retro-line);
+/* ─── Section header (typewriter look) ─── */
+.section-header {
+  font-family: 'Courier New', Courier, monospace;
   font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  border-bottom: 2px solid #c4b078;
+  padding-bottom: 0.4rem;
+  margin-bottom: 1rem;
 }
-.retro-table tbody tr {
-  border-bottom: 1px solid #eadfbd;
-}
-.retro-table tbody tr:nth-child(odd) {
-  background: #fffdf5;
-}
-.retro-table tbody tr:hover {
-  background: #fff0d6; /* soft highlight */
-}
-.retro-link-blue { color: var(--retro-sky); }
-.retro-link-green { color: var(--retro-avocado); }
 
-/* Retro Knob - Styled like a bakelite stereo knob */
-.retro-knob {
-  --size: 56px;
-  --accent: var(--retro-cream); /* Cream indicator on a dark knob */
-  width: var(--size);
-  height: var(--size);
+/* ─── Polaroid photo placeholder ─── */
+.polaroid {
+  background: #fff;
+  border: 6px solid #fff;
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.18),
+    inset 0 0 0 1px rgba(0,0,0,0.06);
+  transform: rotate(2deg);
+}
+
+/* ─── Folder tab styles ─── */
+.folder-tab {
+  position: relative;
+  background: var(--tab-inactive);
+  border: 1px solid #b8a76c;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  padding: 8px 16px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ink-light);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 1;
+  margin-bottom: -1px;
+}
+.folder-tab:hover {
+  background: #e8d8a8;
+  color: var(--ink);
+}
+.folder-tab.active {
+  background: var(--paper);
+  color: var(--ink);
+  border-color: #c4b078;
+  z-index: 3;
+  box-shadow: 0 -2px 4px rgba(0,0,0,0.06);
+}
+
+/* ─── Desk shadow for the folder ─── */
+.desk-shadow {
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 12px 24px -8px rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Coffee stain (decorative) ─── */
+.coffee-stain {
+  position: absolute;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  background: radial-gradient(circle at 65% 35%, #5a4f3a, #1a1610 80%);
-  border: 2px solid #1a1610;
-  box-shadow: inset 0 2px 2px #98856a88, 0 4px 6px #00000066;
+  border: 2px solid rgba(139, 90, 43, 0.12);
+  background: radial-gradient(ellipse, rgba(139, 90, 43, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Paperclip (decorative CSS) ─── */
+.paperclip {
+  position: absolute;
+  width: 24px;
+  height: 60px;
+  border: 3px solid #a8a29e;
+  border-radius: 12px 12px 0 0;
+  border-bottom: none;
+  top: -20px;
+  right: 40px;
+  z-index: 10;
+  transform: rotate(8deg);
+}
+.paperclip::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 36px;
+  border: 3px solid #a8a29e;
+  border-radius: 8px 8px 0 0;
+  border-bottom: none;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ─── Horizontal rule (typewriter style) ─── */
+.dossier-hr {
+  border: none;
+  border-top: 1px dashed #c4b078;
+  margin: 1.5rem 0;
+}
+
+/* ─── Animation: subtle page settle ─── */
+@keyframes page-settle {
+  0% { transform: translateY(-8px); opacity: 0.5; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.page-enter {
+  animation: page-settle 0.4s ease-out forwards;
+}
+
+/* ═══════════════════════════════════════════════════
+   DASHBOARD WIDGETS (knob, range slider)
+   ═══════════════════════════════════════════════════ */
+
+/* ─── Rotary knob dial ─── */
+.knob-dial {
+  --angle: 0deg;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: conic-gradient(from 180deg, #27272a 0%, #3f3f46 50%, #27272a 100%);
+  border: 2px solid #52525b;
   position: relative;
   cursor: grab;
   touch-action: none;
-  user-select: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,255,255,0.05);
 }
-.retro-knob:active {
+.knob-dial::after {
+  content: '';
+  position: absolute;
+  width: 3px;
+  height: 14px;
+  background: #f59e0b;
+  border-radius: 2px;
+  top: 4px;
+  left: 50%;
+  transform-origin: bottom center;
+  transform: translateX(-50%) rotate(var(--angle));
+}
+.knob-dial:focus-visible {
+  outline: 2px solid #f59e0b;
+  outline-offset: 2px;
+}
+.knob-dial:active {
   cursor: grabbing;
 }
-.retro-knob::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 8px;
-  width: 3px;
-  height: 12px;
-  background: var(--accent);
-  border-radius: 2px;
-  transform-origin: 50% calc(var(--size) / 2 - 8px); /* Rotate from center */
-  transform: translateX(-50%) rotate(var(--angle, 0deg));
-  box-shadow: 0 0 5px #000;
+
+/* ─── Range slider (vinyl-range) ─── */
+.vinyl-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 0;
+  outline: none;
 }
-.retro-knob::before {
-  content: "";
-  position: absolute;
-  inset: 6px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, #0000 60%, #0e0e0e 61% 62%, #0000 63%);
+.vinyl-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #f59e0b;
+  border: 2px solid #d97706;
+  border-radius: 0;
+  cursor: pointer;
 }
-.retro-knob-label {
-  font-size: 11px;
-  color: #5a4a2f;
-  text-align: center;
-  margin-top: 6px;
+.vinyl-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #f59e0b;
+  border: 2px solid #d97706;
+  border-radius: 0;
+  cursor: pointer;
 }
 
-/* Light retro pills for selected filters */
-.retro-pill {
-  background: var(--retro-paper);
-  border: 1px solid var(--retro-line);
-  border-radius: 999px;
-  padding: .35rem .7rem;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: .4rem;
-  color: var(--retro-ink);
-  font-weight: 700;
-  box-shadow: 2px 2px 0 #00000012;
-}
-.retro-pill-dot {
-  width: .65rem; height: .65rem; border-radius: 999px; flex: 0 0 auto;
-  outline: 1px solid #00000010;
-}
-
-/* Retro headline */
-.retro-headline {
-  font-family: "Shrikhand", system-ui;
-  color: var(--retro-ink);
-  letter-spacing: .2px;
-  line-height: 1.1;
-  display: inline-block;
-  /* paper/ink offset vibe */
-  text-shadow:
-    0 1px 0 #fff,
-    2.5px 2.5px 0 var(--retro-line);
-}
-
-/* Smaller “kicker” after the title with a cream underline band */
-.retro-headline .kicker {
-  font-weight: 800;
-  color: var(--retro-brown);
-  padding: 0 .35rem;
-  border-radius: 6px;
-  background:
-    linear-gradient(transparent 62%, #fff5db 62%); /* soft band */
-  box-shadow: inset 0 -1px 0 var(--retro-line);
-}
-
-/* Optional: make the JSON link match the palette */
-.retro-link-blue { color: var(--retro-sky); }
-
-/* Reusable Atlantic record icon */
-.record-icon {
-  --size: 30px;                 /* change per usage */
-  width: var(--size);
-  height: var(--size);
-  display: inline-block;
-  border-radius: 50%;
-  vertical-align: -2px;
-  border: 2px solid #0a0a0a;    /* outer rim */
-  box-shadow: 0 0 0 2px #111, 0 2px 6px #0005;
-  background:
-    /* 1) spindle hole */
-    radial-gradient(circle at 50% 50%, var(--retro-ink) 0 1.2px, transparent 1.3px),
-    /* 2) mask outside label (keeps label perfectly circular) */
-    radial-gradient(circle at 50% 50%, transparent 0 8px, #0b0b0c 9px 30px),
-    /* 3) label bands (Atlantic-style) */
-    linear-gradient(
-      to bottom,
-      var(--retro-avocado) 0%,
-      var(--retro-avocado) 46%,
-      #ffffff 46%,
-      #ffffff 54%,
-      var(--retro-orange) 54%,
-      var(--retro-orange) 100%
-    ),
-    /* 4) grooves (begin just outside label) */
-    repeating-radial-gradient(circle at 50% 50%, transparent 0 9px, rgba(0,0,0,.20) 9.5px 10.5px),
-    /* 5) record body */
-    radial-gradient(circle at 50% 50%, #151515 0 14px, #0b0b0c 15px 30px);
-  background-clip: padding-box;
-}
-
-/* Retro buttons */
-.retro-btn {
-  background: var(--retro-orange);
-  color: var(--retro-ink);
-  border: 1px solid var(--retro-line);
-  border-radius: 10px;
-  padding: .45rem .75rem;
-  font-weight: 700;
-  box-shadow: 3px 3px 0 #00000022;
-}
-.retro-btn:hover { filter: brightness(1.05); transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #00000026; }
-
-.retro-btn-outline {
-  background: var(--retro-paper);
-  color: var(--retro-ink);
-  border: 1px solid var(--retro-line);
-  border-radius: 10px;
-  padding: .45rem .75rem;
-  font-weight: 700;
-  box-shadow: 3px 3px 0 #00000012;
-}
-.retro-btn-outline:hover { background: #fff5db; transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #00000018; }
