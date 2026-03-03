@@ -74,14 +74,14 @@ export default function DiscogsCollectionPanel() {
   return (
     <div className="space-y-6">
       {error && (
-        <div className="bg-zinc-900 border-2 border-red-700/50 p-3 rounded-none text-red-300">
+        <div className="bg-zinc-900 p-3 rounded-none text-red-300" style={{ borderTop: '1px solid #ffffff33', borderLeft: '1px solid #ffffff33', borderBottom: '1px solid #000000aa', borderRight: '1px solid #000000aa' }}>
           <div className="text-xs text-amber-500 font-bold tracking-widest uppercase mb-1">Error</div>
           <p className="text-sm">{error}</p>
         </div>
       )}
 
       {/* Controls */}
-      <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+      <div className="bg-zinc-900 p-4 rounded-none" style={{ borderTop: '1px solid #ffffff33', borderLeft: '1px solid #ffffff33', borderBottom: '1px solid #000000aa', borderRight: '1px solid #000000aa' }}>
         <div className="text-sm text-amber-500 font-bold tracking-widest uppercase mb-2">Load your Discogs collection</div>
         <div className="grid md:grid-cols-2 gap-4">
           <div className="border border-dashed border-zinc-600 p-4">
@@ -424,7 +424,7 @@ function toChart(map) {
 
 function SummaryTile({ title, value }) {
   return (
-    <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+    <div className="bg-zinc-900 p-4 rounded-none" style={{ borderTop: '1px solid #ffffff33', borderLeft: '1px solid #ffffff33', borderBottom: '1px solid #000000aa', borderRight: '1px solid #000000aa' }}>
       <div className="text-xs text-amber-500 font-bold tracking-widest uppercase mb-1">{title}</div>
       <div className="text-2xl font-semibold tracking-tight text-zinc-100">{value}</div>
     </div>
@@ -432,7 +432,7 @@ function SummaryTile({ title, value }) {
 }
 function ChartCard({ title, children }) {
   return (
-    <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+    <div className="bg-zinc-900 p-4 rounded-none" style={{ borderTop: '1px solid #ffffff33', borderLeft: '1px solid #ffffff33', borderBottom: '1px solid #000000aa', borderRight: '1px solid #000000aa' }}>
       <div className="text-sm text-amber-500 font-bold tracking-widest uppercase mb-3">{title}</div>
       {children}
     </div>

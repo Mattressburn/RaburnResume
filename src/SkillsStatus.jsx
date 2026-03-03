@@ -69,7 +69,8 @@ export default function SkillsTicker({ skills = [], title = "SYSTEM STATUS" }) {
 
   return (
     <div
-      className="w-full rounded-xl border border-zinc-700/70 bg-zinc-900/70"
+      className="w-full rounded-xl bg-zinc-900/70"
+      style={{ borderTop: '1px solid #ffffff33', borderLeft: '1px solid #ffffff33', borderBottom: '1px solid #000000aa', borderRight: '1px solid #000000aa' }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={() => setPaused(true)}

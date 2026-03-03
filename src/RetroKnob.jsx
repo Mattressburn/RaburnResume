@@ -1,4 +1,28 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
+
+/* ─── Mechanical tick via Web Audio API ─── */
+const AudioCtx = typeof window !== "undefined" && (window.AudioContext || window.webkitAudioContext);
+let _audioCtx = null;
+function getAudioCtx() {
+  if (!_audioCtx && AudioCtx) _audioCtx = new AudioCtx();
+  return _audioCtx;
+}
+function playTick() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  // Resume context if suspended (autoplay policy)
+  if (ctx.state === "suspended") ctx.resume();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "square";
+  osc.frequency.setValueAtTime(1800, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.03);
+  gain.gain.setValueAtTime(0.08, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 0.06);
+}
 
 /**
  * RetroKnob (pointer-events based)
@@ -11,6 +35,7 @@ import React, { useEffect, useMemo, useRef } from "react";
  */
 export default function RetroKnob({ value, min, max, step = 1, onChange, label }) {
   const el = useRef(null);
+  const lastTickAngle = useRef(null);
 
   // guard: avoid NaN / bad ranges
   const [lo, hi] = useMemo(() => {
@@ -27,8 +52,17 @@ export default function RetroKnob({ value, min, max, step = 1, onChange, label }
     return -135 + t * 270;
   }, [clamped, lo, hi]);
 
+  // Fire mechanical tick every 15° of rotation
   useEffect(() => {
     el.current?.style.setProperty("--angle", `${angle}deg`);
+    if (lastTickAngle.current === null) {
+      lastTickAngle.current = angle;
+      return;
+    }
+    if (Math.abs(angle - lastTickAngle.current) >= 15) {
+      playTick();
+      lastTickAngle.current = angle;
+    }
   }, [angle]);
 
   const snap = (v) => {
@@ -116,7 +150,7 @@ export default function RetroKnob({ value, min, max, step = 1, onChange, label }
         onKeyDown={onKeyDown}
         onWheel={onWheel}
       />
-      {label && <div className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">{label}</div>}
+      {label && <div className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1" style={{ fontFamily: "var(--font-pixel)", fontSize: '12px' }}>{label}</div>}
     </div>
   );
 }
