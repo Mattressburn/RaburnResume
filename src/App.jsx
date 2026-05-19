@@ -288,6 +288,18 @@ function ResumeHome() {
             ))}
           </div>
         </section>
+
+        <section>
+          <SectionHeader number="05" label="TARGET ROLES" id="target-roles" />
+          <ol className="font-mono text-base space-y-2 list-none p-0">
+            {resumeData.targetRoles.map((role, i) => (
+              <li key={i}>
+                <span className="text-muted-fg mr-3">[{String(i + 1).padStart(2, '0')}]</span>
+                {role}
+              </li>
+            ))}
+          </ol>
+        </section>
       </main>
     </div>
   );
