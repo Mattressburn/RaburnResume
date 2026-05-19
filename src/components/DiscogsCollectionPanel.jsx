@@ -13,7 +13,7 @@ import {
 } from "recharts";
 
 // shared chart theme (colors, tick, tooltip)
-import { palette, colorByIndex, tooltipStyle, LeftTick } from "../charts/theme";
+import { palette, axisStyle, colorByIndex, tooltipStyle, LeftTick } from "../charts/theme";
 import MicrocopyLabel from "./MicrocopyLabel";
 
 export default function DiscogsCollectionPanel() {
@@ -157,7 +157,7 @@ export default function DiscogsCollectionPanel() {
                 <CartesianGrid strokeDasharray="3 3" stroke={palette.muted} />
                 <XAxis
                   dataKey="name"
-                  tick={{ fontSize: 12, fill: palette.mutedFg }}
+                  tick={axisStyle}
                   interval={0}
                   angle={-45}
                   textAnchor="end"
@@ -170,7 +170,7 @@ export default function DiscogsCollectionPanel() {
                   stroke={palette.mutedFg}
                   axisLine={{ stroke: palette.muted }}
                   tickLine={{ stroke: palette.muted }}
-                  tick={{ fill: palette.mutedFg }}
+                  tick={axisStyle}
                 />
                 <Tooltip cursor={{ fill: "#00000008" }} {...tooltipStyle} />
                 <Bar dataKey="value">
@@ -189,7 +189,7 @@ export default function DiscogsCollectionPanel() {
                 <CartesianGrid strokeDasharray="3 3" stroke={palette.muted} />
                 <XAxis
                   dataKey="name"
-                  tick={{ fill: palette.mutedFg }}
+                  tick={axisStyle}
                   axisLine={{ stroke: palette.muted }}
                   tickLine={{ stroke: palette.muted }}
                 />
@@ -198,7 +198,7 @@ export default function DiscogsCollectionPanel() {
                   stroke={palette.mutedFg}
                   axisLine={{ stroke: palette.muted }}
                   tickLine={{ stroke: palette.muted }}
-                  tick={{ fill: palette.mutedFg }}
+                  tick={axisStyle}
                 />
                 <Tooltip cursor={{ fill: "#00000008" }} {...tooltipStyle} />
                 <Bar dataKey="value">

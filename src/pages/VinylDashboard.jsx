@@ -17,7 +17,7 @@ import MicrocopyLabel from "../components/MicrocopyLabel";
 import BrutalistCard from "../components/BrutalistCard";
 
 // Shared chart theme
-import { palette, colorByIndex, tooltipStyle, LeftTick } from "../charts/theme";
+import { palette, axisStyle, colorByIndex, tooltipStyle, LeftTick } from "../charts/theme";
 
 // Utility: fetch JSON from public
 async function loadData(url = "/fan500.json") {
@@ -496,11 +496,13 @@ export default function VinylDashboard() {
                   <XAxis
                     dataKey="year"
                     stroke={palette.mutedFg}
+                    tick={axisStyle}
                     axisLine={{ stroke: palette.muted }}
                     tickLine={{ stroke: palette.muted }}
                   />
                   <YAxis
                     stroke={palette.mutedFg}
+                    tick={axisStyle}
                     axisLine={{ stroke: palette.muted }}
                     tickLine={{ stroke: palette.muted }}
                   />
