@@ -1,6 +1,6 @@
 // src/pages/VinylDashboard.jsx
 import React, { useEffect, useMemo, useState } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
   ResponsiveContainer,
   BarChart,
@@ -11,9 +11,10 @@ import {
   CartesianGrid,
   Cell,
 } from "recharts";
-import RetroKnob from "../RetroKnob";
 import DiscogsCollectionPanel from "../components/DiscogsCollectionPanel";
-import BootSequence from "../components/BootSequence";
+import Marquee from "../components/Marquee";
+import MicrocopyLabel from "../components/MicrocopyLabel";
+import BrutalistCard from "../components/BrutalistCard";
 
 // Shared chart theme
 import { palette, colorByIndex, tooltipStyle, LeftTick } from "../charts/theme";
@@ -79,27 +80,10 @@ function useURLState(defaults) {
   return [state, setState];
 }
 
-function CoverMosaic({ items }) {
-  const covers = (items || []).map((d) => d.cover).filter(Boolean).slice(0, 100);
-  return (
-    <div className="absolute inset-0 -z-10 overflow-hidden">
-      <div className="opacity-15 blur-xl scale-110">
-        <div className="grid grid-cols-10 gap-1">
-          {covers.map((src, i) => (
-            <img key={i} src={src} alt="cover" className="w-full h-24 object-cover" loading="lazy" />
-          ))}
-        </div>
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/80 via-zinc-950/95 to-zinc-950" />
-    </div>
-  );
-}
 
 export default function VinylDashboard() {
   const [data, setData] = useState([]);
   const [dataReady, setDataReady] = useState(false);
-  const [animationDone, setAnimationDone] = useState(false);
-  const isFullyReady = dataReady && animationDone;
 
   useEffect(() => {
     loadData()
@@ -257,16 +241,6 @@ export default function VinylDashboard() {
   const yearsMin = defaults.ymin,
     yearsMax = defaults.ymax;
 
-  const pillColors = [
-    "#f59e0b",
-    "#3b82f6",
-    "#d97706",
-    "#8b5cf6",
-    "#64748b",
-    "#10b981",
-    "#ef4444",
-  ];
-
   // Helpers for Labels
   const isLabelActive = (name, labels = []) => labels?.some((l) => l === name);
   const toggleLabel = (name, labels = []) => {
@@ -275,89 +249,69 @@ export default function VinylDashboard() {
     return [...labels, name];
   };
 
-  if (!isFullyReady) {
+  if (!dataReady) {
     return (
-      <BootSequence
-        onComplete={() => setAnimationDone(true)}
-      />
+      <div className="min-h-screen bg-bg flex items-center justify-center">
+        <MicrocopyLabel>CONNECTING…</MicrocopyLabel>
+      </div>
     );
   }
   return (
-    <div className="min-h-screen relative bg-zinc-950 text-zinc-300 font-mono">
-      <CoverMosaic items={filtered.length ? filtered : data} />
-      <div className="mx-auto max-w-7xl px-4 py-6 space-y-6 relative z-10">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <h1 className="text-amber-500 font-bold tracking-widest text-base sm:text-xl border-b-2 border-zinc-700 pb-2 font-mono uppercase">
-            [ EVIDENCE ARCHIVE: AUDIO SURVEILLANCE LOGS ]
-          </h1>
-
-          <div className="flex items-center gap-2">
-            <Link to="/" className="border border-zinc-600 px-3 py-1 text-xs uppercase hover:bg-zinc-800 hover:text-amber-500 transition-colors inline-flex items-center gap-2 text-zinc-400">
-              <span aria-hidden>←</span>
-              <span>Back to Dossier</span>
-            </Link>
-            <a href="/fan500.json" className="border border-zinc-600 px-3 py-1 text-xs uppercase hover:bg-zinc-800 hover:text-amber-500 transition-colors text-zinc-400">
-              Download JSON
-            </a>
+    <div className="min-h-screen bg-bg text-fg font-mono">
+      <Marquee text="DASHBOARD · RECON · DASHBOARD · RECON" />
+      <main className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-8 space-y-6">
+        <div className="flex justify-between items-baseline mb-8">
+          <MicrocopyLabel as="div">VINYL RECON · {data.length} RECORDS</MicrocopyLabel>
+          <div className="flex items-center gap-4">
+            <MicrocopyLabel as="a" href="/">← BACK</MicrocopyLabel>
+            <MicrocopyLabel as="a" href="/fan500.json">↓ JSON</MicrocopyLabel>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Year range */}
-          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
-            <div className="text-sm text-amber-500 font-bold tracking-widest uppercase mb-3">Year range</div>
+          <div className="border-3 border-fg bg-bg p-4">
+            <MicrocopyLabel as="div" className="text-accent mb-3">Year range</MicrocopyLabel>
             <div className="flex items-center justify-around flex-wrap gap-4">
               {/* Start Year Control */}
               <div className="flex flex-col items-center">
-                <div className="text-2xl font-bold text-zinc-100 tabular-nums mb-2">{qs.ymin}</div>
+                <div className="text-2xl font-bold text-fg tabular-nums mb-2">{qs.ymin}</div>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setQS({ ymin: clamp(qs.ymin - 1, defaults.ymin, qs.ymax) })}
-                    className="w-8 h-8 border border-zinc-600 text-zinc-400 hover:bg-zinc-800 hover:text-amber-500 transition-colors text-sm font-bold"
+                    className="w-8 h-8 border-3 border-muted-fg text-muted-fg hover:border-accent hover:text-accent transition-colors text-sm font-bold font-mono"
                   >
                     -
                   </button>
-                  <RetroKnob
-                    value={qs.ymin}
-                    min={defaults.ymin}
-                    max={qs.ymax}
-                    onChange={(v) => setQS({ ymin: v })}
-                  />
                   <button
                     onClick={() => setQS({ ymin: clamp(qs.ymin + 1, defaults.ymin, qs.ymax) })}
-                    className="w-8 h-8 border border-zinc-600 text-zinc-400 hover:bg-zinc-800 hover:text-amber-500 transition-colors text-sm font-bold"
+                    className="w-8 h-8 border-3 border-muted-fg text-muted-fg hover:border-accent hover:text-accent transition-colors text-sm font-bold font-mono"
                   >
                     +
                   </button>
                 </div>
-                <div className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Start</div>
+                <MicrocopyLabel as="div" className="text-muted-fg mt-1">Start</MicrocopyLabel>
               </div>
-              <span className="text-zinc-400 font-medium self-end pb-5">to</span>
+              <span className="text-muted-fg font-mono self-end pb-5">→</span>
 
               {/* End Year Control */}
               <div className="flex flex-col items-center">
-                <div className="text-2xl font-bold text-zinc-100 tabular-nums mb-2">{qs.ymax}</div>
+                <div className="text-2xl font-bold text-fg tabular-nums mb-2">{qs.ymax}</div>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setQS({ ymax: clamp(qs.ymax - 1, qs.ymin, defaults.ymax) })}
-                    className="w-8 h-8 border border-zinc-600 text-zinc-400 hover:bg-zinc-800 hover:text-amber-500 transition-colors text-sm font-bold"
+                    className="w-8 h-8 border-3 border-muted-fg text-muted-fg hover:border-accent hover:text-accent transition-colors text-sm font-bold font-mono"
                   >
                     -
                   </button>
-                  <RetroKnob
-                    value={qs.ymax}
-                    min={qs.ymin}
-                    max={defaults.ymax}
-                    onChange={(v) => setQS({ ymax: v })}
-                  />
                   <button
                     onClick={() => setQS({ ymax: clamp(qs.ymax + 1, qs.ymin, defaults.ymax) })}
-                    className="w-8 h-8 border border-zinc-600 text-zinc-400 hover:bg-zinc-800 hover:text-amber-500 transition-colors text-sm font-bold"
+                    className="w-8 h-8 border-3 border-muted-fg text-muted-fg hover:border-accent hover:text-accent transition-colors text-sm font-bold font-mono"
                   >
                     +
                   </button>
                 </div>
-                <div className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">End</div>
+                <MicrocopyLabel as="div" className="text-muted-fg mt-1">End</MicrocopyLabel>
               </div>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -371,10 +325,10 @@ export default function VinylDashboard() {
                 return (
                   <button
                     key={label}
-                    className={`border px-2 py-1 text-xs font-mono transition-colors ${
+                    className={`border-3 px-2 py-1 text-xs font-mono uppercase tracking-wider transition-colors ${
                       active
-                        ? "border-amber-500 text-amber-500 bg-amber-500/10"
-                        : "border-zinc-700 text-zinc-400 hover:border-amber-500 hover:text-amber-500"
+                        ? "border-accent text-accent bg-accent/10"
+                        : "border-muted text-muted-fg hover:border-accent hover:text-accent"
                     }`}
                     onClick={() => setQS({ ymin: a, ymax: b })}
                   >
@@ -386,16 +340,12 @@ export default function VinylDashboard() {
           </div>
 
           {/* Duration */}
-          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
+          <div className="border-3 border-fg bg-bg p-4">
             <div className="flex items-center justify-between mb-2">
-              <div className="text-sm text-amber-500 font-bold tracking-widest uppercase">Max duration (min)</div>
-              <div className="text-xs">
-                <span
-                  className="inline-block px-2 py-1 bg-zinc-800 border border-zinc-700 text-zinc-300"
-                >
-                  ≤ {qs.dmax} min
-                </span>
-              </div>
+              <MicrocopyLabel as="div" className="text-accent">Max duration (min)</MicrocopyLabel>
+              <MicrocopyLabel as="span" className="text-fg border-3 border-muted px-2 py-1">
+                ≤ {qs.dmax} min
+              </MicrocopyLabel>
             </div>
             <input
               type="range"
@@ -405,31 +355,31 @@ export default function VinylDashboard() {
               onChange={(e) => setQS({ dmax: parseInt(e.target.value, 10) })}
               className="vinyl-range w-full"
             />
-            <div className="mt-2 flex justify-between text-[11px] text-zinc-500">
-              <span>Single</span>
-              <span>Album-cut</span>
-              <span>Epic</span>
+            <div className="mt-2 flex justify-between">
+              <MicrocopyLabel className="text-muted-fg">Single</MicrocopyLabel>
+              <MicrocopyLabel className="text-muted-fg">Album-cut</MicrocopyLabel>
+              <MicrocopyLabel className="text-muted-fg">Epic</MicrocopyLabel>
             </div>
           </div>
 
           {/* LABELS + ARTISTS ROW */}
           <div className="grid grid gap-4 md:col-span-2 grid-cols-1 md:grid-cols-[280px_minmax(0,1fr)]">
             {/* Labels */}
-            <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
-              <div className="text-sm mb-2 font-bold text-amber-500 tracking-widest uppercase">Labels</div>
+            <div className="border-3 border-fg bg-bg p-4">
+              <MicrocopyLabel as="div" className="text-accent mb-2">Labels</MicrocopyLabel>
               <div className="h-48 overflow-y-auto space-y-1 pr-1">
                 {labelCounts.map(({ name, count }) => {
                   const active = isLabelActive(name, qs.lab);
                   return (
-                    <label key={name} className="flex items-center gap-2 text-xs text-zinc-400 hover:text-zinc-200 cursor-pointer">
+                    <label key={name} className="flex items-center gap-2 text-xs text-muted-fg hover:text-fg cursor-pointer font-mono">
                       <input
                         type="checkbox"
                         checked={active}
                         onChange={() => setQS({ lab: toggleLabel(name, qs.lab) })}
-                        className="accent-amber-500"
+                        className="accent-accent"
                       />
                       <span className="truncate">{name}</span>
-                      <span className="text-zinc-600">({count})</span>
+                      <span className="text-muted">({count})</span>
                     </label>
                   );
                 })}
@@ -437,26 +387,24 @@ export default function VinylDashboard() {
             </div>
 
             {/* Artists */}
-            <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
-              <div className="text-sm mb-2 font-bold text-amber-500 tracking-widest uppercase">Artists</div>
+            <div className="border-3 border-fg bg-bg p-4">
+              <MicrocopyLabel as="div" className="text-accent mb-2">Artists</MicrocopyLabel>
 
               {/* Top pills */}
               <div className="flex flex-wrap gap-2 mb-2">
-                {artistCounts.slice(0, 10).map(({ norm, name }, idx) => {
+                {artistCounts.slice(0, 10).map(({ norm, name }) => {
                   const active = isArtistActive(norm, qs.art);
-                  const c = pillColors[idx % pillColors.length];
                   return (
                     <button
                       key={norm}
                       onClick={() => setQS({ art: toggleArtist(norm, name, qs.art) })}
-                      className={`inline-flex items-center gap-1.5 border px-2 py-1 text-xs font-mono transition-colors ${
+                      className={`border-3 px-2 py-1 text-xs font-mono uppercase tracking-wider transition-colors ${
                         active
-                          ? "border-amber-500 text-amber-500 bg-amber-500/10"
-                          : "border-zinc-700 text-zinc-400 hover:border-amber-500 hover:text-amber-500"
+                          ? "border-accent text-accent bg-accent/10"
+                          : "border-muted text-muted-fg hover:border-accent hover:text-accent"
                       }`}
                       aria-pressed={active}
                     >
-                      <span className="w-2 h-2 rounded-full inline-block" style={{ background: c }} />
                       {name}
                     </button>
                   );
@@ -468,15 +416,15 @@ export default function VinylDashboard() {
                 {artistCounts.slice(10).map(({ norm, name, count }) => {
                   const active = isArtistActive(norm, qs.art);
                   return (
-                    <label key={norm} className="flex items-center gap-2 text-xs text-zinc-400 hover:text-zinc-200 cursor-pointer">
+                    <label key={norm} className="flex items-center gap-2 text-xs text-muted-fg hover:text-fg cursor-pointer font-mono">
                       <input
                         type="checkbox"
                         checked={active}
                         onChange={() => setQS({ art: toggleArtist(norm, name, qs.art) })}
-                        className="accent-amber-500"
+                        className="accent-accent"
                       />
                       <span className="truncate">{name}</span>
-                      <span className="text-zinc-600">({count})</span>
+                      <span className="text-muted">({count})</span>
                     </label>
                   );
                 })}
@@ -487,25 +435,19 @@ export default function VinylDashboard() {
 
         {/* Summary cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
-            <div className="text-xs text-zinc-400">
-              Tracks
-            </div>
-            <div className="text-2xl font-semibold text-zinc-100">{filtered.length}</div>
+          <div className="border-3 border-fg bg-bg p-4">
+            <MicrocopyLabel as="div" className="text-muted-fg mb-1">Tracks</MicrocopyLabel>
+            <div className="text-2xl font-bold text-fg tabular-nums">{filtered.length}</div>
           </div>
-          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
-            <div className="text-xs text-zinc-400">
-              Artists
-            </div>
-            <div className="text-2xl font-semibold text-zinc-100">
+          <div className="border-3 border-fg bg-bg p-4">
+            <MicrocopyLabel as="div" className="text-muted-fg mb-1">Artists</MicrocopyLabel>
+            <div className="text-2xl font-bold text-fg tabular-nums">
               {new Set(filtered.map((d) => normalizeArtist(d.artist))).size}
             </div>
           </div>
-          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
-            <div className="text-xs text-zinc-400">
-              Total playtime
-            </div>
-            <div className="text-2xl font-semibold text-zinc-100">
+          <div className="border-3 border-fg bg-bg p-4">
+            <MicrocopyLabel as="div" className="text-muted-fg mb-1">Total playtime</MicrocopyLabel>
+            <div className="text-2xl font-bold text-fg tabular-nums">
               {(() => {
                 const s = filtered.reduce((a, b) => a + (b.secs || 0), 0);
                 const h = Math.floor(s / 3600),
@@ -514,11 +456,9 @@ export default function VinylDashboard() {
               })()}
             </div>
           </div>
-          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
-            <div className="text-xs text-zinc-400">
-              Avg length
-            </div>
-            <div className="text-2xl font-semibold text-zinc-100">
+          <div className="border-3 border-fg bg-bg p-4">
+            <MicrocopyLabel as="div" className="text-muted-fg mb-1">Avg length</MicrocopyLabel>
+            <div className="text-2xl font-bold text-fg tabular-nums">
               {(() => {
                 const arr = filtered.filter((d) => d.secs != null).map((d) => d.secs);
                 if (!arr.length) return "-";
@@ -539,10 +479,10 @@ export default function VinylDashboard() {
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Songs by Year */}
-          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none lg:col-span-2">
-            <div className="text-sm mb-2 font-bold text-amber-500 tracking-widest uppercase">Songs by Year (click bar to filter)</div>
+          <div className="border-3 border-fg bg-bg p-4 lg:col-span-2">
+            <MicrocopyLabel as="div" className="text-accent mb-2">Songs by Year (click bar to filter)</MicrocopyLabel>
             <button
-              className="text-xs px-2 py-1 border border-zinc-600 text-zinc-400 hover:bg-zinc-800 hover:text-amber-500 transition-colors mb-2"
+              className="border-3 border-muted text-muted-fg hover:border-accent hover:text-accent px-3 py-1 text-xs font-mono uppercase tracking-wider transition-colors mb-2"
               onClick={() => setQS({ ymin: defaults.ymin, ymax: defaults.ymax })}
               disabled={qs.ymin === defaults.ymin && qs.ymax === defaults.ymax}
               title="Clear year filter"
@@ -576,8 +516,8 @@ export default function VinylDashboard() {
           </div>
 
           {/* Top Artists (filtered) */}
-          <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
-            <div className="text-sm mb-2 font-bold text-amber-500 tracking-widest uppercase">Top Artists (filtered)</div>
+          <div className="border-3 border-fg bg-bg p-4">
+            <MicrocopyLabel as="div" className="text-accent mb-2">Top Artists (filtered)</MicrocopyLabel>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
@@ -619,33 +559,33 @@ export default function VinylDashboard() {
         </div>
 
         {/* Longest tracks */}
-        <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
-          <div className="text-sm mb-3 font-bold text-amber-500 tracking-widest uppercase">Top 10 Longest Tracks (filtered)</div>
+        <div className="border-3 border-fg bg-bg p-4">
+          <MicrocopyLabel as="div" className="text-accent mb-3">Top 10 Longest Tracks (filtered)</MicrocopyLabel>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {longest.map((d, i) => (
               <div
                 key={d.n ?? `${d.artist}|${d.title}|${d.year}|${i}`}
-                className="bg-zinc-900 border border-zinc-700 flex gap-3 p-3"
+                className="border-3 border-muted bg-bg flex gap-3 p-3"
               >
                 <img
                   src={d.cover || "https://placehold.co/80x80?text=No+Art"}
                   alt="cover"
-                  className="w-16 h-16 rounded object-cover"
+                  className="w-16 h-16 object-cover"
                   loading="lazy"
                 />
                 <div className="min-w-0">
-                  <div className="text-sm font-medium truncate text-zinc-200">{d.title}</div>
-                  <div className="text-xs text-zinc-500 truncate">
-                    {d.artist} • {d.album || "—"} • {d.year || "—"}
+                  <div className="text-sm font-mono font-medium truncate text-fg">{d.title}</div>
+                  <div className="text-xs text-muted-fg truncate font-mono">
+                    {d.artist} · {d.album || "—"} · {d.year || "—"}
                   </div>
-                  <div className="text-xs mt-1 text-zinc-400">
+                  <MicrocopyLabel as="div" className="text-accent mt-1">
                     {(() => {
                       if (d.secs == null) return "—";
                       const mm = Math.floor(d.secs / 60),
                         ss = String(d.secs % 60).padStart(2, "0");
                       return `${mm}:${ss}`;
                     })()}
-                  </div>
+                  </MicrocopyLabel>
                 </div>
               </div>
             ))}
@@ -653,13 +593,13 @@ export default function VinylDashboard() {
         </div>
 
         {/* Tracks table */}
-        <div className="bg-zinc-900 border-2 border-zinc-700 p-4 rounded-none">
-          <div className="text-sm mb-3 font-bold text-amber-500 tracking-widest uppercase">Tracks ({filtered.length})</div>
+        <div className="border-3 border-fg bg-bg p-4">
+          <MicrocopyLabel as="div" className="text-accent mb-3">Tracks ({filtered.length})</MicrocopyLabel>
 
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm font-mono">
               <thead>
-                <tr className="border-b-2 border-zinc-700 text-amber-500 text-left">
+                <tr className="border-b-3 border-fg text-accent text-left">
                   <th className="py-2 pr-3">#</th>
                   <th className="py-2 pr-3">Cover</th>
                   <th className="py-2 pr-3">Title</th>
@@ -674,22 +614,22 @@ export default function VinylDashboard() {
 
               <tbody>
                 {filtered.map((d, i) => (
-                  <tr key={i} className="border-b border-zinc-800 hover:bg-zinc-800/50">
-                    <td className="py-2 pr-3 text-zinc-400">{d.n ?? ""}</td>
+                  <tr key={i} className="border-b border-muted hover:bg-muted/30">
+                    <td className="py-2 pr-3 text-muted-fg">{d.n ?? ""}</td>
                     <td className="py-2 pr-3">
                       <img
                         src={d.cover || "https://placehold.co/48x48?text=—"}
                         alt="cover"
-                        className="w-12 h-12 rounded object-cover"
+                        className="w-12 h-12 object-cover"
                         loading="lazy"
                       />
                     </td>
-                    <td className="py-2 pr-3 text-zinc-200">{d.title}</td>
-                    <td className="py-2 pr-3 text-zinc-300">{d.artist}</td>
-                    <td className="py-2 pr-3 text-zinc-400">{d.album || "—"}</td>
-                    <td className="py-2 pr-3 text-zinc-400">{d.year || "—"}</td>
-                    <td className="py-2 pr-3 max-w-[240px] truncate text-zinc-500">{(d.labels || []).join(", ")}</td>
-                    <td className="py-2 pr-3 text-zinc-400">
+                    <td className="py-2 pr-3 text-fg">{d.title}</td>
+                    <td className="py-2 pr-3 text-fg">{d.artist}</td>
+                    <td className="py-2 pr-3 text-muted-fg">{d.album || "—"}</td>
+                    <td className="py-2 pr-3 text-muted-fg">{d.year || "—"}</td>
+                    <td className="py-2 pr-3 max-w-[240px] truncate text-muted-fg">{(d.labels || []).join(", ")}</td>
+                    <td className="py-2 pr-3 text-muted-fg">
                       {(() => {
                         if (d.secs == null) return "—";
                         const mm = Math.floor(d.secs / 60);
@@ -703,7 +643,7 @@ export default function VinylDashboard() {
                           href={d.discogs_release}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-amber-500 hover:underline text-xs"
+                          className="text-accent hover:underline text-xs"
                         >
                           Discogs
                         </a>
@@ -713,7 +653,7 @@ export default function VinylDashboard() {
                           href={d.spotify}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-emerald-500 hover:underline text-xs"
+                          className="text-accent hover:underline text-xs"
                         >
                           Spotify
                         </a>
@@ -725,7 +665,7 @@ export default function VinylDashboard() {
             </table>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
