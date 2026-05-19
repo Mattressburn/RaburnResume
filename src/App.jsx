@@ -3,7 +3,6 @@ import resumePDF from "./assets/Matthew_Raburn_Resume.pdf";
 import VinylDashboard from "./pages/VinylDashboard";
 import { Routes, Route } from "react-router-dom";
 import { resumeData } from "./data/resumeData";
-import Preview from './pages/Preview';
 import Marquee from './components/Marquee';
 import MicrocopyLabel from './components/MicrocopyLabel';
 import BrutalistCard from './components/BrutalistCard';
@@ -150,7 +149,6 @@ export default function App() {
     <Routes>
       <Route path="/" element={<ResumeHome />} />
       <Route path="/dashboard" element={<VinylDashboard />} />
-      <Route path="/preview" element={<Preview />} />
     </Routes>
   );
 }
