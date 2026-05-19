@@ -38,11 +38,6 @@ const ClassifiedStamp = ({ children, className = "" }) => (
   </div>
 );
 
-/* ═══════════════ Section Header ═══════════════ */
-const SectionHeader = ({ children }) => (
-  <h2 className="section-header">{children}</h2>
-);
-
 /* ═══════════════ Folder Tab ═══════════════ */
 const FolderTab = ({ job, isActive, onClick }) => {
   const startYear = job.period.split(" - ")[0].split("/")[1];
