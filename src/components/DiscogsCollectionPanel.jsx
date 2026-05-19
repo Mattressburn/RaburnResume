@@ -14,6 +14,7 @@ import {
 
 // shared chart theme (colors, tick, tooltip)
 import { palette, colorByIndex, tooltipStyle, LeftTick } from "../charts/theme";
+import MicrocopyLabel from "./MicrocopyLabel";
 
 export default function DiscogsCollectionPanel() {
   const [items, setItems] = useState([]);
@@ -74,23 +75,23 @@ export default function DiscogsCollectionPanel() {
   return (
     <div className="space-y-6">
       {error && (
-        <div className="bg-zinc-900 p-3 rounded-none text-red-300" style={{ borderTop: '1px solid #ffffff33', borderLeft: '1px solid #ffffff33', borderBottom: '1px solid #000000aa', borderRight: '1px solid #000000aa' }}>
-          <div className="text-xs text-amber-500 font-bold tracking-widest uppercase mb-1">Error</div>
-          <p className="text-sm">{error}</p>
+        <div className="border-3 border-fg bg-bg p-3 text-fg">
+          <MicrocopyLabel as="div" className="text-accent mb-1">Error</MicrocopyLabel>
+          <p className="text-sm font-mono">{error}</p>
         </div>
       )}
 
       {/* Controls */}
-      <div className="bg-zinc-900 p-4 rounded-none" style={{ borderTop: '1px solid #ffffff33', borderLeft: '1px solid #ffffff33', borderBottom: '1px solid #000000aa', borderRight: '1px solid #000000aa' }}>
-        <div className="text-sm text-amber-500 font-bold tracking-widest uppercase mb-2">Load your Discogs collection</div>
+      <div className="border-3 border-fg bg-bg p-4">
+        <MicrocopyLabel as="div" className="text-accent mb-3">Load your Discogs collection</MicrocopyLabel>
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="border border-dashed border-zinc-600 p-4">
-            <div className="text-sm text-zinc-400 mb-2">Option A · CSV export</div>
-            <p className="text-xs text-zinc-500 mb-3">
-              In Discogs: Collection ➜ Export ➜ Collection CSV. Then drop it
+          <div className="border-3 border-muted p-4">
+            <MicrocopyLabel as="div" className="text-muted-fg mb-2">Option A · CSV export</MicrocopyLabel>
+            <p className="text-xs text-muted-fg font-mono mb-3">
+              In Discogs: Collection → Export → Collection CSV. Then drop it
               here.
             </p>
-            <label className="border border-zinc-600 px-3 py-1 text-xs uppercase hover:bg-zinc-800 hover:text-amber-500 transition-colors text-zinc-400 cursor-pointer inline-block">
+            <label className="border-3 border-muted-fg text-muted-fg px-3 py-1 text-xs uppercase font-mono hover:border-accent hover:text-accent transition-colors cursor-pointer inline-block">
               <input
                 type="file"
                 accept=".csv,text/csv"
@@ -100,15 +101,15 @@ export default function DiscogsCollectionPanel() {
                   if (f) handleCsvSelect(f);
                 }}
               />
-              <span className="text-sm">Choose CSV…</span>
+              <span>Choose CSV…</span>
             </label>
           </div>
 
-          <div className="border border-dashed border-zinc-600 p-4">
-            <div className="text-sm text-zinc-400 mb-2">
+          <div className="border-3 border-muted p-4">
+            <MicrocopyLabel as="div" className="text-muted-fg mb-2">
               Option B · Live from Discogs API
-            </div>
-            <p className="text-xs text-zinc-500 mb-3">
+            </MicrocopyLabel>
+            <p className="text-xs text-muted-fg font-mono mb-3">
               Requires a Netlify function with a Discogs token set
               (DISCOGS_TOKEN).
             </p>
@@ -117,11 +118,11 @@ export default function DiscogsCollectionPanel() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Discogs username"
-                className="flex-1 bg-zinc-800 border border-zinc-600 px-3 py-1.5 text-sm text-zinc-200 placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
+                className="flex-1 bg-bg border-3 border-muted px-3 py-1.5 text-sm text-fg placeholder-muted-fg font-mono focus:border-accent focus:outline-none"
               />
               <button
                 onClick={handleFetchFromAPI}
-                className="border border-zinc-600 px-3 py-1.5 text-xs uppercase hover:bg-zinc-800 hover:text-amber-500 transition-colors text-zinc-400"
+                className="border-3 border-muted-fg text-muted-fg px-3 py-1.5 text-xs uppercase font-mono hover:border-accent hover:text-accent transition-colors"
                 disabled={loading}
               >
                 {loading ? "Loading…" : "Load"}
@@ -424,16 +425,16 @@ function toChart(map) {
 
 function SummaryTile({ title, value }) {
   return (
-    <div className="bg-zinc-900 p-4 rounded-none" style={{ borderTop: '1px solid #ffffff33', borderLeft: '1px solid #ffffff33', borderBottom: '1px solid #000000aa', borderRight: '1px solid #000000aa' }}>
-      <div className="text-xs text-amber-500 font-bold tracking-widest uppercase mb-1">{title}</div>
-      <div className="text-2xl font-semibold tracking-tight text-zinc-100">{value}</div>
+    <div className="border-3 border-fg bg-bg p-4">
+      <MicrocopyLabel as="div" className="text-muted-fg mb-1">{title}</MicrocopyLabel>
+      <div className="text-2xl font-bold tabular-nums text-fg">{value}</div>
     </div>
   );
 }
 function ChartCard({ title, children }) {
   return (
-    <div className="bg-zinc-900 p-4 rounded-none" style={{ borderTop: '1px solid #ffffff33', borderLeft: '1px solid #ffffff33', borderBottom: '1px solid #000000aa', borderRight: '1px solid #000000aa' }}>
-      <div className="text-sm text-amber-500 font-bold tracking-widest uppercase mb-3">{title}</div>
+    <div className="border-3 border-fg bg-bg p-4">
+      <MicrocopyLabel as="div" className="text-accent mb-3">{title}</MicrocopyLabel>
       {children}
     </div>
   );
