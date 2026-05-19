@@ -276,6 +276,18 @@ function ResumeHome() {
             ))}
           </div>
         </section>
+
+        <section>
+          <SectionHeader number="04" label="TRIVIA" id="trivia" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {resumeData.anomalousCapabilities.map((cap, i) => (
+              <BrutalistCard key={i} className="w-full block">
+                <PillBadge>FACT {String(i + 1).padStart(2, '0')}</PillBadge>
+                <p className="font-mono text-sm leading-relaxed mt-3 mb-0">{cap}</p>
+              </BrutalistCard>
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );
