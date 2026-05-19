@@ -15,6 +15,7 @@ import BrutalistCard from './components/BrutalistCard';
 import PillBadge from './components/PillBadge';
 import RedactedBlock from './components/RedactedBlock';
 import SectionHeader from './components/SectionHeader';
+import BrutalistChip from './components/BrutalistChip';
 
 /* ═══════════════ Redacted — morphs per era ═══════════════ */
 const Redacted = ({ children, era }) => {
@@ -249,6 +250,15 @@ function ResumeHome() {
                   ))}
                 </ul>
               </BrutalistCard>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <SectionHeader number="02" label="SKILLS" id="skills" />
+          <div className="flex flex-wrap gap-2">
+            {resumeData.operationalTradecraft.map((s, i) => (
+              <BrutalistChip key={i}>{s}</BrutalistChip>
             ))}
           </div>
         </section>
