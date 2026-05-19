@@ -14,6 +14,7 @@ import MicrocopyLabel from './components/MicrocopyLabel';
 import BrutalistCard from './components/BrutalistCard';
 import PillBadge from './components/PillBadge';
 import RedactedBlock from './components/RedactedBlock';
+import SectionHeader from './components/SectionHeader';
 
 /* ═══════════════ Redacted — morphs per era ═══════════════ */
 const Redacted = ({ children, era }) => {
@@ -229,6 +230,28 @@ function ResumeHome() {
         </div>
 
         <MicrocopyLabel as="div" className="mt-12">LOCATION: CYBERSPACE</MicrocopyLabel>
+
+        <section>
+          <SectionHeader number="01" label="EXPERIENCE" id="experience" />
+          <div className="space-y-6">
+            {resumeData.experience.map((job) => (
+              <BrutalistCard key={job.id} className="w-full block">
+                <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2">
+                  <h3 className="display text-2xl">{job.company}</h3>
+                  <MicrocopyLabel>{job.period} · {job.location}</MicrocopyLabel>
+                </div>
+                <MicrocopyLabel as="div" className="mb-3">{job.title}</MicrocopyLabel>
+                <ul className="space-y-2 list-none p-0 m-0">
+                  {job.achievements.map((a, i) => (
+                    <li key={i} className="font-mono text-sm leading-relaxed text-fg">
+                      <span className="text-accent mr-2">▸</span>{a}
+                    </li>
+                  ))}
+                </ul>
+              </BrutalistCard>
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );
