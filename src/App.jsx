@@ -262,6 +262,20 @@ function ResumeHome() {
             ))}
           </div>
         </section>
+
+        <section>
+          <SectionHeader number="03" label="TESTIMONIALS" id="testimonials" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {resumeData.fieldReports.map((report, i) => (
+              <BrutalistCard key={i} className="w-full block">
+                <blockquote className="display text-lg leading-tight mb-4">
+                  "{report.quote}"
+                </blockquote>
+                <cite className="micro not-italic block">— {report.author}</cite>
+              </BrutalistCard>
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );
