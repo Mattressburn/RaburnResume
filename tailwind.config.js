@@ -1,31 +1,22 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./public/index.html", "./src/**/*.{js,jsx,ts,tsx}"],
+  content: ['./public/index.html', './index.html', './src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        retro: {
-          ink: '#0b0b0c',
-          cream: '#f8f3e1',
-          paper: '#fffdf5',
-          line: '#d9cfaf',
-          grid: '#e6dcb8',
-          mustard:'#e6b800',
-          avocado:'#2db38b',
-          teal:'#1aa0a4',
-          orange:'#ff7a3d',
-          cherry:'#d84654',
-          plum:'#6e417a',
-          sky:'#4aa9d9',
-          sun:'#ffbf3f',
-          mint:'#55c2a1',
-          brown:'#7a5130',
-          navy:'#1f3a5b',
-        }
+        bg:           '#09090B',
+        fg:           '#FAFAFA',
+        accent:       '#A3E635',
+        'accent-ink': '#000000',
+        muted:        '#3F3F46',
+        'muted-fg':   '#A1A1AA',
       },
       fontFamily: {
-        display: ['Shrikhand','system-ui','sans-serif'],
-        body: ['Rubik','system-ui','sans-serif'],
+        display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+        mono:    ['"Departure Mono"', '"JetBrains Mono"', 'ui-monospace', 'monospace'],
+      },
+      borderWidth: {
+        3: '3px',
       },
     },
   },
