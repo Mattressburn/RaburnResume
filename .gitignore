@@ -29,3 +29,10 @@ coverage/
 # Logs & temp
 *.log
 *.tmp
+
+# Ruflo local DB
+ruvector.db
+
+# nano-banana / belt CLI subagent traces
+mockups/*.out
+mockups/*-pro.out
