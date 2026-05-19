@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Download,
   Eye,
@@ -9,11 +8,12 @@ import resumePDF from "./assets/Matthew_Raburn_Resume.pdf";
 import VinylDashboard from "./pages/VinylDashboard";
 import { Routes, Route, Link } from "react-router-dom";
 import { resumeData } from "./data/resumeData";
-import HiddenGlitchTrigger from "./components/HiddenGlitchTrigger";
 import Preview from './pages/Preview';
-
-/* ═══════════════ ERA DEFINITIONS ═══════════════ */
-const ERA_KEYS = ["1982", "1995", "2005", "2026", "dossier"];
+import Marquee from './components/Marquee';
+import MicrocopyLabel from './components/MicrocopyLabel';
+import BrutalistCard from './components/BrutalistCard';
+import PillBadge from './components/PillBadge';
+import RedactedBlock from './components/RedactedBlock';
 
 /* ═══════════════ Redacted — morphs per era ═══════════════ */
 const Redacted = ({ children, era }) => {
@@ -199,334 +199,42 @@ const DeskClutter = () => (
   </div>
 );
 
-/* ═══════════════ CRT Glitch Transition ═══════════════ */
-const glitchTransition = {
-  initial: { opacity: 1, scale: 1, x: 0, filter: "brightness(1)" },
-  exit: {
-    opacity: [1, 0.7, 1, 0.5, 0],
-    scale: [1, 1.03, 1.01, 1.03, 1],
-    x: [0, -4, 6, -2, 0],
-    filter: [
-      "brightness(1)",
-      "brightness(1.8) contrast(1.5)",
-      "brightness(0.6)",
-      "brightness(2)",
-      "brightness(1)",
-    ],
-    transition: { duration: 0.4, ease: "easeInOut" },
-  },
-  enter: {
-    opacity: [0, 0.5, 1, 0.8, 1],
-    scale: [1.03, 1.01, 1.03, 1, 1],
-    x: [6, -3, 2, 0, 0],
-    filter: [
-      "brightness(2)",
-      "brightness(0.6)",
-      "brightness(1.5)",
-      "brightness(1)",
-      "brightness(1)",
-    ],
-    transition: { duration: 0.4, ease: "easeInOut" },
-  },
-};
-
 /* ═══════════════ Resume Home Page ═══════════════ */
 function ResumeHome() {
   const [activeJob, setActiveJob] = useState("johnson-controls");
-  const [currentEra, setCurrentEra] = useState(4); // start at dossier (era 4)
-  const [transitionKey, setTransitionKey] = useState(0);
-
-  const era = ERA_KEYS[currentEra];
-
-  const handleCycleEra = useCallback(() => {
-    setCurrentEra((prev) => (prev + 1) % 5);
-    setTransitionKey((k) => k + 1);
-  }, []);
 
   return (
-    <div className="min-h-screen relative era-body" data-era={era}>
+    <div className="min-h-screen">
+      <Marquee text="AVAILABLE · RABURN · AVAILABLE · RABURN" />
+      <main className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-8">
+        <div className="flex justify-between items-baseline mb-8">
+          <MicrocopyLabel as="div">LAST UPDATED: 2026-05-18</MicrocopyLabel>
+          <MicrocopyLabel as="a" href="#experience">MENU</MicrocopyLabel>
+        </div>
 
-      {/* Glitch trigger — z-[100], top-right */}
-      <HiddenGlitchTrigger onCycleEra={handleCycleEra} currentEra={currentEra} />
+        <h1 className="display display-name mb-6">
+          MATTHEW<br />RABURN
+        </h1>
 
-      {/* Noise overlay for CRT glitch */}
-      <div className="era-noise-overlay" aria-hidden="true" />
+        <p className="display display-tagline mb-12">
+          I FIX HIGH-MAINTENANCE SYSTEMS. ALL OF THEM.
+        </p>
 
-      {/* Main container with framer-motion glitch transition */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={transitionKey}
-          initial={glitchTransition.enter}
-          animate={{ opacity: 1, scale: 1, x: 0, filter: "brightness(1)", transition: { duration: 0.4 } }}
-          exit={glitchTransition.exit}
-          className="era-page-wrapper"
-        >
-          <div className="flex justify-center px-2 sm:px-6 lg:px-8 py-6 sm:py-10 relative z-[2]">
-            <div className="w-full max-w-5xl mx-auto relative">
+        <div className="flex flex-wrap items-start justify-between gap-8 mb-12">
+          <a href="#trivia" className="no-underline">
+            <BrutalistCard interactive>
+              <MicrocopyLabel as="div" className="mb-2">04  TRIVIA</MicrocopyLabel>
+              <PillBadge>UNPREDICTABLE</PillBadge>
+            </BrutalistCard>
+          </a>
 
-              <CoffeeStain era={era} />
-              {era === "dossier" && <DeskClutter />}
+          <MicrocopyLabel as="div">
+            CLIENTS: <RedactedBlock width="3em" /> <RedactedBlock width="4em" />
+          </MicrocopyLabel>
+        </div>
 
-              {/* ══ Main Card ══ */}
-              <div className="era-card desk-shadow rounded-sm relative">
-                <div className="p-3 sm:p-5 lg:p-8">
-
-                  {/* Top classification bar */}
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="era-text-muted text-[10px] sm:text-xs font-mono tracking-wider">
-                      {era === "1982" ? "> FILE No. " : "DOSSIER FILE No. "}
-                      <Redacted era={era}>MR-4782</Redacted>
-                    </div>
-                    <ClassifiedStamp className="text-xs sm:text-sm">
-                      {era === "1982" ? "** TOP SECRET **" : "TOP SECRET // EYES ONLY"}
-                    </ClassifiedStamp>
-                  </div>
-
-                  {/* ══ The Paper / Content Area ══ */}
-                  <div className="era-paper border rounded-sm relative paper-texture page-enter">
-
-                    {/* Watermark stamp */}
-                    <div
-                      className="dossier-stamp absolute top-1/3 left-1/2 era-text-accent font-mono text-5xl sm:text-7xl lg:text-8xl font-black border-4 border-current px-4 sm:px-6 py-1 sm:py-2 pointer-events-none select-none whitespace-nowrap"
-                      aria-hidden="true"
-                    >
-                      {era === "1982" ? "CLASSIFIED" : era === "1995" ? "CLASSIFIED" : "CLASSIFIED"}
-                    </div>
-
-                    <div className="relative z-[2] p-4 sm:p-8 lg:p-12">
-
-                      {/* ── HEADER ── */}
-                      <header className="mb-8 pb-6 border-b-2 border-dashed border-[var(--era-accent)]">
-                        <div className="flex flex-col sm:flex-row gap-6 items-start">
-
-                          {/* Photo */}
-                          <div className="era-photo w-[130px] h-[150px] sm:w-[150px] sm:h-[170px] flex-shrink-0 flex flex-col items-center justify-center mx-auto sm:mx-0 relative">
-                            {era === "dossier" && (
-                              <div className="absolute top-[-15px] left-4 rotate-[15deg] drop-shadow-md pointer-events-none z-30">
-                                <svg width="24" height="60" viewBox="0 0 24 60" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M 12 2 L 12 48 Q 12 56 6 56 Q 0 56 0 48 L 0 12 Q 0 6 4 6 Q 8 6 8 12 L 8 44 Q 8 48 10 48 Q 12 48 12 44 L 12 10 Q 12 0 18 0 Q 24 0 24 10 L 24 50" fill="none" stroke="#cbd5e1" strokeWidth="2" strokeLinecap="round" />
-                                  <path d="M 11 3 L 11 47" fill="none" stroke="#f8fafc" strokeWidth="0.5" opacity="0.8" />
-                                </svg>
-                              </div>
-                            )}
-                            <div className="era-photo-inner w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] flex items-center justify-center">
-                              <span className="era-text-muted font-mono text-[10px] sm:text-xs text-center font-bold tracking-wider leading-tight px-2">
-                                {era === "1982" ? "[ PHOTO N/A ]" : "[ HEADSHOT\nREDACTED ]"}
-                              </span>
-                            </div>
-                            <span className="era-text-muted text-[9px] mt-1.5 font-mono tracking-wider">SUBJ. RABURN, M.</span>
-                          </div>
-
-                          {/* Name + info */}
-                          <div className="flex-1 text-center sm:text-left">
-                            <p className="era-text-muted text-[10px] sm:text-xs mb-1 tracking-widest font-mono">
-                              CLEARANCE: <span className="era-text-accent font-bold">BLACK</span>
-                            </p>
-                            <h1 className="text-2xl sm:text-3xl md:text-4xl era-text font-black mb-1 tracking-tight font-mono">
-                              {resumeData.personal.name}
-                            </h1>
-                            <p className="era-text-muted text-xs sm:text-sm mb-4 tracking-wider font-mono">
-                              {resumeData.personal.title}
-                            </p>
-
-                            {/* Contact row */}
-                            <div className="flex flex-wrap justify-center sm:justify-start gap-2 mb-4">
-                              <a
-                                href={`mailto:${resumeData.personal.contact.email}`}
-                                className="era-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] sm:text-xs font-mono"
-                                aria-label={`Send email to ${resumeData.personal.contact.email}`}
-                              >
-                                {era === "1982" ? "[EMAIL]" : "📧"} {resumeData.personal.contact.email}
-                              </a>
-                              <a
-                                href={`https://${resumeData.personal.contact.linkedin}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="era-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] sm:text-xs font-mono"
-                                aria-label="Open LinkedIn profile in new window"
-                              >
-                                {era === "1982" ? "[LINK]" : "🔗"} LinkedIn
-                                <ExternalLink className="w-3 h-3" aria-hidden="true" />
-                              </a>
-                              <span className="era-btn inline-flex items-center px-3 py-1.5 text-[11px] sm:text-xs font-mono">
-                                {era === "1982" ? "[LOC]" : "📍"} {resumeData.personal.contact.location}
-                              </span>
-                            </div>
-
-                            {/* Actions */}
-                            <div className="flex flex-wrap justify-center sm:justify-start gap-3">
-                              <a
-                                href={resumePDF}
-                                download="Matthew_Raburn_Resume.pdf"
-                                className="era-btn-primary inline-flex items-center gap-2 px-4 py-2 font-bold text-[11px] sm:text-xs tracking-wider font-mono"
-                                aria-label="Download PDF version of resume"
-                              >
-                                <Download className="w-3.5 h-3.5" aria-hidden="true" />
-                                {era === "1982" ? "DOWNLOAD .TXT" : "DOWNLOAD DOSSIER (PDF)"}
-                              </a>
-                              <Link
-                                to="/dashboard"
-                                className="era-btn inline-flex items-center gap-2 px-3 py-2 text-[11px] sm:text-xs font-mono"
-                              >
-                                <Eye className="w-3.5 h-3.5" aria-hidden="true" />
-                                VINYL RECON DASHBOARD
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                      </header>
-
-                      {/* ── SUBJECT BRIEFING ── */}
-                      <section className="mb-8">
-                        <SectionHeader>SUBJECT BRIEFING</SectionHeader>
-                        <div className="era-inset-panel p-4">
-                          <p className="era-text text-xs sm:text-sm leading-relaxed italic font-mono">
-                            "<Redacted era={era}>Subject</Redacted> {resumeData.personal.summary}"
-                          </p>
-                        </div>
-                      </section>
-
-                      {/* ── OPERATIONAL TRADECRAFT ── */}
-                      <section className="mb-8">
-                        <SectionHeader>OPERATIONAL TRADECRAFT (CLEARED FOR RELEASE)</SectionHeader>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-                          {resumeData.operationalTradecraft.map((skill, i) => (
-                            <div
-                              key={i}
-                              className="era-skill-chip px-3 py-2 text-[11px] sm:text-xs font-mono"
-                            >
-                              <span className="era-text-accent mr-1">▪</span>
-                              {skill}
-                            </div>
-                          ))}
-                        </div>
-                      </section>
-
-                      {/* ── MISSION HISTORY ── */}
-                      <section className="mb-8">
-                        <SectionHeader>MISSION HISTORY</SectionHeader>
-                        <div className="flex flex-wrap items-end gap-0.5 -mb-px relative z-[4]" role="tablist" aria-label="Mission history timeline">
-                          {resumeData.experience.map((job) => (
-                            <FolderTab
-                              key={job.id}
-                              job={job}
-                              isActive={activeJob === job.id}
-                              onClick={() => setActiveJob(job.id)}
-                            />
-                          ))}
-                        </div>
-                        <div className="era-tab-panel rounded-b-sm p-4 sm:p-6 relative z-[3]">
-                          {resumeData.experience.map((job) => (
-                            <div key={job.id} role="tabpanel" aria-labelledby={`tab-${job.id}`}>
-                              <JobDetails job={job} isActive={activeJob === job.id} />
-                            </div>
-                          ))}
-                        </div>
-                      </section>
-
-                      {/* ── ANOMALOUS CAPABILITIES ── */}
-                      <section className="mb-8">
-                        <div className="flex items-center gap-4 mb-4">
-                          <SectionHeader>ANOMALOUS CAPABILITIES</SectionHeader>
-                          <ClassifiedStamp className="text-[9px] sm:text-[10px] -mt-2">
-                            UNVERIFIED
-                          </ClassifiedStamp>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          {resumeData.anomalousCapabilities.map((cap, i) => (
-                            <div
-                              key={i}
-                              className="era-inset-panel p-3 era-text text-xs sm:text-sm leading-relaxed font-mono relative"
-                            >
-                              <span className="absolute top-2 left-3 era-text-accent text-sm font-black" aria-hidden="true">
-                                {String(i + 1).padStart(2, "0")}
-                              </span>
-                              <span className="pl-8 block">{cap}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </section>
-
-                      {/* ── FIELD REPORTS ── */}
-                      <section className="mb-8">
-                        <SectionHeader>FIELD REPORTS // DEBRIEFING TRANSCRIPTS</SectionHeader>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {resumeData.fieldReports.map((report, i) => (
-                            <div
-                              key={i}
-                              className="era-inset-panel p-4 relative"
-                            >
-                              <div className="absolute top-2 right-3 era-text-accent text-[10px] font-bold tracking-wider font-mono opacity-40">
-                                EXHIBIT {String.fromCharCode(65 + i)}
-                              </div>
-                              <blockquote className="era-text text-xs sm:text-sm leading-relaxed italic mb-3 font-mono">
-                                "{report.quote}"
-                              </blockquote>
-                              <cite className="era-text-accent text-[11px] not-italic block border-t border-current pt-2 tracking-wider font-mono opacity-70">
-                                — {report.author}
-                              </cite>
-                            </div>
-                          ))}
-                        </div>
-                      </section>
-
-                      {/* ── Two-column bottom ── */}
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                        <section>
-                          <SectionHeader>TARGET DEPLOYMENTS</SectionHeader>
-                          <div className="era-inset-panel p-4">
-                            <p className="era-text-accent mb-3 text-[10px] font-mono tracking-wider font-bold opacity-60">
-                              ▸ Subject is cleared for deployment in the following configurations:
-                            </p>
-                            <div className="space-y-1.5 text-xs sm:text-sm font-mono">
-                              {resumeData.targetRoles.map((role, i) => (
-                                <div key={i} className="era-text">
-                                  <span className="era-text-muted mr-2">[{String(i + 1).padStart(2, "0")}]</span>
-                                  {role}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </section>
-
-                        <section>
-                          <SectionHeader>SURVEILLANCE NOTES: CIVILIAN COVER</SectionHeader>
-                          <div className="era-inset-panel p-4">
-                            <p className="era-text-accent mb-3 text-[10px] font-mono tracking-wider font-bold opacity-60">
-                              ▸ Background activities detected:
-                            </p>
-                            <div className="space-y-2 text-xs sm:text-sm font-mono">
-                              {resumeData.civilianCover.map((item, i) => (
-                                <div key={i} className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 era-text">
-                                  <span className="font-bold">{item.name}</span>
-                                  <span className="era-text-muted text-[11px]">{item.category}</span>
-                                  <span className="hidden sm:inline era-text-muted opacity-40">—</span>
-                                  <span className="era-text-accent text-[11px] tracking-wider opacity-70">{item.status}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </section>
-                      </div>
-
-                    </div>
-                    {/* end inner padding */}
-                  </div>
-                  {/* end paper */}
-
-                  {/* Footer */}
-                  <div className="era-text-muted text-[9px] sm:text-[10px] tracking-widest text-center pt-4 pb-1 font-mono">
-                    DOCUMENT CLASSIFICATION: <span className="era-text-accent font-bold">TOP SECRET</span> // DISTRIBUTION: <Redacted era={era}>EYES ONLY</Redacted> // REF: DR-{new Date().getFullYear()}-RABURN
-                  </div>
-                </div>
-                {/* end card padding */}
-              </div>
-              {/* end era-card */}
-            </div>
-            {/* end max-w wrapper */}
-          </div>
-        </motion.div>
-      </AnimatePresence>
+        <MicrocopyLabel as="div" className="mt-12">LOCATION: CYBERSPACE</MicrocopyLabel>
+      </main>
     </div>
   );
 }
