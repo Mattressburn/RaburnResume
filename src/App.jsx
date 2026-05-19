@@ -300,6 +300,20 @@ function ResumeHome() {
             ))}
           </ol>
         </section>
+
+        <section>
+          <SectionHeader number="06" label="INTERESTS" id="interests" />
+          <ul className="space-y-3 list-none p-0">
+            {resumeData.civilianCover.map((item, i) => (
+              <li key={i} className="flex flex-wrap items-center gap-3 font-mono text-sm">
+                <span className="text-fg font-bold uppercase">{item.name}</span>
+                <span className="text-muted-fg">{item.category}</span>
+                <span className="text-accent">·</span>
+                <span className="text-accent uppercase tracking-widest">{item.status}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
       </main>
     </div>
   );
