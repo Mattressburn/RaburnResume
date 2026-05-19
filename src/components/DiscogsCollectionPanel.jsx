@@ -13,7 +13,7 @@ import {
 } from "recharts";
 
 // shared chart theme (colors, tick, tooltip)
-import { RC, colorByIndex, tooltipStyle, LeftTick } from "../charts/theme";
+import { palette, colorByIndex, tooltipStyle, LeftTick } from "../charts/theme";
 
 export default function DiscogsCollectionPanel() {
   const [items, setItems] = useState([]);
@@ -153,25 +153,25 @@ export default function DiscogsCollectionPanel() {
                 data={toChart(stats.byYear)}
                 margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke={RC.grid} />
+                <CartesianGrid strokeDasharray="3 3" stroke={palette.muted} />
                 <XAxis
                   dataKey="name"
-                  tick={{ fontSize: 12, fill: RC.ink }}
+                  tick={{ fontSize: 12, fill: palette.mutedFg }}
                   interval={0}
                   angle={-45}
                   textAnchor="end"
                   height={60}
-                  axisLine={{ stroke: RC.line }}
-                  tickLine={{ stroke: RC.line }}
+                  axisLine={{ stroke: palette.muted }}
+                  tickLine={{ stroke: palette.muted }}
                 />
                 <YAxis
                   allowDecimals={false}
-                  stroke={RC.ink}
-                  axisLine={{ stroke: RC.line }}
-                  tickLine={{ stroke: RC.line }}
-                  tick={{ fill: RC.ink }}
+                  stroke={palette.mutedFg}
+                  axisLine={{ stroke: palette.muted }}
+                  tickLine={{ stroke: palette.muted }}
+                  tick={{ fill: palette.mutedFg }}
                 />
-                <Tooltip cursor={{ fill: "#00000008" }} contentStyle={tooltipStyle} />
+                <Tooltip cursor={{ fill: "#00000008" }} {...tooltipStyle} />
                 <Bar dataKey="value">
                   {toChart(stats.byYear).map((d, i) => (
                     <Cell key={d.name} fill={colorByIndex(i)} />
@@ -185,21 +185,21 @@ export default function DiscogsCollectionPanel() {
           <ChartCard title="By decade">
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={toChart(stats.byDecade)}>
-                <CartesianGrid strokeDasharray="3 3" stroke={RC.grid} />
+                <CartesianGrid strokeDasharray="3 3" stroke={palette.muted} />
                 <XAxis
                   dataKey="name"
-                  tick={{ fill: RC.ink }}
-                  axisLine={{ stroke: RC.line }}
-                  tickLine={{ stroke: RC.line }}
+                  tick={{ fill: palette.mutedFg }}
+                  axisLine={{ stroke: palette.muted }}
+                  tickLine={{ stroke: palette.muted }}
                 />
                 <YAxis
                   allowDecimals={false}
-                  stroke={RC.ink}
-                  axisLine={{ stroke: RC.line }}
-                  tickLine={{ stroke: RC.line }}
-                  tick={{ fill: RC.ink }}
+                  stroke={palette.mutedFg}
+                  axisLine={{ stroke: palette.muted }}
+                  tickLine={{ stroke: palette.muted }}
+                  tick={{ fill: palette.mutedFg }}
                 />
-                <Tooltip cursor={{ fill: "#00000008" }} contentStyle={tooltipStyle} />
+                <Tooltip cursor={{ fill: "#00000008" }} {...tooltipStyle} />
                 <Bar dataKey="value">
                   {toChart(stats.byDecade).map((d, i) => (
                     <Cell key={d.name} fill={colorByIndex(i)} />
@@ -218,8 +218,8 @@ export default function DiscogsCollectionPanel() {
                 margin={{ left: 28, right: 12, top: 8, bottom: 8 }}
                 barCategoryGap={10}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke={RC.grid} />
-                <XAxis type="number" stroke={RC.ink} />
+                <CartesianGrid strokeDasharray="3 3" stroke={palette.muted} />
+                <XAxis type="number" stroke={palette.mutedFg} />
                 <YAxis
                   type="category"
                   dataKey="name"
@@ -229,7 +229,7 @@ export default function DiscogsCollectionPanel() {
                   axisLine={false}
                   tick={<LeftTick maxChars={22} lines={3} shift={26} />}
                 />
-                <Tooltip cursor={{ fill: "#00000008" }} contentStyle={tooltipStyle} />
+                <Tooltip cursor={{ fill: "#00000008" }} {...tooltipStyle} />
                 <Bar dataKey="value" barSize={14}>
                   {toChart(stats.topLabels).map((d, i) => (
                     <Cell key={d.name} fill={colorByIndex(i)} />
@@ -248,8 +248,8 @@ export default function DiscogsCollectionPanel() {
                 margin={{ left: 28, right: 12, top: 8, bottom: 8 }}
                 barCategoryGap={10}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke={RC.grid} />
-                <XAxis type="number" stroke={RC.ink} />
+                <CartesianGrid strokeDasharray="3 3" stroke={palette.muted} />
+                <XAxis type="number" stroke={palette.mutedFg} />
                 <YAxis
                   type="category"
                   dataKey="name"
@@ -259,7 +259,7 @@ export default function DiscogsCollectionPanel() {
                   axisLine={false}
                   tick={<LeftTick maxChars={22} lines={3} shift={26} />}
                 />
-                <Tooltip cursor={{ fill: "#00000008" }} contentStyle={tooltipStyle} />
+                <Tooltip cursor={{ fill: "#00000008" }} {...tooltipStyle} />
                 <Bar dataKey="value" barSize={14}>
                   {toChart(stats.topArtists).map((d, i) => (
                     <Cell key={d.name} fill={colorByIndex(i)} />

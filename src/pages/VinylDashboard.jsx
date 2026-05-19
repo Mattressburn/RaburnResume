@@ -16,7 +16,7 @@ import DiscogsCollectionPanel from "../components/DiscogsCollectionPanel";
 import BootSequence from "../components/BootSequence";
 
 // Shared chart theme
-import { RC, colorByIndex, tooltipStyle, LeftTick } from "../charts/theme";
+import { palette, colorByIndex, tooltipStyle, LeftTick } from "../charts/theme";
 
 // Utility: fetch JSON from public
 async function loadData(url = "/fan500.json") {
@@ -552,19 +552,19 @@ export default function VinylDashboard() {
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={yearBuckets} onClick={onYearBarClick}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={RC.grid} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={palette.muted} />
                   <XAxis
                     dataKey="year"
-                    stroke={RC.ink}
-                    axisLine={{ stroke: RC.line }}
-                    tickLine={{ stroke: RC.line }}
+                    stroke={palette.mutedFg}
+                    axisLine={{ stroke: palette.muted }}
+                    tickLine={{ stroke: palette.muted }}
                   />
                   <YAxis
-                    stroke={RC.ink}
-                    axisLine={{ stroke: RC.line }}
-                    tickLine={{ stroke: RC.line }}
+                    stroke={palette.mutedFg}
+                    axisLine={{ stroke: palette.muted }}
+                    tickLine={{ stroke: palette.muted }}
                   />
-                  <Tooltip cursor={{ fill: "#ffffff10" }} contentStyle={tooltipStyle} />
+                  <Tooltip cursor={{ fill: "#ffffff10" }} {...tooltipStyle} />
                   <Bar dataKey="count">
                     {yearBuckets.map((_, idx) => (
                       <Cell key={`cell-${idx}`} fill={colorByIndex(idx)} />
@@ -585,12 +585,12 @@ export default function VinylDashboard() {
                   layout="vertical"
                   margin={{ left: 28, right: 12, top: 8, bottom: 8 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke={RC.grid} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={palette.muted} />
                   <XAxis
                     type="number"
-                    stroke={RC.ink}
-                    axisLine={{ stroke: RC.line }}
-                    tickLine={{ stroke: RC.line }}
+                    stroke={palette.mutedFg}
+                    axisLine={{ stroke: palette.muted }}
+                    tickLine={{ stroke: palette.muted }}
                   />
                   <YAxis
                     dataKey="name"
@@ -603,7 +603,7 @@ export default function VinylDashboard() {
                   />
                   <Tooltip
                     cursor={{ fill: "#00000008" }}
-                    contentStyle={tooltipStyle}
+                    {...tooltipStyle}
                     formatter={(v, k) => (k === "count" ? [v, "Tracks"] : [v, k])}
                     labelFormatter={(label) => label}
                   />

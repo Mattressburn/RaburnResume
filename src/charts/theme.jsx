@@ -1,36 +1,53 @@
-// Shared Recharts theme for the classified dossier dashboard
+// src/charts/theme.jsx — brutalist lime palette
 import React from "react";
 
-export const RC = {
-  paper: "#18181b",
-  line: "#3f3f46",
-  ink: "#d4d4d8",
-  grid: "#27272a",
+export const palette = {
+  accent:  '#A3E635',
+  fg:      '#FAFAFA',
+  mutedFg: '#A1A1AA',
+  muted:   '#3F3F46',
+  bg:      '#09090B',
 };
 
-// Tactical muted palette: ambers, reds, slate blues, olive greens, purples
-const BASE_PALETTE = [
-  "#f59e0b", "#ef4444", "#3b82f6", "#10b981", "#8b5cf6",
-  "#64748b", "#d97706", "#b91c1c",
+export const chartSeries = [
+  palette.accent,
+  palette.fg,
+  palette.mutedFg,
 ];
-// 0,5,1,6,2,7… => maximizes separation between neighbors
-const SPREAD = (() => {
-  const p = BASE_PALETTE, half = Math.ceil(p.length / 2), out = [];
-  for (let i = 0; i < half; i++) {
-    out.push(p[i]);
-    if (p[i + half]) out.push(p[i + half]);
-  }
-  return out;
-})();
-export const colorByIndex = (i) => SPREAD[i % SPREAD.length];
+
+export const axisStyle = {
+  fontFamily: 'Departure Mono, JetBrains Mono, ui-monospace, monospace',
+  fontSize: 11,
+  letterSpacing: '0.1em',
+  textTransform: 'uppercase',
+  fill: palette.mutedFg,
+};
+
+export const gridStyle = {
+  stroke: palette.muted,
+  strokeWidth: 1,
+};
 
 export const tooltipStyle = {
-  background: RC.paper,
-  border: `1px solid ${RC.line}`,
-  color: RC.ink,
+  contentStyle: {
+    background: palette.bg,
+    border: `2px solid ${palette.accent}`,
+    borderRadius: 0,
+    fontFamily: 'Departure Mono, JetBrains Mono, ui-monospace, monospace',
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
+    color: palette.fg,
+  },
+  labelStyle: { color: palette.accent },
 };
 
-// ---------- Long-label tick (wrap + abbreviate + left gutter) ----------
+// ---------- Keepalive shims (consumed by VinylDashboard + DiscogsCollectionPanel) ----------
+
+/** Round-robin over chartSeries by index. */
+export const colorByIndex = (i) => chartSeries[i % chartSeries.length];
+
+// Long-label tick: abbreviates + wraps multi-word Y-axis labels in horizontal bar charts.
 const ABBREV = {
   Records: "Recs.", Recordings: "Recs.", Incorporated: "Inc.", Corporation: "Corp.",
   Company: "Co.", Limited: "Ltd.", International: "Intl.", Brothers: "Bros.",
@@ -41,7 +58,7 @@ const abbreviate = (s) =>
     (m) => ABBREV[m] || m
   );
 
-export const wrapText = (s, maxChars = 22, maxLines = 3) => {
+const wrapText = (s, maxChars = 22, maxLines = 3) => {
   const words = String(s).split(" ");
   const lines = [];
   let line = "";
@@ -65,7 +82,14 @@ export const LeftTick = ({ x, y, payload, maxChars = 22, lines = 3, shift = 26 }
   const small = rows.some((r) => r.length > maxChars);
   return (
     <g transform={`translate(${x - shift},${y})`}>
-      <text dy="4" textAnchor="end" fill={RC.ink} fontSize={small ? 11 : 12}>
+      <text
+        dy="4"
+        textAnchor="end"
+        fill={palette.mutedFg}
+        fontSize={small ? 10 : 11}
+        fontFamily="Departure Mono, JetBrains Mono, ui-monospace, monospace"
+        letterSpacing="0.05em"
+      >
         {rows.map((t, i) => (
           <tspan key={i} x="0" dy={i === 0 ? 0 : 12}>{t}</tspan>
         ))}
