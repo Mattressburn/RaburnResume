@@ -10,6 +10,7 @@ import VinylDashboard from "./pages/VinylDashboard";
 import { Routes, Route, Link } from "react-router-dom";
 import { resumeData } from "./data/resumeData";
 import HiddenGlitchTrigger from "./components/HiddenGlitchTrigger";
+import Preview from './pages/Preview';
 
 /* ═══════════════ ERA DEFINITIONS ═══════════════ */
 const ERA_KEYS = ["1982", "1995", "2005", "2026", "dossier"];
@@ -536,6 +537,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<ResumeHome />} />
       <Route path="/dashboard" element={<VinylDashboard />} />
+      <Route path="/preview" element={<Preview />} />
     </Routes>
   );
 }
