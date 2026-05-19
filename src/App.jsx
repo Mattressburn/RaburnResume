@@ -314,6 +314,17 @@ function ResumeHome() {
             ))}
           </ul>
         </section>
+
+        <footer className="mt-16 pt-6 border-t-3 border-fg">
+          <div className="flex flex-wrap justify-between items-baseline gap-4 font-mono text-xs uppercase tracking-widest">
+            <span>© 2026 RABURN, M.</span>
+            <div className="flex gap-4">
+              <a href={`mailto:${resumeData.personal.contact.email}`}>{resumeData.personal.contact.email}</a>
+              <a href={`https://${resumeData.personal.contact.linkedin}`} target="_blank" rel="noopener noreferrer">LINKEDIN</a>
+              <a href={resumePDF} download="Matthew_Raburn_Resume.pdf">DOWNLOAD .PDF</a>
+            </div>
+          </div>
+        </footer>
       </main>
     </div>
   );
