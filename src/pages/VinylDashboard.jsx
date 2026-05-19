@@ -14,7 +14,6 @@ import {
 import DiscogsCollectionPanel from "../components/DiscogsCollectionPanel";
 import Marquee from "../components/Marquee";
 import MicrocopyLabel from "../components/MicrocopyLabel";
-import BrutalistCard from "../components/BrutalistCard";
 
 // Shared chart theme
 import { palette, axisStyle, colorByIndex, tooltipStyle, LeftTick } from "../charts/theme";
@@ -533,6 +532,7 @@ export default function VinylDashboard() {
                     stroke={palette.mutedFg}
                     axisLine={{ stroke: palette.muted }}
                     tickLine={{ stroke: palette.muted }}
+                    tick={axisStyle}
                   />
                   <YAxis
                     dataKey="name"

@@ -220,7 +220,7 @@ export default function DiscogsCollectionPanel() {
                 barCategoryGap={10}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke={palette.muted} />
-                <XAxis type="number" stroke={palette.mutedFg} />
+                <XAxis type="number" stroke={palette.mutedFg} tick={axisStyle} />
                 <YAxis
                   type="category"
                   dataKey="name"
@@ -250,7 +250,7 @@ export default function DiscogsCollectionPanel() {
                 barCategoryGap={10}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke={palette.muted} />
-                <XAxis type="number" stroke={palette.mutedFg} />
+                <XAxis type="number" stroke={palette.mutedFg} tick={axisStyle} />
                 <YAxis
                   type="category"
                   dataKey="name"
