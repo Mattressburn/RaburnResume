@@ -8,7 +8,6 @@ A personal portfolio site for Matthew Raburn (IT Professional · Enterprise Reli
 - Tailwind 3
 - react-router-dom 7
 - Recharts 3
-- framer-motion 12 (motion respects `prefers-reduced-motion`)
 - Netlify Edge Functions (`netlify/functions/discogs-collection.ts`)
 
 ## Local dev

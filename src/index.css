@@ -226,6 +226,40 @@ html, body {
   letter-spacing: -0.01em;
 }
 
+/* ═══════════════ RANGE INPUT ═══════════════ */
+
+.vinyl-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: var(--muted);
+  border: 1px solid var(--muted);
+  outline: none;
+}
+
+.vinyl-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--accent);
+  border: 2px solid var(--accent-ink);
+  cursor: pointer;
+}
+
+.vinyl-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: var(--accent);
+  border: 2px solid var(--accent-ink);
+  cursor: pointer;
+}
+
+.vinyl-range:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* ═══════════════ LINKS ═══════════════ */
 
 a {
