@@ -1,22 +1,26 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./public/index.html', './index.html', './src/**/*.{js,jsx,ts,tsx}'],
+  content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {
       colors: {
-        bg:           '#09090B',
-        fg:           '#FAFAFA',
-        accent:       '#A3E635',
-        'accent-ink': '#000000',
-        muted:        '#3F3F46',
-        'muted-fg':   '#A1A1AA',
+        bg: 'var(--bg)',
+        bg2: 'var(--bg-2)',
+        line: 'var(--line)',
+        line2: 'var(--line-2)',
+        fg: 'var(--fg)',
+        fg2: 'var(--fg-2)',
+        fg3: 'var(--fg-3)',
+        accent: 'var(--accent)',
+        ok: 'var(--ok)',
       },
       fontFamily: {
-        display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
-        mono:    ['"Departure Mono"', '"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        display: ['"Inter Tight"', 'system-ui', 'sans-serif'],
+        body: ['Inter', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
-      borderWidth: {
-        3: '3px',
+      maxWidth: {
+        page: '1200px',
       },
     },
   },

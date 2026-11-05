@@ -1,270 +1,45 @@
-/* Google Fonts loaded via index.html. */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ═══════════════ TOKENS ═══════════════ */
-
 :root {
-  --bg:           #09090B;
-  --fg:           #FAFAFA;
-  --accent:       #A3E635;
-  --accent-ink:   #000000;
-  --muted:        #3F3F46;
-  --muted-fg:     #A1A1AA;
-
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-mono:    'Departure Mono', 'JetBrains Mono', ui-monospace, monospace;
-
-  --space-1:  4px;
-  --space-2:  8px;
-  --space-3:  16px;
-  --space-4:  24px;
-  --space-5:  32px;
-  --space-6:  48px;
-  --space-7:  64px;
-  --space-8:  96px;
-
-  --border-w:   3px;
-  --shadow-off: 6px;
-  --radius:     0;
-
-  --marquee-speed: 30s;
-  --press-scale:   0.97;
+  --bg: #0A0C10;
+  --bg-2: #0E1117;
+  --line: #1C2129;
+  --line-2: #2A2F38;
+  --fg: #E6E8EC;
+  --fg-2: #9AA0AA;
+  --fg-3: #777E8A;
+  --accent: #FFB020;
+  --ok: #5BD38A;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* ═══════════════ GLOBAL BASE ═══════════════ */
+* {
+  box-sizing: border-box;
+}
 
-html, body {
+html,
+body {
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-display);
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Inter', system-ui, sans-serif;
+  color-scheme: dark;
+  scroll-behavior: smooth;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  border-radius: var(--radius);
-}
-
-/* Visible keyboard focus */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* Reduced motion */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  html,
+  body {
+    scroll-behavior: auto;
   }
-}
-
-/* ═══════════════ DISPLAY TYPE ═══════════════ */
-
-.display {
-  font-family: var(--font-display);
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  line-height: 0.9;
-}
-
-.display-name {
-  font-size: clamp(3.5rem, 12vw, 9rem);
-}
-
-.display-tagline {
-  font-size: clamp(1.5rem, 4vw, 3rem);
-  font-weight: 700;
-}
-
-/* ═══════════════ MICROCOPY ═══════════════ */
-
-.micro {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  font-weight: 500;
-}
-
-/* ═══════════════ MARQUEE ═══════════════ */
-
-.marquee {
-  background: var(--accent);
-  color: var(--accent-ink);
-  overflow: hidden;
-  white-space: nowrap;
-  font-family: var(--font-mono);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: var(--space-2) 0;
-}
-
-.marquee-track {
-  display: inline-flex;
-  animation: marquee var(--marquee-speed) linear infinite;
-}
-
-.marquee-track > span {
-  padding-right: var(--space-6);
-}
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-/* ═══════════════ BRUTALIST CARD ═══════════════ */
-
-.bcard {
-  position: relative;
-  display: inline-block;
-}
-
-.bcard-inner {
-  position: relative;
-  z-index: 1;
-  background: var(--bg);
-  border: var(--border-w) solid var(--accent);
-  padding: var(--space-3) var(--space-4);
-}
-
-.bcard-shadow {
-  position: absolute;
-  inset: 0;
-  transform: translate(var(--shadow-off), var(--shadow-off));
-  background: var(--accent);
-  z-index: 0;
-}
-
-/* Press feedback for interactive cards */
-.bcard-interactive {
-  cursor: pointer;
-  transition: transform 100ms ease-out;
-}
-
-.bcard-interactive:active {
-  transform: scale(var(--press-scale));
-}
-
-/* ═══════════════ PILL BADGE ═══════════════ */
-
-.pill {
-  display: inline-block;
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-family: var(--font-mono);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: var(--space-1) var(--space-3);
-  border-radius: 9999px;
-  font-size: 12px;
-}
-
-/* ═══════════════ REDACTED BLOCK ═══════════════ */
-
-.redacted {
-  display: inline-block;
-  background: var(--muted);
-  height: 1em;
-  vertical-align: middle;
-  margin: 0 2px;
-}
-
-/* ═══════════════ BRUTALIST CHIP ═══════════════ */
-
-.chip {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: var(--space-2) var(--space-3);
-  border: 2px solid var(--fg);
-  margin: var(--space-1);
-}
-
-/* ═══════════════ SECTION HEADER ═══════════════ */
-
-.section-header {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-4);
-  margin-top: var(--space-7);
-  margin-bottom: var(--space-4);
-  padding-bottom: var(--space-2);
-  border-bottom: var(--border-w) solid var(--fg);
-}
-
-.section-number {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  color: var(--accent);
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  letter-spacing: 0;
-}
-
-.section-label {
-  font-family: var(--font-display);
-  font-weight: 900;
-  text-transform: uppercase;
-  font-size: clamp(1.5rem, 4vw, 3rem);
-  letter-spacing: -0.01em;
-}
-
-/* ═══════════════ RANGE INPUT ═══════════════ */
-
-.vinyl-range {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 4px;
-  background: var(--muted);
-  border: 1px solid var(--muted);
-  outline: none;
-}
-
-.vinyl-range::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  background: var(--accent);
-  border: 2px solid var(--accent-ink);
-  cursor: pointer;
-}
-
-.vinyl-range::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
-  background: var(--accent);
-  border: 2px solid var(--accent-ink);
-  cursor: pointer;
-}
-
-.vinyl-range:focus-visible::-webkit-slider-thumb {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* ═══════════════ LINKS ═══════════════ */
-
-a {
-  color: var(--accent);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-thickness: 2px;
 }

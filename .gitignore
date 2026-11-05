@@ -36,3 +36,7 @@ ruvector.db
 # nano-banana / belt CLI subagent traces
 mockups/*.out
 mockups/*-pro.out
+
+# Generated / local
+shared/facts.generated.js
+.superpowers/
