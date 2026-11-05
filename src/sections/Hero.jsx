@@ -46,7 +46,7 @@ export default function Hero() {
       <div className="relative grid lg:grid-cols-[52fr_48fr] gap-10">
         <div>
           <Reveal as="p" delay={heroTimings.status} className="font-mono text-[11px] tracking-[.1em] uppercase text-accent flex items-center gap-2 mb-6">
-            <span aria-hidden="true" className="inline-block w-[7px] h-[7px] rounded-full bg-accent shrink-0" />
+            <span aria-hidden="true" className="status-dot inline-block w-[7px] h-[7px] rounded-full bg-accent shrink-0" />
             {hero.status}
           </Reveal>
           <h1 className="font-display font-extrabold text-[40px] lg:text-[60px] leading-none tracking-[-0.035em]">

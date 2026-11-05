@@ -1,7 +1,7 @@
 // Single source of page copy. Production figures are the rounded "published as" forms;
 // measured quality figures and small counts stay exact. shared/facts.md mirrors this copy.
 
-const CASE_STUDY = 'https://github.com/Mattressburn/rumil-case-study'
+export const CASE_STUDY = 'https://github.com/Mattressburn/rumil-case-study'
 const GITHUB = 'https://github.com/Mattressburn'
 const RESUME = '/Matthew_Raburn_Resume.pdf'
 

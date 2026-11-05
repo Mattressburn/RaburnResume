@@ -61,3 +61,18 @@ test('paused answers do not count toward the cap', async () => {
   await waitFor(() => expect(screen.getByText(/pre-written/)).toBeInTheDocument())
   expect(screen.getByText('0 of 6')).toBeInTheDocument()
 })
+
+test('closing the panel aborts the request and drops the unanswered turn', async () => {
+  client.ask.mockImplementation((_h, { signal }) => new Promise((resolve) => {
+    signal.addEventListener('abort', () => resolve({ status: 'aborted', text: '' }))
+  }))
+  render(<Ask />)
+  askQ('hello')
+  await waitFor(() => expect(client.ask).toHaveBeenCalledTimes(1))
+  fireEvent.click(screen.getByRole('button', { name: 'Close' }))
+  expect(client.ask.mock.calls[0][1].signal.aborted).toBe(true)
+  askQ('again')
+  await waitFor(() => expect(client.ask).toHaveBeenCalledTimes(2))
+  expect(client.ask.mock.calls[1][0]).toEqual([{ role: 'user', content: 'again' }])
+  expect(screen.getByText('1 of 6')).toBeInTheDocument()
+})

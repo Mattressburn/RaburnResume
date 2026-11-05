@@ -16,6 +16,12 @@ test('maps statuses', async () => {
   expect((await ask([], { fetchImpl: async () => { throw new Error('net') } })).status).toBe('error')
 })
 
+test('passes the signal through and treats an AbortError as a silent stop', async () => {
+  const ac = new AbortController()
+  const r = await ask([], { signal: ac.signal, fetchImpl: async (_url, init) => { expect(init.signal).toBe(ac.signal); throw new DOMException('closed', 'AbortError') } })
+  expect(r).toEqual({ status: 'aborted', text: '' })
+})
+
 test('streams chunks and returns the full text', async () => {
   const chunks = []
   const r = await ask([{ role: 'user', content: 'hi' }], { fetchImpl: async () => res(200, 'Hel' + 'lo [cite:system]', 'text/plain'), onChunk: (t) => chunks.push(t) })

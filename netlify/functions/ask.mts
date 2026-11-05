@@ -6,7 +6,7 @@ import { buildSystem } from '../lib/prompt'
 import { checkAndCount, type CounterStore } from '../lib/ratelimit'
 import { validateBody } from '../lib/validate'
 
-const MAX_BODY = 16_384
+const MAX_BODY = 24_576
 const DEADLINE_MS = 50_000 // our own budget inside the platform's 60 s limit
 
 type Usage = {
@@ -19,11 +19,12 @@ type AskStream =
   | ReturnType<Anthropic['messages']['stream']>
   | ReturnType<Anthropic['beta']['messages']['stream']>
 
-// One line per request. Never the question text, the IP or the key.
-function log(model: string, status: number, usage?: Usage) {
+// One line per request. Never the question text, the answer text, the IP or the key.
+function log(model: string, status: number, usage?: Usage, stopReason?: string | null) {
   console.log(JSON.stringify({
     model,
     status,
+    stop_reason: stopReason ?? null,
     cache_read_input_tokens: usage?.cache_read_input_tokens ?? null,
     cache_creation_input_tokens: usage?.cache_creation_input_tokens ?? null,
     input_tokens: usage?.input_tokens ?? null,
@@ -32,7 +33,7 @@ function log(model: string, status: number, usage?: Usage) {
 }
 
 export default async (req: Request, context: Context) => {
-  const model = (process.env.ASK_MODEL || '').trim() || 'claude-opus-5-5'
+  const model = (process.env.ASK_MODEL || '').trim() || 'claude-haiku-5-5'
   const json = (status: number, body: object) => {
     log(model, status)
     return Response.json(body, { status })
@@ -56,7 +57,9 @@ export default async (req: Request, context: Context) => {
   try {
     // ponytail: cast because Store.set types onlyIfMatch/onlyIfNew as exclusive variants; same runtime shape
     const store = getStore({ name: 'ask-limits', consistency: 'strong' }) as CounterStore
-    const limit = await checkAndCount(store, { ip: context.ip, salt, ctx: process.env.CONTEXT ?? 'dev', now: new Date() })
+    // No usable address still counts, under one shared key, so the hash stays stable.
+    const ip = typeof context.ip === 'string' && context.ip ? context.ip : 'unknown'
+    const limit = await checkAndCount(store, { ip, salt, ctx: process.env.CONTEXT ?? 'dev', now: new Date() })
     if (!limit.allowed) return json(429, { reason: limit.reason })
   } catch {
     return json(429, { reason: 'global' }) // the limiter fails closed
@@ -71,15 +74,22 @@ export default async (req: Request, context: Context) => {
     const client = new Anthropic({ maxRetries: 1, timeout: 20_000 })
     const params = {
       model,
-      max_tokens: 600,
       output_config: { effort: 'low' as const },
       system: buildSystem(FACTS),
       messages: valid.messages,
     }
-    // Server-side fallback exists for Opus only; Haiku has none.
+    // Opus: thinking stays adaptive (it cannot be disabled), so its 1,200 tokens cover thinking and the answer;
+    // server-side fallback exists for Opus only. Everything else: thinking off (Haiku 5.5 accepts it at effort low).
+    // ponytail: 'disabled' 400s on Sonnet 5.5 and Fable; branch here if ASK_MODEL ever points at them.
     stream = model.startsWith('claude-opus')
-      ? client.beta.messages.stream({ ...params, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' })
-      : client.messages.stream(params)
+      ? client.beta.messages.stream({
+        ...params,
+        max_tokens: 1200,
+        thinking: { type: 'adaptive' },
+        betas: ['server-side-fallback-2026-07-01'],
+        fallbacks: 'default',
+      })
+      : client.messages.stream({ ...params, max_tokens: 600, thinking: { type: 'disabled' } })
     // Take the iterator in the same tick: it registers the stream's error listeners.
     it = stream[Symbol.asyncIterator]()
     deadline = setTimeout(() => stream.abort(), DEADLINE_MS)
@@ -107,7 +117,7 @@ export default async (req: Request, context: Context) => {
     else ctrl.error(new Error('empty'))
     try {
       const final = await stream.finalMessage()
-      log(final.model, 200, final.usage)
+      log(final.model, 200, final.usage, final.stop_reason)
     } catch {
       log(model, 200)
     }

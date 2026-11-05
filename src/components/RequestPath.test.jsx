@@ -10,6 +10,16 @@ test('renders every node label and one pulse path per edge', () => {
   expect(container.querySelectorAll('path.pulse').length).toBe(site.diagram.edges.length)
 })
 
+test('each pulse period is its own route length plus the dash, so no edge shows two dashes', () => {
+  const { container } = render(<RequestPath size="card" animate />)
+  const pulses = [...container.querySelectorAll('path.pulse')]
+  site.diagram.edges.forEach((e, i) => {
+    const pts = routeOf(e, site.diagram.layouts.desktop)
+    const len = pts.slice(1).reduce((s, b, j) => s + Math.hypot(b[0] - pts[j][0], b[1] - pts[j][1]), 0)
+    expect(Number(pulses[i].style.getPropertyValue('--flow-len'))).toBeCloseTo(len + 6)
+  })
+})
+
 test('nodes with a why are keyboard focusable', () => {
   const { container } = render(<RequestPath size="full" animate={false} />)
   const withWhy = site.diagram.nodes.filter(n => n.why).length

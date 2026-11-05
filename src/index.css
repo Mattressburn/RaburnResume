@@ -37,10 +37,29 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Each pulse sets --flow-len to its route length + 6, so one period carries exactly one dash. */
 @keyframes flow {
   to {
-    stroke-dashoffset: -186;
+    stroke-dashoffset: calc(-1px * var(--flow-len));
   }
+}
+
+/* Status dot: one ring every 1.8 s. */
+@keyframes ping {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 176, 32, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 9px rgba(255, 176, 32, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 176, 32, 0);
+  }
+}
+
+.status-dot {
+  box-shadow: 0 0 0 0 rgba(255, 176, 32, 0.6);
+  animation: ping 1.8s infinite;
 }
 
 @keyframes draw {
@@ -62,12 +81,11 @@ body {
   }
 }
 
-/* Request-path pulse: a 6-unit amber dash travelling each edge. */
+/* Request-path pulse: a 6-unit amber dash travelling each edge; the dash pattern is set per edge inline. */
 .pulse {
   fill: none;
   stroke: var(--accent);
   stroke-width: 1.5;
-  stroke-dasharray: 6 180;
   opacity: 0;
   animation: flow 2.6s linear infinite, pulse-on 0s forwards;
 }
@@ -86,5 +104,9 @@ body {
   html,
   body {
     scroll-behavior: auto;
+  }
+
+  .status-dot {
+    animation: none;
   }
 }

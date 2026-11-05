@@ -33,10 +33,10 @@ Numbers (production figures as of November 2026, rounded; quality figures from t
 - Sources: over 100k Jira issues; around 64k Salesforce cases; around 60k worklogs; over 10k KB articles; around 4,400 Confluence pages; over 180k closed-case resolution records.
 - Usage: over 3,000 questions answered since April 2026; over 1,000 questions in the last 30 days, around a quarter more than the 30 before; around 50 questions on an average weekday; around 10 people asking on an average weekday; over 100 questions on the peak day.
 - Usage, people: around 50 of around 75 approved accounts have asked; around 35 active in the last 30 days.
-- Growth: around 300 → around 850 → around 1,100 questions, August to October; over 2,300 questions in the last 90 days against around 540 in the 90 before, over 4x; more than double the people asking.
+- Growth: around 300 → around 850 → around 1,100 questions, August to October; over 2,300 questions in the last 90 days; around 540 questions in the 90 days before; over 4x growth between the two periods; more than double the people asking.
 - Tool mix, 30 days: over 1,300 tool calls: around 700 KB search, around 210 Jira, around 210 Salesforce, around 130 Snowflake case lookups.
-- Quality: 0.82 recall@10 on a 50-question golden set, measured August 2026 on the then 310k-chunk corpus (case study); 48 of 50 correct vs 26 of 50 for the vendor assistant bundled with the case tool, unrehearsed head-to-head (candidate, 2026-09-14); forced retries on ungrounded answers 25% → 0% (case study).
-- Engineering: 17 agent tools (case study); around 19,700 automated tests; over 1,000 merged PRs and over 2,000 commits since April 2026; around 190k lines of Python and around 120k of TypeScript; around 130 test environments built by an automated VM pipeline since September.
+- Quality: 0.82 recall@10 on a 50-question golden set, measured August 2026 on the then 310k-chunk corpus (case study); 48 of 50 correct, unrehearsed head-to-head (candidate, 2026-09-14); 26 of 50 correct for the vendor assistant bundled with the case tool, in the same head-to-head; 25% → 0% forced retries on ungrounded answers (case study).
+- Engineering: 17 agent tools (case study); around 19,700 automated tests; over 1,000 merged PRs since April 2026; over 2,000 commits since April 2026; around 190k lines of Python; around 120k lines of TypeScript; around 130 test environments built by an automated VM pipeline since September.
 
 ## Architecture
 

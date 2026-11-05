@@ -56,6 +56,7 @@ export default function AskPanel({ open, initialQuestion, onClose }) {
   const closeRef = useRef(null)
   const rootRef = useRef(null)
   const sent = useRef(false)
+  const inflight = useRef(null)
   const state = useRef({})
   state.current = { msgs, asked, paused, limited, busy }
 
@@ -78,9 +79,14 @@ export default function AskPanel({ open, initialQuestion, onClose }) {
     setMsgs([...cur, userMsg, { role: 'assistant', text: '', cites: [], streaming: true }])
     setBusy(true)
     const history = [...cur, userMsg].map((x) => ({ role: x.role, content: x.text }))
-    const r = await ask(history, { onChunk: (t) => patchLast({ text: splitCites(stripPartial(t)).body }) })
+    inflight.current = new AbortController()
+    const r = await ask(history, { signal: inflight.current.signal, onChunk: (t) => patchLast({ text: splitCites(stripPartial(t)).body }) })
     setBusy(false)
-    if (r.status === 'ok') {
+    if (r.status === 'aborted') {
+      // Closed mid-answer: drop the unanswered turn so the history never carries an empty or cut-off reply.
+      setAsked(n)
+      setMsgs((ms) => ms.slice(0, -2))
+    } else if (r.status === 'ok') {
       const { body, cites } = splitCites(stripPartial(r.text))
       // an empty answer gets a fixed non-empty string so the history never holds an empty turn
       patchLast({ text: body.trim() || 'No answer was produced.', cites, streaming: false, email: cites.length === 0 })
@@ -96,9 +102,14 @@ export default function AskPanel({ open, initialQuestion, onClose }) {
     }
   }
 
-  // Send the question that opened the panel, once per opening.
+  // Send the question that opened the panel, once per opening. Closing aborts the fetch in flight
+  // (here, not in an effect cleanup: StrictMode's dev remount would abort the first send).
   useEffect(() => {
-    if (!open) { sent.current = false; return }
+    if (!open) {
+      sent.current = false
+      inflight.current?.abort()
+      return
+    }
     // if a stream is still running, wait: busy is a dependency, so this runs again when it ends
     if (initialQuestion && !sent.current && !busy) {
       sent.current = true
@@ -148,7 +159,7 @@ export default function AskPanel({ open, initialQuestion, onClose }) {
           <button type="button" ref={closeRef} onClick={() => onClose()} aria-label="Close" className="text-fg2 text-[18px] leading-none px-2">×</button>
         </div>
         {paused && <p className="px-4 pt-3 font-mono text-[11px] text-accent">{COPY.paused}</p>}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4" aria-live="polite" aria-busy={busy}>
+        <div className="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4" aria-live="polite" aria-busy={busy}>
           {msgs.map((x, i) => (
             <div key={i} className={x.role === 'user' ? 'text-fg2' : 'text-fg'}>
               <p className="text-[14px] whitespace-pre-wrap">{x.text}</p>
@@ -187,7 +198,10 @@ export default function AskPanel({ open, initialQuestion, onClose }) {
             />
             <button type="submit" disabled={atLimit || busy} className="rounded-md bg-accent text-bg px-4 text-[13px] font-semibold disabled:opacity-50">Ask</button>
           </div>
-          <p className="font-mono text-[10px] text-fg3 mt-2">{Math.min(asked, LIMITS.maxQuestions)} of {LIMITS.maxQuestions}</p>
+          <div className="flex justify-between font-mono text-[10px] text-fg3 mt-2">
+            <p>{Math.min(asked, LIMITS.maxQuestions)} of {LIMITS.maxQuestions}</p>
+            <p>{draft.length}/{LIMITS.maxChars}</p>
+          </div>
         </form>
       </Panel>
     </div>,

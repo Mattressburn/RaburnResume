@@ -1,3 +1,5 @@
+import { CASE_STUDY } from '../data/site'
+
 export const LIMITS = { maxChars: 500, maxQuestions: 6 }
 
 // The server's fixed vocabulary is system, experience, projects, stack, case-study.
@@ -7,7 +9,7 @@ export const CITES = {
   experience: '#experience',
   projects: '#projects',
   stack: '#stack',
-  'case-study': 'https://github.com/Mattressburn/rumil-case-study',
+  'case-study': CASE_STUDY,
   contact: '#contact',
 }
 
@@ -21,16 +23,19 @@ export function splitCites(text) {
   return { body, cites }
 }
 
-export async function ask(messages, { fetchImpl = (...a) => fetch(...a), onChunk } = {}) {
+// `signal` aborts the request (the panel closed); that returns status 'aborted', never an error.
+export async function ask(messages, { fetchImpl = (...a) => fetch(...a), onChunk, signal } = {}) {
+  const stopped = (err) => signal?.aborted || err?.name === 'AbortError'
   let res
   try {
     res = await fetchImpl('/.netlify/functions/ask', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ messages }),
+      signal,
     })
-  } catch {
-    return { status: 'error', text: '' }
+  } catch (err) {
+    return { status: stopped(err) ? 'aborted' : 'error', text: '' }
   }
   if (res.status === 429) {
     let reason = 'ip'
@@ -56,7 +61,8 @@ export async function ask(messages, { fetchImpl = (...a) => fetch(...a), onChunk
       }
       acc += dec.decode()
     }
-  } catch {
+  } catch (err) {
+    if (stopped(err)) return { status: 'aborted', text: acc }
     // Stream died midway: keep what arrived (the UI shows it as truncated); nothing arrived is an error.
     if (!acc) return { status: 'error', text: '' }
   }

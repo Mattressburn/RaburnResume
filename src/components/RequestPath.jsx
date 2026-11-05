@@ -69,7 +69,12 @@ export default function RequestPath({ size = 'card', animate = true }) {
             <g key={`${e.from}>${e.to}`}>
               <path d={toD(pts)} fill="none" stroke="var(--line-2)" strokeWidth={1.5} style={draw} />
               {pulse ? (
-                <path d={toD(pts)} className="pulse" style={{ animationDelay: `calc(${heroTimings.flow}s + ${e.delay}s)` }} />
+                // Gap = route length, so a long route never shows a second dash; flow travels one full period.
+                <path
+                  d={toD(pts)}
+                  className="pulse"
+                  style={{ strokeDasharray: `6 ${len}`, '--flow-len': len + 6, animationDelay: `calc(${heroTimings.flow}s + ${e.delay}s)` }}
+                />
               ) : (
                 <path d={midDash(pts)} fill="none" stroke="var(--accent)" strokeWidth={1.5} />
               )}
