@@ -20,7 +20,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prebuild": "node scripts/build-facts.mjs",
+    "pretest": "node scripts/build-facts.mjs"
   },
   "eslintConfig": {
     "extends": [
