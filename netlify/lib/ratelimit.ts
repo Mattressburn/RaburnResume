@@ -12,7 +12,8 @@ export interface CounterStore {
 
 export type LimitResult = { allowed: true } | { allowed: false, reason: 'ip' | 'global' }
 
-const MAX_ATTEMPTS = 3
+const MAX_ATTEMPTS = 5
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 
 export async function hashIp(ip: string, salt: string): Promise<string> {
   const digest = await globalThis.crypto.subtle.digest('SHA-256', new TextEncoder().encode(salt + ip))
@@ -59,6 +60,7 @@ async function reserve(store: CounterStore, key: string, limit: number): Promise
     if (count >= limit) return 'refused'
     const res = await store.set(key, String(count + 1), got ? { onlyIfMatch: got.etag } : { onlyIfNew: true })
     if (res.modified) return got ? 'updated' : 'created'
+    if (attempt < MAX_ATTEMPTS - 1) await sleep(10 + Math.random() * 30)
   }
   return 'refused'
 }
