@@ -11,6 +11,10 @@
 [functions]
   node_bundler = "esbuild"
 
+[dev]
+  # vite.config.js pins the dev server to 3001
+  targetPort = 3001
+
 [[redirects]]
   # This is needed for React Router to work on refresh
   from = "/*"

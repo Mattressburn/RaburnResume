@@ -7,8 +7,17 @@ import { checkAndCount, type CounterStore } from '../lib/ratelimit'
 import { validateBody } from '../lib/validate'
 
 const MAX_BODY = 16_384
+const DEADLINE_MS = 50_000 // our own budget inside the platform's 60 s limit
 
-type Usage = { cache_read_input_tokens?: number | null, input_tokens?: number, output_tokens?: number }
+type Usage = {
+  cache_read_input_tokens?: number | null
+  cache_creation_input_tokens?: number | null
+  input_tokens?: number
+  output_tokens?: number
+}
+type AskStream =
+  | ReturnType<Anthropic['messages']['stream']>
+  | ReturnType<Anthropic['beta']['messages']['stream']>
 
 // One line per request. Never the question text, the IP or the key.
 function log(model: string, status: number, usage?: Usage) {
@@ -16,6 +25,7 @@ function log(model: string, status: number, usage?: Usage) {
     model,
     status,
     cache_read_input_tokens: usage?.cache_read_input_tokens ?? null,
+    cache_creation_input_tokens: usage?.cache_creation_input_tokens ?? null,
     input_tokens: usage?.input_tokens ?? null,
     output_tokens: usage?.output_tokens ?? null,
   }))
@@ -35,7 +45,8 @@ export default async (req: Request, context: Context) => {
 
   // content-length can be absent (chunked), so the text length is the real check
   if (Number(req.headers.get('content-length')) > MAX_BODY) return json(400, { error: 'body too large' })
-  const raw = await req.text()
+  let raw: string
+  try { raw = await req.text() } catch { return json(500, { error: 'internal' }) }
   if (raw.length > MAX_BODY) return json(400, { error: 'body too large' })
   let parsed: unknown
   try { parsed = JSON.parse(raw) } catch { return json(400, { error: 'invalid JSON' }) }
@@ -51,26 +62,32 @@ export default async (req: Request, context: Context) => {
     return json(429, { reason: 'global' }) // the limiter fails closed
   }
 
-  const client = new Anthropic()
-  const params = {
-    model,
-    max_tokens: 600,
-    output_config: { effort: 'low' as const },
-    system: buildSystem(FACTS),
-    messages: valid.messages,
-  }
-  // Server-side fallback exists for Opus only; Haiku has none.
-  const stream = model.startsWith('claude-opus')
-    ? client.beta.messages.stream({ ...params, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' })
-    : client.messages.stream(params)
-  // Take the iterator in the same tick: it registers the stream's error listeners.
-  const it = stream[Symbol.asyncIterator]()
-
-  // Await the first event so API errors become real statuses, not a broken stream.
+  let stream: AskStream
+  let it: ReturnType<AskStream[typeof Symbol.asyncIterator]>
   let pending: Awaited<ReturnType<typeof it.next>> | null
+  let deadline: ReturnType<typeof setTimeout> | undefined
   try {
+    // 20 s per attempt, one retry: both attempts fit inside the 50 s deadline.
+    const client = new Anthropic({ maxRetries: 1, timeout: 20_000 })
+    const params = {
+      model,
+      max_tokens: 600,
+      output_config: { effort: 'low' as const },
+      system: buildSystem(FACTS),
+      messages: valid.messages,
+    }
+    // Server-side fallback exists for Opus only; Haiku has none.
+    stream = model.startsWith('claude-opus')
+      ? client.beta.messages.stream({ ...params, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' })
+      : client.messages.stream(params)
+    // Take the iterator in the same tick: it registers the stream's error listeners.
+    it = stream[Symbol.asyncIterator]()
+    deadline = setTimeout(() => stream.abort(), DEADLINE_MS)
+    // Await the first event so API errors become real statuses, not a broken stream.
+    // A deadline abort here rejects with APIUserAbortError, an APIError, so it maps to 502.
     pending = await it.next()
   } catch (err) {
+    clearTimeout(deadline)
     if (err instanceof Anthropic.AuthenticationError) return json(503, { reason: 'nokey' })
     if (err instanceof Anthropic.RateLimitError) return json(503, { reason: 'upstream' })
     if (err instanceof Anthropic.APIError) return json(502, { reason: 'upstream' })
@@ -79,10 +96,15 @@ export default async (req: Request, context: Context) => {
 
   const enc = new TextEncoder()
   let closed = false
+  let sent = false
   const finish = async (ctrl: ReadableStreamDefaultController<Uint8Array>) => {
     if (closed) return
     closed = true
-    ctrl.close()
+    clearTimeout(deadline)
+    // Nothing arrived (refusal before output, failure right after message_start): error the body
+    // so the client takes its "nothing arrived" branch instead of showing an empty answer.
+    if (sent) ctrl.close()
+    else ctrl.error(new Error('empty'))
     try {
       const final = await stream.finalMessage()
       log(final.model, 200, final.usage)
@@ -100,6 +122,8 @@ export default async (req: Request, context: Context) => {
           if (r.done) return await finish(ctrl)
           const ev = r.value
           if (ev.type === 'content_block_delta' && ev.delta.type === 'text_delta') {
+            if (!ev.delta.text) continue
+            sent = true
             ctrl.enqueue(enc.encode(ev.delta.text))
             return
           }
@@ -107,12 +131,13 @@ export default async (req: Request, context: Context) => {
           if (ev.type === 'message_stop') return await finish(ctrl)
         }
       } catch {
-        await finish(ctrl) // mid-stream failure: the client sees no cite token and shows it as truncated
+        await finish(ctrl) // mid-stream failure or deadline: the client sees no cite token and shows it as truncated
       }
     },
     cancel() { // the visitor closed the panel: stop paying for tokens
       if (!closed) log(model, 200)
       closed = true
+      clearTimeout(deadline)
       stream.abort()
     },
   })

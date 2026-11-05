@@ -21,7 +21,7 @@ npm start
 To run the site and the assistant function together, put the environment variables below in a gitignored `.env` and run:
 
 ```bash
-npx netlify dev --port 8888
+npx netlify dev
 ```
 
 ## Build
@@ -41,7 +41,7 @@ npm run test        # run vitest suite
 
 ## Ask about Matt
 
-The assistant answers only from `shared/facts.md` and ends each answer with `[cite:<section>]` tokens that the page renders as chips. No questions or addresses are stored; the rate limiter keeps a salted hash of the address for two hours.
+The assistant answers only from `shared/facts.md` and ends each answer with `[cite:<section>]` tokens that the page renders as chips. No questions or addresses are stored. The rate limiter counts per salted hash of the address; address counters are kept for the current hour and the two before it, and pruning runs when a new address key is created.
 
 Environment variables (Netlify site settings, never in the repo):
 
@@ -51,7 +51,7 @@ Environment variables (Netlify site settings, never in the repo):
 
 Limits: 10 questions per hour per address and 300 questions per UTC day across all visitors, counted in Netlify Blobs.
 
-Cost: the system prompt (instructions plus the facts document) measures about 5,600 tokens. Claude Opus 5.5 costs $4 / $20 per million input / output tokens, so a question is roughly 2.9 cents uncached and the 300-per-day cap bounds a month near $260 worst case. Claude Haiku 5.5 costs $0.10 / $0.50 per million tokens, about 0.07 cents a question and under $7 a month at the cap, which is why this site runs Haiku through `ASK_MODEL`. The facts block is prompt-cached, so questions within a few minutes of each other pay less for input.
+Cost: the system prompt (instructions plus the facts document) measures about 5,600 tokens, and a cold request pays the cache write (1.25x input). A typical question costs about 3.4 cents on Claude Opus 5.5 ($4 / $20 per million input / output tokens) and about 0.085 cents on Claude Haiku 5.5 ($0.10 / $0.50 per million). The ceiling per request, with a full conversation history (about 13,000 characters from the browser) and all 600 output tokens (thinking included), is roughly 5 to 6 cents on Opus and about 0.13 cents on Haiku. At the 300-per-day cap that is about $450 to $550 a month on Opus and about $12 on Haiku; a typical month is a few dollars on either. This site runs Haiku through `ASK_MODEL`.
 
 ## Design
 
