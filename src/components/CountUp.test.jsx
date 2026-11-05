@@ -1,5 +1,8 @@
+import { afterEach } from 'vitest'
 import { render, act } from '@testing-library/react'
 import CountUp from './CountUp'
+
+afterEach(() => { vi.useRealTimers() })
 
 test('reduced motion shows the final formatted value at once', () => {
   window.matchMedia = (q) => ({ matches: q.includes('reduce'), media: q, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, onchange: null, dispatchEvent: () => false })

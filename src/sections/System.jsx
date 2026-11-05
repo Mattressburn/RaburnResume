@@ -4,13 +4,13 @@ import Reveal from '../components/Reveal'
 import CountUp from '../components/CountUp'
 import Eyebrow from '../components/Eyebrow'
 
-const BARE = /^(\d+(?:\.\d+)?)(.*)$/
+const BARE = /^(\d[\d,]*(?:\.\d+)?)(.*)$/
 
 function Num({ display }) {
   const m = BARE.exec(display)
   if (!m || /\s/.test(m[2]) || m[2].includes('→')) return display
   const decimals = (m[1].split('.')[1] || '').length
-  return <CountUp value={Number(m[1])} decimals={decimals} suffix={m[2]} />
+  return <CountUp value={Number(m[1].replace(/,/g, ''))} decimals={decimals} suffix={m[2]} />
 }
 
 export default function System() {

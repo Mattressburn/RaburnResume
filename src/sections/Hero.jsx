@@ -21,9 +21,9 @@ export default function Hero() {
           <Reveal as="p" delay={heroTimings.lede} className="text-fg2 max-w-[46ch] mt-6">{hero.lede}</Reveal>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-7 mt-8">
             {hero.metrics.map((m, i) => (
-              <Reveal key={m.label} delay={heroTimings.metrics + i * 0.06}>
+              <Reveal key={m.label} delay={heroTimings.metrics + i * heroTimings.metricsStagger}>
                 <div className="font-mono text-[26px]">
-                  <CountUp value={m.value} decimals={m.decimals} suffix={m.suffix} inView startDelay={600} />
+                  <CountUp value={m.value} decimals={m.decimals} suffix={m.suffix} inView startDelay={heroTimings.countDelay * 1000} duration={heroTimings.countDuration * 1000} />
                 </div>
                 <div className="text-[11px] uppercase text-fg3">{m.label}</div>
               </Reveal>
