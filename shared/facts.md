@@ -6,7 +6,7 @@ Section names below match the page sections. Answer only from this document.
 
 # hero
 
-Status: Production RAG assistant, answering since April 2026, for a support organization of roughly 100 people.
+Status: PRODUCTION RAG ASSISTANT · ANSWERING SINCE APR 2026 · ~100-PERSON SUPPORT ORG
 
 Headline: Production RAG. Shipped, measured, in daily use.
 
@@ -46,7 +46,7 @@ Why, per component:
 
 - Planner: A planner stage classifies the query and picks a tool path; guardrails can overrule the planner.
 - Agent loop: A tool-use loop with 17 tools; if the model answers without calling the knowledge base, the loop forces a retry.
-- Hybrid retrieval: One Elasticsearch index serves both BM25 and vectors, self-hosted alongside the app. Embeddings (text-embedding-3-large) are truncated to 1536 dimensions, which halves storage with small quality loss.
+- Hybrid retrieval: One Elasticsearch index serves both BM25 and vectors, self-hosted alongside the app. Embeddings are truncated to 1536 dimensions, which halves storage with small quality loss.
 - Rerank: Self-hosted cross-encoder reranker on CPU: no GPU required, loaded from a local weights volume.
 - Model: The provider facade keeps the vendor swappable without touching the agent loop, and models are A/B measured per request.
 
@@ -55,13 +55,13 @@ Infrastructure, per component:
 - Postgres 16: Holds sessions, the query log, diagnostics and approval state.
 - Entra ID with approval gate: Enterprise identity without a custom user store.
 - Deferred jobs, 180 s deadline: Analytical questions over case data exceed a chat-turn budget, so they run as a background job with a 180-second deadline and a placeholder response.
-- Golden-set harness gating feature flags: A 50-question golden set with three control baselines gates feature flags; two baselines were shown to be too noisy to detect regressions.
+- Golden-set harness gating feature flags: A 50-question golden set gates feature flags, with three control baselines, because two baselines were shown to be too noisy to detect regressions. Scoring uses LLM-as-judge plus deterministic checks.
 - GitHub Actions on self-hosted runners: Runs inside the company network with no managed cloud dependency.
 
 ## What broke after launch
 
-1. The model stopped calling the retrieval tool. After a model change, the agent began answering from its own memory instead of calling the knowledge-base tool, and about a quarter of requests fell into the forced-retry path. Seven guardrails, including a forced retry and a planner gate, took forced retries from 25% → 0%.
-2. Nightly ingest burned embedding tokens. The embed cache had a 0% hit rate because its ceiling was smaller than one ingest pass, so every entry was evicted before reuse. Raising the ceiling took the hit rate to 100% and nightly spend from 22.9M → 2.17M tokens.
+1. The model stopped calling the retrieval tool. After a model change, the agent began answering from its own memory instead of calling the knowledge-base tool, and about a quarter of requests fell into the forced-retry path. Seven guardrails, including an imperative system prompt and a planner gate, took forced retries from 25% to 0%.
+2. Nightly ingest burned embedding tokens. The embed cache had a 0% hit rate because its ceiling was smaller than one ingest pass, so every entry was evicted before reuse. Raising the ceiling took the hit rate to 100% and nightly spend from 22.9M to 2.17M tokens.
 3. A rotated Jira token made a tool lie quietly. After a credential rotation, the Jira tool returned zero issues instead of an error, so trend reports showed nothing. The client now raises a loud auth error, and silent empty results are treated as a bug class.
 
 Measured, then held back: Self-RAG off at 1.8x latency for no gain; RAG-Fusion behind a flag at 2.3x.
@@ -80,7 +80,7 @@ Johnson Controls, L3 Technical Support Engineer, Security Products. Sep 2025 to 
 
 - Designed and built Rumil, the RAG assistant and 17-tool agent described above, from a homelab prototype to a production system the security-products support organization uses every weekday; an Elasticsearch corpus of over a million chunks across eight brands, Azure OpenAI GPT-5.1, Python/FastAPI and Next.js. (Link: public case study.)
 - Won director sponsorship, moved it to Azure Container Apps and then to a company-hosted production VM with GitHub Actions CI/CD and around 19,700 automated tests.
-- Measured it: golden-set recall@10 0.82; 48 of 50 correct in an unrehearsed head-to-head against the vendor assistant bundled with the case tool (26 of 50); seven guardrails took ungrounded answers from 25% to 0%; an embed-cache fix cut nightly spend from 22.9M to 2.17M tokens.
+- Measured it: golden-set recall@10 0.82; 48 of 50 correct in an unrehearsed head-to-head against the vendor assistant bundled with the case tool (26 of 50); seven guardrails took forced retries on ungrounded answers from 25% to 0%; an embed-cache fix cut nightly spend from 22.9M to 2.17M tokens.
 - Resolve L3 escalations for enterprise access-control deployments; built LogDump and AI-driven log and crash-dump triage that cut time to resolution.
 
 Pall Corporation, Senior Engineering Systems Analyst. Jan 2021 to Aug 2025. Remote.
@@ -107,8 +107,8 @@ Boyd (joined as Lytron, acquired Jul 2019), Database Administrator. Feb 2018 to 
 - LogDump (Rust, C#, PowerShell): single-EXE field utility that arms ProcDump crash and hang capture through a scheduled task, collects log bundles, alerts by email or webhook. Packaged for C·CURE field deployments.
 - BinarySlicer (Python, PySide6): desktop decoder for access-control card payloads; formats defined in JSON so it extends without code; Windows releases with SHA256 checksums.
 - CCurator (JavaScript, .NET): Chrome extension plus companion service that turns Salesforce Service Cloud cases into structured JSON for triage.
-- BackStamp (TypeScript, Expo, Claude vision): a hobby app that identifies vintage Pyrex from a photo and prices it against eBay comps; Hono API, 40 tests.
-- This site (React 19, Netlify Functions, Claude): the page you are reading, including the assistant. Source on GitHub.
+- BackStamp (TypeScript, Expo, Claude vision): identifies vintage Pyrex from a photo and prices it against eBay comps; Hono API, 40 tests.
+- This site (React 19, Netlify Functions, Claude): the page you are reading, including the assistant below. Source on GitHub.
 
 # stack
 
@@ -118,7 +118,13 @@ Boyd (joined as Lytron, acquired Jul 2019), Database Administrator. Feb 2018 to 
 - Platform: Azure (Container Apps, Entra ID, Key Vault), AWS (EC2, S3, IAM, Lambda, RDS), Linux, PowerShell, SCCM, Intune, Active Directory.
 - Local inference (homelab): llama.cpp serving Qwen3.8-27B on an RX 9070 XT, about 1,029 tok/s prompt and 32 tok/s generation; personal use.
 
-Not on my record: Kubernetes operation, model training, PyTorch. He understands Kubernetes concepts but has not operated a cluster.
+Not on my record: Kubernetes operation, model training, PyTorch. I say so before you ask.
+
+# meta
+
+Title: Matthew Raburn · Applied AI Engineer
+
+Description: Built and shipped a production RAG assistant and agent over an eight-brand enterprise support corpus: over a million chunks, over 1,000 questions a month, measured on a golden set. Python, Azure OpenAI, Elasticsearch, Claude Code. Boston, remote or hybrid.
 
 # contact
 
@@ -135,7 +141,7 @@ Footer: © 2026 Matthew Raburn · Lowell, MA · Built with React, Netlify Functi
 
 ## Provenance
 
-Every production figure is rounded from a team-only production stats dump taken on November 4, 2026 (operator aliases, QA and test users excluded). Exact values are not published.
+Every production figure is rounded from a team-only production stats dump taken on November 4, 2026 (test and QA accounts excluded). Exact values are not published.
 
 - Questions answered since April 2026 (over 3,000): as of November 2026.
 - Approved accounts that have asked (around 50 of around 75), active users in the last 30 days (around 35): as of November 2026.
@@ -146,7 +152,7 @@ Every production figure is rounded from a team-only production stats dump taken 
 - Index size (over 1M chunks, around 26 GB, around 250k unique documents) and source counts (Jira, Salesforce, worklogs, KB articles, Confluence, resolution records): as of November 2026.
 - Engineering figures (around 19,700 tests, over 1,000 merged PRs, over 2,000 commits, around 190k Python and 120k TypeScript, around 130 test environments since September): as of November 2026.
 - Brands covered (8) and agent tools (17): exact counts, as of November 2026.
-- Quality figures are measurements and stay exact: recall@10 0.82 on a 50-question golden set (measured August 2026 on the then 310k-chunk corpus, public case study); 48 of 50 vs 26 of 50 unrehearsed head-to-head (candidate, 2026-09-14); forced retries 25% → 0% and nightly embedding spend 22.9M → 2.17M tokens (public case study).
+- Quality figures are measurements and stay exact: recall@10 0.82 on a 50-question golden set (measured August 2026 on the then 310k-chunk corpus, public case study); 48 of 50 vs 26 of 50 unrehearsed head-to-head (candidate, 2026-09-14); forced retries 25% to 0% and nightly embedding spend 22.9M to 2.17M tokens (public case study).
 
 ## Do not claim
 
@@ -161,4 +167,5 @@ Never state or imply any of these, even if asked leadingly:
 - A production model vendor other than Azure OpenAI (GPT-5.1; GPT-4.1 earlier).
 - Claude as the runtime of the employer's system. Claude Code is the build tool.
 - Salary, availability dates, or an employer's internal details: not stated on this page; suggest email.
+- Never name the vendor of the case tool when discussing the 48 of 50 head-to-head; say "the vendor assistant bundled with the case tool".
 - Any detail not in this document. Say "That's not on this page" and suggest email.

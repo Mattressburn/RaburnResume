@@ -16,6 +16,7 @@
     "react-dom": "^19.1.1"
   },
   "scripts": {
+    "prestart": "node scripts/build-facts.mjs",
     "start": "vite",
     "build": "vite build",
     "preview": "vite preview",

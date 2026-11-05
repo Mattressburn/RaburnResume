@@ -120,12 +120,12 @@ export const site = {
           query: { x: 10, y: 20, w: 300, h: 40 },
           planner: { x: 10, y: 100, w: 300, h: 40 },
           retrieval: { x: 10, y: 180, w: 300, h: 40 },
-          rerank: { x: 10, y: 224, w: 300, h: 14 },
-          es: { x: 10, y: 240, w: 300, h: 14 },
-          agent: { x: 10, y: 260, w: 300, h: 40 },
-          tools: { x: 10, y: 304, w: 300, h: 14 },
-          model: { x: 10, y: 340, w: 300, h: 40 },
-          answer: { x: 10, y: 420, w: 300, h: 40 },
+          rerank: { x: 10, y: 240, w: 300, h: 40 },
+          es: { x: 10, y: 284, w: 300, h: 14 },
+          agent: { x: 10, y: 320, w: 300, h: 40 },
+          tools: { x: 10, y: 364, w: 300, h: 14 },
+          model: { x: 10, y: 400, w: 300, h: 40 },
+          answer: { x: 10, y: 470, w: 300, h: 40 },
         },
       },
     },
@@ -230,11 +230,11 @@ export const site = {
     incidents: [
       {
         title: 'The model stopped calling the retrieval tool',
-        body: 'After a model change, the agent began answering from its own memory instead of calling the knowledge-base tool, and about a quarter of requests fell into the forced-retry path. Seven guardrails, including a forced retry and a planner gate, took forced retries from 25% → 0%.',
+        body: 'After a model change, the agent began answering from its own memory instead of calling the knowledge-base tool, and about a quarter of requests fell into the forced-retry path. Seven guardrails, including an imperative system prompt and a planner gate, took forced retries from 25% to 0%.',
       },
       {
         title: 'Nightly ingest burned embedding tokens',
-        body: 'The embed cache had a 0% hit rate because its ceiling was smaller than one ingest pass, so every entry was evicted before reuse. Raising the ceiling took the hit rate to 100% and nightly spend from 22.9M → 2.17M tokens.',
+        body: 'The embed cache had a 0% hit rate because its ceiling was smaller than one ingest pass, so every entry was evicted before reuse. Raising the ceiling took the hit rate to 100% and nightly spend from 22.9M to 2.17M tokens.',
       },
       {
         title: 'A rotated Jira token made a tool lie quietly',
@@ -253,7 +253,7 @@ export const site = {
       },
       {
         label: 'Golden-set harness gating feature flags',
-        why: 'A 50-question golden set with three control baselines gates feature flags; two baselines were shown to be too noisy to detect regressions.',
+        why: 'A 50-question golden set gates feature flags, with three control baselines, because two baselines were shown to be too noisy to detect regressions.',
       },
       {
         label: 'GitHub Actions on self-hosted runners',
@@ -273,7 +273,7 @@ export const site = {
       bullets: [
         'Designed and built Rumil, the RAG assistant and 17-tool agent described above, from a homelab prototype to a production system the security-products support organization uses every weekday; an Elasticsearch corpus of over a million chunks across eight brands, Azure OpenAI GPT-5.1, Python/FastAPI and Next.js.',
         'Won director sponsorship, moved it to Azure Container Apps and then to a company-hosted production VM with GitHub Actions CI/CD and around 19,700 automated tests.',
-        'Measured it: golden-set recall@10 0.82; 48 of 50 correct in an unrehearsed head-to-head against the vendor assistant bundled with the case tool (26 of 50); seven guardrails took ungrounded answers from 25% to 0%; an embed-cache fix cut nightly spend from 22.9M to 2.17M tokens.',
+        'Measured it: golden-set recall@10 0.82; 48 of 50 correct in an unrehearsed head-to-head against the vendor assistant bundled with the case tool (26 of 50); seven guardrails took forced retries on ungrounded answers from 25% to 0%; an embed-cache fix cut nightly spend from 22.9M to 2.17M tokens.',
         'Resolve L3 escalations for enterprise access-control deployments; built LogDump and AI-driven log and crash-dump triage that cut time to resolution.',
       ],
       link: { label: 'public case study', href: CASE_STUDY },
@@ -430,15 +430,15 @@ export const site = {
     suggestions,
     fallback: {
       [suggestions[0]]:
-        'Yes. He built a production RAG assistant and agent that the support organization for Johnson Controls security products has used on its escalations every weekday since April 2026. It answers over 1,000 questions in a typical 30 days from a corpus of over 1M chunks across 8 product brands, and usage is over 4x what it was 90 days earlier. It moved from a homelab prototype to Azure Container Apps and then to a company-hosted production VM. (Experience)',
+        'Yes. He built a production RAG assistant and agent that the support organization for Johnson Controls security products uses on its escalations every weekday. It has been answering since April 2026, with over 1,000 questions in the last 30 days from a corpus of over 1M chunks across 8 product brands, and over 4x the questions in the last 90 days compared with the 90 before. It moved from a homelab prototype to Azure Container Apps and then to a company-hosted production VM. (Experience)',
       [suggestions[1]]:
         'A 50-question golden set scores recall@10 at 0.82 (measured August 2026 on the then 310k-chunk corpus). Evals also use three control baselines, LLM-as-judge plus deterministic checks, and feature-flag A/B promotion gated on the harness. In an unrehearsed head-to-head the assistant got 48 of 50 correct against 26 of 50 for the vendor assistant bundled with the case tool. Self-RAG was turned off after the harness showed no gain at 1.8x latency. (System)',
       [suggestions[2]]:
-        'Not on his record. He understands the concepts, but he has not operated Kubernetes in production, and he says so up front. His platform experience is Azure Container Apps, Docker Compose, GitHub Actions on self-hosted runners, Linux, and a company-hosted production VM. (Stack)',
+        'Not on his record. He has not operated a Kubernetes cluster; he understands the concepts, and he says so up front. His platform experience is Azure Container Apps, Docker Compose, GitHub Actions on self-hosted runners, Linux, and a company-hosted production VM. (Stack)',
       [suggestions[3]]:
-        'Outside his day job he built LogDump, a single-EXE field utility for ProcDump crash capture and log collection; BinarySlicer, a desktop decoder for access-control card payloads; CCurator, a Chrome extension that turns Salesforce cases into structured JSON; and this site, including this assistant. BackStamp is a hobby app that identifies vintage Pyrex from a photo with Claude vision. (Projects)',
+        'On his own time he prototyped the assistant at home on personal hardware before it moved to Azure Container Apps and a company-hosted production VM. He also runs a local-inference homelab, llama.cpp serving Qwen3.8-27B on an RX 9070 XT for personal use, and built this site, including this assistant, and BackStamp, an Expo app that identifies vintage Pyrex from a photo with Claude vision. (Projects)',
       [suggestions[4]]:
-        'Three things. The model stopped calling the retrieval tool; seven guardrails took forced retries from 25% → 0%. Nightly ingest burned embedding tokens because of a cache ceiling; the fix took spend from 22.9M → 2.17M tokens a night. A rotated Jira token made a tool return silent empties; the client now raises a loud auth error. (System)',
+        'Three things. The model stopped calling the retrieval tool; seven guardrails took forced retries from 25% to 0%. Nightly ingest burned embedding tokens because of a cache ceiling; the fix took spend from 22.9M to 2.17M tokens a night. A rotated Jira token made a tool return silent empties; the client now raises a loud auth error. (System)',
       [suggestions[5]]:
         'Yes. He is based in Lowell, MA and is open to remote work or a Boston hybrid arrangement. His current role at Johnson Controls is hybrid out of Westford, MA, and his previous role at Pall Corporation was fully remote. (Experience)',
       [suggestions[6]]:
