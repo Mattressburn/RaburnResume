@@ -30,3 +30,34 @@ test('a visitor-typed cite token is never a chip', async () => {
   await waitFor(() => expect(screen.getAllByRole('link', { name: /#system/ })).toHaveLength(1))
   expect(screen.queryByRole('link', { name: /#experience/ })).toBeNull()
 })
+
+const askQ = (q) => {
+  fireEvent.change(screen.getByLabelText('Ask about Matt'), { target: { value: q } })
+  fireEvent.submit(screen.getByRole('form', { name: /ask/i }))
+}
+
+test('prototype-member text does not crash the paused path', async () => {
+  client.ask.mockResolvedValue({ status: 'global', text: '' })
+  render(<Ask />)
+  askQ('constructor')
+  await waitFor(() => expect(screen.getByText(/Can't answer live right now\. Email Matt\./)).toBeInTheDocument())
+})
+
+test('an empty 200 shows a visible line and stays out of history as empty', async () => {
+  client.ask.mockResolvedValue({ status: 'ok', text: '' })
+  render(<Ask />)
+  askQ('hello')
+  await waitFor(() => expect(screen.getByText('No answer was produced.')).toBeInTheDocument())
+  fireEvent.change(screen.getByLabelText('Your question'), { target: { value: 'again' } })
+  fireEvent.submit(screen.getByRole('form', { name: /follow-up/i }))
+  await waitFor(() => expect(client.ask).toHaveBeenCalledTimes(2))
+  expect(client.ask.mock.calls[1][0].every((x) => x.content !== '')).toBe(true)
+})
+
+test('paused answers do not count toward the cap', async () => {
+  client.ask.mockResolvedValue({ status: 'paused', text: '' })
+  render(<Ask />)
+  askQ('Has he run anything in production?')
+  await waitFor(() => expect(screen.getByText(/pre-written/)).toBeInTheDocument())
+  expect(screen.getByText('0 of 6')).toBeInTheDocument()
+})

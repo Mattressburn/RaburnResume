@@ -24,11 +24,12 @@ export default function Ask() {
     setOpen(true)
     setValue('')
   }
-  const close = () => {
+  const close = (opts) => {
     setOpen(false)
     setQuestion(null)
-    // the panel's inert/portal teardown runs in its effect cleanup; focus after it
-    setTimeout(() => inputRef.current?.focus(), 0)
+    // After a cite chip click the page must stay where the chip scrolled it. Otherwise focus
+    // returns to the hero input after the panel's effect cleanup has removed inert.
+    if (!opts?.skipFocus) setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 0)
   }
 
   return (

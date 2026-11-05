@@ -53,6 +53,7 @@ export default function AskPanel({ open, initialQuestion, onClose }) {
   const [busy, setBusy] = useState(false)
   const [draft, setDraft] = useState('')
   const inputRef = useRef(null)
+  const closeRef = useRef(null)
   const rootRef = useRef(null)
   const sent = useRef(false)
   const state = useRef({})
@@ -64,29 +65,31 @@ export default function AskPanel({ open, initialQuestion, onClose }) {
     const { msgs: cur, asked: n, paused: isPaused, limited: isLimited, busy: isBusy } = state.current
     const q = raw.trim().slice(0, LIMITS.maxChars)
     if (!q || isBusy || isLimited || n >= LIMITS.maxQuestions) return
-    setAsked(n + 1)
     const userMsg = { role: 'user', text: q }
     const answerFromFallback = (paused) => {
-      const fb = site.ask.fallback[q]
+      const fb = Object.hasOwn(site.ask.fallback, q) ? site.ask.fallback[q] : null
       return fb ? { role: 'assistant', ...fallbackAnswer(fb) } : { role: 'assistant', text: COPY.error, cites: [], email: true, paused }
     }
     if (isPaused) {
       setMsgs([...cur, userMsg, answerFromFallback(true)])
       return
     }
+    setAsked(n + 1)
     setMsgs([...cur, userMsg, { role: 'assistant', text: '', cites: [], streaming: true }])
     setBusy(true)
     const history = [...cur, userMsg].map((x) => ({ role: x.role, content: x.text }))
     const r = await ask(history, { onChunk: (t) => patchLast({ text: splitCites(stripPartial(t)).body }) })
     setBusy(false)
     if (r.status === 'ok') {
-      const { body, cites } = splitCites(r.text)
-      patchLast({ text: body.trim(), cites, streaming: false, email: cites.length === 0 })
+      const { body, cites } = splitCites(stripPartial(r.text))
+      // an empty answer gets a fixed non-empty string so the history never holds an empty turn
+      patchLast({ text: body.trim() || 'No answer was produced.', cites, streaming: false, email: cites.length === 0 })
     } else if (r.status === 'ip') {
       setLimited(true)
       patchLast({ text: COPY.limit, cites: [], streaming: false, email: true })
     } else if (r.status === 'global' || r.status === 'paused') {
       setPaused(true)
+      setAsked(n) // the question was answered from the bundled set, not the live API
       setMsgs((ms) => [...ms.slice(0, -1), answerFromFallback(true)])
     } else {
       patchLast({ text: COPY.error, cites: [], streaming: false, email: true })
@@ -96,17 +99,17 @@ export default function AskPanel({ open, initialQuestion, onClose }) {
   // Send the question that opened the panel, once per opening.
   useEffect(() => {
     if (!open) { sent.current = false; return }
-    if (initialQuestion && !sent.current) {
+    // if a stream is still running, wait: busy is a dependency, so this runs again when it ends
+    if (initialQuestion && !sent.current && !busy) {
       sent.current = true
       send(initialQuestion)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, initialQuestion])
+  }, [open, initialQuestion, busy])
 
   // Focus in, page behind inert, Escape closes.
   useEffect(() => {
     if (!open) return undefined
-    inputRef.current?.focus()
     const others = [...document.body.children].filter((el) => el !== rootRef.current)
     const prev = others.map((el) => el.hasAttribute('inert'))
     others.forEach((el) => el.setAttribute('inert', ''))
@@ -119,8 +122,15 @@ export default function AskPanel({ open, initialQuestion, onClose }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
+  const atLimitNow = limited || (asked >= LIMITS.maxQuestions && !busy)
+  // Focus the input, or the close button when the input is disabled (cap or ip limit).
+  useEffect(() => {
+    if (!open) return
+    ;(inputRef.current && !inputRef.current.disabled ? inputRef.current : closeRef.current)?.focus()
+  }, [open, atLimitNow])
+
   if (!open) return null
-  const atLimit = limited || asked >= LIMITS.maxQuestions
+  const atLimit = atLimitNow
   const Panel = reduced ? 'div' : m.div
   const motionProps = reduced ? {} : { initial: { x: '100%' }, animate: { x: 0 }, transition: { duration: 0.3, ease } }
 
@@ -135,16 +145,16 @@ export default function AskPanel({ open, initialQuestion, onClose }) {
       >
         <div className="flex items-start gap-3 p-4 border-b border-line">
           <p className="flex-1 text-[12px] text-fg3">{COPY.header}</p>
-          <button type="button" onClick={onClose} aria-label="Close" className="text-fg2 text-[18px] leading-none px-2">×</button>
+          <button type="button" ref={closeRef} onClick={() => onClose()} aria-label="Close" className="text-fg2 text-[18px] leading-none px-2">×</button>
         </div>
         {paused && <p className="px-4 pt-3 font-mono text-[11px] text-accent">{COPY.paused}</p>}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4" aria-live="polite">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4" aria-live="polite" aria-busy={busy}>
           {msgs.map((x, i) => (
             <div key={i} className={x.role === 'user' ? 'text-fg2' : 'text-fg'}>
               <p className="text-[14px] whitespace-pre-wrap">{x.text}</p>
               {x.role === 'assistant' && !x.streaming && (
                 <div className="mt-2 text-[12px]">
-                  {(x.cites || []).map((k) => <Cite key={k} k={k} onNav={onClose} />)}
+                  {(x.cites || []).map((k) => <Cite key={k} k={k} onNav={() => onClose({ skipFocus: true })} />)}
                   {x.email && <span className="text-fg3">{x.text === COPY.limit || x.text === COPY.error ? null : `${COPY.truncated}: `}{mail}</span>}
                 </div>
               )}
@@ -157,11 +167,11 @@ export default function AskPanel({ open, initialQuestion, onClose }) {
               ))}
             </div>
           )}
-          {atLimit && !limited && <p className="text-[14px] text-fg">{COPY.limit}</p>}
+          {atLimit && !limited && <p className="text-[14px] text-fg"><span>{COPY.limit}</span> {mail}</p>}
         </div>
         <form
           aria-label="Ask a follow-up"
-          onSubmit={(e) => { e.preventDefault(); const q = draft; setDraft(''); send(q) }}
+          onSubmit={(e) => { e.preventDefault(); if (busy) return; const q = draft; setDraft(''); send(q) }}
           className="p-4 border-t border-line"
         >
           <div className="flex gap-2">
