@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useReducedMotionPref } from '../lib/motion'
+import { heroTimings, useReducedMotionPref } from '../lib/motion'
 
-const START = 1300
+const START = heroTimings.flow * 1000
 const PER_CHAR = 18
 const LATENCY = /\d+ ms/
 

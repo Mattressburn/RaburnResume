@@ -1,6 +1,6 @@
 import { useId, useState, useSyncExternalStore } from 'react'
 import { site } from '../data/site'
-import { useReducedMotionPref } from '../lib/motion'
+import { heroTimings, useReducedMotionPref } from '../lib/motion'
 import Tooltip from './Tooltip'
 
 const WIDE = '(min-width: 640px)'
@@ -25,6 +25,7 @@ export function routeOf(edge, layout) {
 }
 
 const toD = (pts) => pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x} ${y}`).join('')
+const lengthOf = (pts) => pts.slice(1).reduce((s, b, i) => s + Math.hypot(b[0] - pts[i][0], b[1] - pts[i][1]), 0)
 
 // Static 6-unit marker centered at half the route's length, along the segment it lands on.
 function midDash(pts) {
@@ -56,14 +57,19 @@ export default function RequestPath({ size = 'card', animate = true }) {
 
   return (
     <div className={`relative ${size === 'full' ? 'max-w-[640px] mx-auto' : ''}`}>
-      <svg role="img" aria-label="Request path through the assistant" viewBox={`0 0 ${vw} ${vh}`} className="block w-full h-auto font-mono">
+      <svg role="group" aria-label="Request path through the assistant" viewBox={`0 0 ${vw} ${vh}`} className="block w-full h-auto font-mono">
         {site.diagram.edges.map((e) => {
           const pts = routeOf(e, L)
+          const len = lengthOf(pts)
+          // Edges draw in with the card's reveal (0.4 s + 0.9 s), so they finish as the pulses start at 1.3 s.
+          const draw = pulse
+            ? { strokeDasharray: len, strokeDashoffset: len, animation: `draw 0.9s var(--ease) ${heroTimings.diagram}s forwards` }
+            : undefined
           return (
             <g key={`${e.from}>${e.to}`}>
-              <path d={toD(pts)} fill="none" stroke="var(--line-2)" strokeWidth={1.5} />
+              <path d={toD(pts)} fill="none" stroke="var(--line-2)" strokeWidth={1.5} style={draw} />
               {pulse ? (
-                <path d={toD(pts)} className="pulse" style={{ animationDelay: `${e.delay}s` }} />
+                <path d={toD(pts)} className="pulse" style={{ animationDelay: `calc(${heroTimings.flow}s + ${e.delay}s)` }} />
               ) : (
                 <path d={midDash(pts)} fill="none" stroke="var(--accent)" strokeWidth={1.5} />
               )}

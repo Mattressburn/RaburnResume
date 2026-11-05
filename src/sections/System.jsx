@@ -16,8 +16,30 @@ function Num({ display }) {
   return <CountUp value={Number(m[1].replace(/,/g, ''))} decimals={decimals} suffix={m[2]} />
 }
 
+const around = (n) => `around ${n.toLocaleString('en-US')}`
+
+function Items({ items }) {
+  return (
+    <ul>
+      {items.map((i) => (
+        <li key={i.label} className="py-1.5">
+          <span className="font-mono text-[15px] tabular"><Num display={i.display} /></span>
+          <span className="block text-[13px] text-fg2">{i.label}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 export default function System() {
   const s = site.system
+  const growthText = s.growth.values.map(around).join(' → ')
+  // Growth and tool mix render once, as the chart cards; their items that a chart already shows as text are left out.
+  const charted = new Set([growthText, ...s.toolMix.map((t) => around(t.value))])
+  const growthGroup = s.numbers.find((g) => g.name === 'Growth')
+  const toolGroup = s.numbers.find((g) => g.name.startsWith('Tool mix'))
+  const gridGroups = s.numbers.filter((g) => g !== growthGroup && g !== toolGroup)
+  const rest = (g) => g.items.filter((i) => !charted.has(i.display))
   const [pre, post] = s.closing.split(s.caseStudy.label)
   return (
     <section id="system" className="py-20">
@@ -27,18 +49,11 @@ export default function System() {
       <Reveal as="p" className="text-fg2 max-w-[68ch] mt-4">{s.what}</Reveal>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
-        {s.numbers.map((g, gi) => (
+        {gridGroups.map((g, gi) => (
           <Reveal key={g.name} delay={(gi % 3) * 0.06}>
           <Card className="h-full">
             <h3 className="font-mono text-[11px] tracking-[.1em] uppercase text-fg3 mb-3">{g.name}</h3>
-            <ul>
-              {g.items.map((i) => (
-                <li key={i.label} className="py-1.5">
-                  <span className="font-mono text-[15px] tabular"><Num display={i.display} /></span>
-                  <span className="block text-[13px] text-fg2">{i.label}</span>
-                </li>
-              ))}
-            </ul>
+            <Items items={g.items} />
           </Card>
           </Reveal>
         ))}
@@ -65,17 +80,21 @@ export default function System() {
       <div className="grid md:grid-cols-2 gap-4 mt-10">
         <Reveal>
           <Card className="h-full">
-            <h3 className="font-mono text-[11px] tracking-[.1em] uppercase text-fg3 mb-3">Growth</h3>
+            <h3 className="font-mono text-[11px] tracking-[.1em] uppercase text-fg3 mb-3">{growthGroup.name}</h3>
             <Sparkline labels={s.growth.labels} values={s.growth.values} animate />
-            <p className="font-mono text-[13px] text-fg2 mt-3">
-              {s.growth.values.map((v) => `around ${v.toLocaleString('en-US')}`).join(' → ')} questions, August to October
-            </p>
+            <p className="font-mono text-[13px] text-fg2 mt-3">{growthText} questions, August to October</p>
+            <div className="mt-2">
+              <Items items={rest(growthGroup)} />
+            </div>
           </Card>
         </Reveal>
         <Reveal delay={0.06}>
           <Card className="h-full">
-            <h3 className="font-mono text-[11px] tracking-[.1em] uppercase text-fg3 mb-3">Tool mix, 30 days</h3>
-            <BarStrip items={s.toolMix} animate />
+            <h3 className="font-mono text-[11px] tracking-[.1em] uppercase text-fg3 mb-3">{toolGroup.name}</h3>
+            <Items items={rest(toolGroup)} />
+            <div className="mt-3">
+              <BarStrip items={s.toolMix} animate />
+            </div>
           </Card>
         </Reveal>
       </div>

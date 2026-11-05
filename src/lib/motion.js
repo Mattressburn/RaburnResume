@@ -12,4 +12,5 @@ export function useReducedMotionPref() {
   return Boolean(fm);
 }
 
-export const heroTimings = { status: 0, headline: 0.1, lede: 0.45, metrics: 0.6, diagram: 0.4, actions: 0.9, metricsStagger: 0.06, countDelay: 0.6, countDuration: 1.2 };
+// flow: diagram pulses start and the trace log starts typing (spec 8.1).
+export const heroTimings = { status: 0, headline: 0.1, lede: 0.45, metrics: 0.6, diagram: 0.4, flow: 1.3, actions: 0.9, metricsStagger: 0.06, countDelay: 0.6, countDuration: 1.2 };
