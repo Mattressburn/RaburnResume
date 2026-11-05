@@ -7,6 +7,7 @@ import { btn } from '../components/buttonClass'
 import Card from '../components/Card'
 import RequestPath from '../components/RequestPath'
 import TraceLog from '../components/TraceLog'
+import Ask from '../components/Ask'
 
 export default function Hero() {
   const { hero } = site
@@ -47,7 +48,7 @@ export default function Hero() {
             ))}
           </Reveal>
           <Reveal delay={heroTimings.actions}>
-            <div data-slot="ask" />
+            <div data-slot="ask"><Ask /></div>
           </Reveal>
         </div>
         <Reveal delay={heroTimings.diagram} className="order-last">
