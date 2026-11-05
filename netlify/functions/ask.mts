@@ -59,7 +59,7 @@ export default async (req: Request, context: Context) => {
     const store = getStore({ name: 'ask-limits', consistency: 'strong' }) as CounterStore
     // No usable address still counts, under one shared key, so the hash stays stable.
     const ip = typeof context.ip === 'string' && context.ip ? context.ip : 'unknown'
-    const limit = await checkAndCount(store, { ip, salt, ctx: process.env.CONTEXT ?? 'dev', now: new Date() })
+    const limit = await checkAndCount(store, { ip, salt, ctx: context.deploy?.context ?? process.env.CONTEXT ?? 'dev', now: new Date() })
     if (!limit.allowed) return json(429, { reason: limit.reason })
   } catch {
     return json(429, { reason: 'global' }) // the limiter fails closed
