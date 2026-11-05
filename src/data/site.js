@@ -97,6 +97,7 @@ export const site = {
       { from: 'planner', to: 'retrieval', delay: 0.6 },
       { from: 'agent', to: 'retrieval', delay: 1.0 },
       { from: 'retrieval', to: 'model', delay: 1.4 },
+      { from: 'retrieval', to: 'rerank', delay: 0.9 },
     ],
     layouts: {
       desktop: {
@@ -119,8 +120,8 @@ export const site = {
           query: { x: 10, y: 20, w: 300, h: 40 },
           planner: { x: 10, y: 100, w: 300, h: 40 },
           retrieval: { x: 10, y: 180, w: 300, h: 40 },
-          es: { x: 10, y: 224, w: 300, h: 14 },
-          rerank: { x: 10, y: 240, w: 300, h: 14 },
+          rerank: { x: 10, y: 224, w: 300, h: 14 },
+          es: { x: 10, y: 240, w: 300, h: 14 },
           agent: { x: 10, y: 260, w: 300, h: 40 },
           tools: { x: 10, y: 304, w: 300, h: 14 },
           model: { x: 10, y: 340, w: 300, h: 40 },
