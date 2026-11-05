@@ -1,19 +1,49 @@
+import { useEffect, useRef, useState } from 'react'
 import { site } from '../data/site'
 import Reveal from '../components/Reveal'
 import MaskedLines from '../components/MaskedLines'
 import CountUp from '../components/CountUp'
-import { heroTimings } from '../lib/motion'
+import { heroTimings, useReducedMotionPref } from '../lib/motion'
 import { btn } from '../components/buttonClass'
 import Card from '../components/Card'
 import RequestPath from '../components/RequestPath'
 import TraceLog from '../components/TraceLog'
 import Ask from '../components/Ask'
 
+const layerClass = 'w-full h-full object-cover opacity-[.07]'
+
+// Ambient loop: sources stay unset until window load so it never competes with the LCP.
+function HeroLoop() {
+  const reduced = useReducedMotionPref()
+  const [loaded, setLoaded] = useState(() => document.readyState === 'complete')
+  const video = useRef(null)
+  useEffect(() => {
+    if (loaded) return
+    const onLoad = () => setLoaded(true)
+    window.addEventListener('load', onLoad)
+    return () => window.removeEventListener('load', onLoad)
+  }, [loaded])
+  useEffect(() => {
+    if (loaded) video.current?.load()
+  }, [loaded])
+  if (reduced) return <img src="/media/hero-poster.jpg" alt="" className={layerClass} />
+  if (navigator.connection?.saveData) return null
+  return (
+    <video ref={video} className={layerClass} autoPlay muted loop playsInline preload="none" poster="/media/hero-poster.jpg">
+      <source src={loaded ? '/media/hero-loop.webm' : undefined} type="video/webm" />
+      <source src={loaded ? '/media/hero-loop.mp4' : undefined} type="video/mp4" />
+    </video>
+  )
+}
+
 export default function Hero() {
   const { hero } = site
   return (
-    <section id="top" className="pt-16 pb-20">
-      <div className="grid lg:grid-cols-[52fr_48fr] gap-10">
+    <section id="top" className="relative isolate bg-bg pt-16 pb-20">
+      <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden pointer-events-none [mask-image:radial-gradient(ellipse_at_center,#000_45%,transparent_78%)]">
+        <HeroLoop />
+      </div>
+      <div className="relative grid lg:grid-cols-[52fr_48fr] gap-10">
         <div>
           <Reveal as="p" delay={heroTimings.status} className="font-mono text-[11px] tracking-[.1em] uppercase text-accent flex items-center gap-2 mb-6">
             <span aria-hidden="true" className="inline-block w-[7px] h-[7px] rounded-full bg-accent shrink-0" />
