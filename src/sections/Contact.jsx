@@ -1,7 +1,6 @@
 import { site } from '../data/site'
+import { btn } from '../components/buttonClass'
 import Eyebrow from '../components/Eyebrow'
-
-const btn = 'rounded-md px-4 py-[11px] text-[13px] font-semibold'
 
 export default function Contact() {
   const c = site.contact
@@ -23,17 +22,6 @@ export default function Contact() {
           Resume PDF
         </a>
       </div>
-      <footer className="mt-16 pt-6 border-t border-line text-[12px] text-fg3">
-        {c.footer}{' '}
-        <a
-          href="https://github.com/Mattressburn/RaburnResume"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline"
-        >
-          github.com/Mattressburn/RaburnResume
-        </a>
-      </footer>
     </section>
   )
 }

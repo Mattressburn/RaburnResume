@@ -27,8 +27,8 @@ export default function TopBar() {
       inert={!shown}
     >
       <nav aria-label="Primary" className="max-w-page mx-auto px-4 sm:px-6 h-12 flex items-center gap-6">
-        <a href="#top" className="font-display font-extrabold text-[15px]">
-          Matthew Raburn
+        <a href="#top" aria-label="Matthew Raburn" className="font-display font-extrabold text-[15px]">
+          MR
         </a>
         <div className="hidden md:flex gap-5 font-mono text-[11px] uppercase tracking-[.1em] text-fg2">
           {links.map(([label, href]) => (

@@ -5,11 +5,12 @@ import Experience from './sections/Experience'
 import Projects from './sections/Projects'
 import Stack from './sections/Stack'
 import Contact from './sections/Contact'
+import Footer from './components/Footer'
 
 export default function App() {
   return (
     <>
-      <a href="#system" className="sr-only focus:not-sr-only">
+      <a href="#system" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-bg focus:px-3 focus:py-2">
         Skip to the system
       </a>
       <TopBar />
@@ -21,6 +22,7 @@ export default function App() {
         <Stack />
         <Contact />
       </main>
+      <Footer />
     </>
   )
 }

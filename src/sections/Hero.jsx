@@ -1,6 +1,5 @@
 import { site } from '../data/site'
-
-const btn = 'rounded-md px-4 py-[11px] text-[13px] font-semibold'
+import { btn } from '../components/buttonClass'
 
 export default function Hero() {
   const { hero } = site
