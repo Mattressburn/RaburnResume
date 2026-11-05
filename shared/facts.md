@@ -36,16 +36,16 @@ Numbers (production figures as of November 2026, rounded; quality figures from t
 - Growth: around 300 → around 850 → around 1,100 questions, August to October; over 2,300 questions in the last 90 days; around 540 questions in the 90 days before; over 4x growth between the two periods; more than double the people asking.
 - Tool mix, 30 days: over 1,300 tool calls: around 700 KB search, around 210 Jira, around 210 Salesforce, around 130 Snowflake case lookups.
 - Quality: 0.82 recall@10 on a 50-question golden set, measured August 2026 on the then 310k-chunk corpus (case study); 48 of 50 correct, unrehearsed head-to-head (candidate, 2026-09-14); 26 of 50 correct for the vendor assistant bundled with the case tool, in the same head-to-head; 25% → 0% forced retries on ungrounded answers (case study).
-- Engineering: 17 agent tools (case study); around 19,700 automated tests; over 1,000 merged PRs since April 2026; over 2,000 commits since April 2026; around 190k lines of Python; around 120k lines of TypeScript; around 130 test environments built by an automated VM pipeline since September.
+- Engineering: 18 agent tools (17 at the time of the case study); around 19,700 automated tests; over 1,000 merged PRs since April 2026; over 2,000 commits since April 2026; around 190k lines of Python; around 120k lines of TypeScript; around 130 test environments built by an automated VM pipeline since September.
 
 ## Architecture
 
-Request path: question, planner, agent loop (17 tools), hybrid retrieval with cross-encoder rerank over Elasticsearch 8, tools for Jira, Salesforce, Snowflake and licensing, model behind a provider facade (Azure OpenAI GPT-5.1), cited answer.
+Request path: question, planner, agent loop (18 tools), hybrid retrieval with cross-encoder rerank over Elasticsearch 8, tools for Jira, Salesforce, Snowflake and licensing, model behind a provider facade (Azure OpenAI GPT-5.1), cited answer.
 
 Why, per component:
 
 - Planner: A planner stage classifies the query and picks a tool path; guardrails can overrule the planner.
-- Agent loop: A tool-use loop with 17 tools; if the model answers without calling the knowledge base, the loop forces a retry.
+- Agent loop: A tool-use loop with 18 tools; if the model answers without calling the knowledge base, the loop forces a retry.
 - Hybrid retrieval: One Elasticsearch index serves both BM25 and vectors, self-hosted alongside the app. Embeddings are truncated to 1536 dimensions, which halves storage with small quality loss.
 - Rerank: Self-hosted cross-encoder reranker on CPU: no GPU required, loaded from a local weights volume.
 - Model: The provider facade keeps the vendor swappable without touching the agent loop, and models are A/B measured per request.
@@ -78,7 +78,7 @@ Full write-up, architecture diagram and incident notes: the public case study (g
 
 Johnson Controls, L3 Technical Support Engineer, Security Products. Sep 2025 to present. Westford, MA (hybrid).
 
-- Designed and built Rumil, the RAG assistant and 17-tool agent described above, from a homelab prototype to a production system the security-products support organization uses every weekday; an Elasticsearch corpus of over a million chunks across eight brands, Azure OpenAI GPT-5.1, Python/FastAPI and Next.js. (Link: public case study.)
+- Designed and built Rumil, the RAG assistant and 18-tool agent described above, from a homelab prototype to a production system the security-products support organization uses every weekday; an Elasticsearch corpus of over a million chunks across eight brands, Azure OpenAI GPT-5.1, Python/FastAPI and Next.js. (Link: public case study.)
 - Won director sponsorship, moved it to Azure Container Apps and then to a company-hosted production VM with GitHub Actions CI/CD and around 19,700 automated tests.
 - Measured it: golden-set recall@10 0.82; 48 of 50 correct in an unrehearsed head-to-head against the vendor assistant bundled with the case tool (26 of 50); seven guardrails took forced retries on ungrounded answers from 25% to 0%; an embed-cache fix cut nightly spend from 22.9M to 2.17M tokens.
 - Resolve L3 escalations for enterprise access-control deployments; built LogDump and AI-driven log and crash-dump triage that cut time to resolution.

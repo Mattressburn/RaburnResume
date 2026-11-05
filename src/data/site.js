@@ -61,9 +61,9 @@ export const site = {
       {
         id: 'agent',
         label: 'Agent loop',
-        sub: '17 tools',
+        sub: '18 tools',
         kind: 'box',
-        why: 'A tool-use loop with 17 tools; if the model answers without calling the knowledge base, the loop forces a retry.',
+        why: 'A tool-use loop with 18 tools; if the model answers without calling the knowledge base, the loop forces a retry.',
       },
       { id: 'answer', label: 'Cited answer', kind: 'box' },
       {
@@ -223,7 +223,7 @@ export const site = {
       {
         name: 'Engineering',
         items: [
-          { display: '17', label: 'agent tools (case study)' },
+          { display: '18', label: 'agent tools' },
           { display: 'around 19,700', label: 'automated tests' },
           { display: 'over 1,000', label: 'merged PRs since April 2026' },
           { display: 'over 2,000', label: 'commits since April 2026' },
@@ -284,7 +284,7 @@ export const site = {
       period: 'Sep 2025 to present',
       location: 'Westford, MA (hybrid)',
       bullets: [
-        'Designed and built Rumil, the RAG assistant and 17-tool agent described above, from a homelab prototype to a production system the security-products support organization uses every weekday; an Elasticsearch corpus of over a million chunks across eight brands, Azure OpenAI GPT-5.1, Python/FastAPI and Next.js.',
+        'Designed and built Rumil, the RAG assistant and 18-tool agent described above, from a homelab prototype to a production system the security-products support organization uses every weekday; an Elasticsearch corpus of over a million chunks across eight brands, Azure OpenAI GPT-5.1, Python/FastAPI and Next.js.',
         'Won director sponsorship, moved it to Azure Container Apps and then to a company-hosted production VM with GitHub Actions CI/CD and around 19,700 automated tests.',
         'Measured it: golden-set recall@10 0.82; 48 of 50 correct in an unrehearsed head-to-head against the vendor assistant bundled with the case tool (26 of 50); seven guardrails took forced retries on ungrounded answers from 25% to 0%; an embed-cache fix cut nightly spend from 22.9M to 2.17M tokens.',
         'Resolve L3 escalations for enterprise access-control deployments; built LogDump and AI-driven log and crash-dump triage that cut time to resolution.',
