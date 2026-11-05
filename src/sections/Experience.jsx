@@ -1,15 +1,17 @@
 import { site } from '../data/site'
 import Card from '../components/Card'
+import Reveal from '../components/Reveal'
 import Eyebrow from '../components/Eyebrow'
 
 export default function Experience() {
   return (
     <section id="experience" className="py-20">
       <Eyebrow>02 · Experience</Eyebrow>
-      <h2 className="font-display font-extrabold text-[32px] lg:text-[40px] tracking-[-0.03em]">Experience</h2>
+      <Reveal as="h2" className="font-display font-extrabold text-[32px] lg:text-[40px] tracking-[-0.03em]">Experience</Reveal>
       <div className="grid gap-4 mt-8">
-        {site.experience.map((e) => (
-          <Card key={e.company}>
+        {site.experience.map((e, idx) => (
+          <Reveal key={e.company} delay={idx * 0.06}>
+          <Card>
             <h3 className="font-display font-bold text-[20px]">{e.company}</h3>
             <p className="font-mono text-[12px] text-fg3 mt-1">
               {e.title} · {e.period} · {e.location}
@@ -27,6 +29,7 @@ export default function Experience() {
               </p>
             )}
           </Card>
+          </Reveal>
         ))}
       </div>
     </section>

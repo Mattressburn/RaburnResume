@@ -1,5 +1,6 @@
 import { site } from '../data/site'
 import { btn } from '../components/buttonClass'
+import Reveal from '../components/Reveal'
 import Eyebrow from '../components/Eyebrow'
 
 export default function Contact() {
@@ -7,8 +8,8 @@ export default function Contact() {
   return (
     <section id="contact" className="py-20">
       <Eyebrow>{c.eyebrow}</Eyebrow>
-      <h2 className="font-display font-extrabold text-[32px] lg:text-[40px] tracking-[-0.03em] max-w-[24ch]">{c.line}</h2>
-      <div className="flex flex-wrap gap-3 mt-8">
+      <Reveal as="h2" className="font-display font-extrabold text-[32px] lg:text-[40px] tracking-[-0.03em] max-w-[24ch]">{c.line}</Reveal>
+      <Reveal delay={0.06} className="flex flex-wrap gap-3 mt-8">
         <a href={`mailto:${c.email}`} className={`${btn} bg-accent text-bg`}>
           {c.email}
         </a>
@@ -21,7 +22,7 @@ export default function Contact() {
         <a href={c.resume} download className={`${btn} border border-line2`}>
           Resume PDF
         </a>
-      </div>
+      </Reveal>
     </section>
   )
 }
