@@ -8,6 +8,9 @@
   # Where your server-side functions live
   functions = "netlify/functions"
 
+[functions]
+  node_bundler = "esbuild"
+
 [[redirects]]
   # This is needed for React Router to work on refresh
   from = "/*"
