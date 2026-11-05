@@ -1,6 +1,6 @@
 {
-  "short_name": "Resume",
-  "name": "Matthew Raburn Resume",
+  "short_name": "Raburn",
+  "name": "Matthew Raburn",
   "icons": [
     {
       "src": "logo48.png",
@@ -45,6 +45,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#0A0C10",
+  "background_color": "#0A0C10"
 }
