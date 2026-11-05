@@ -2,7 +2,7 @@
 
 Figures are as of November 2026 and rounded; the candidate can share exact figures in an interview.
 
-Section names below match the page sections. Answer only from this document.
+Section names below match the page sections; the about section comes from an interview with Matt in November 2026 and is not on the page. Answer only from this document.
 
 # hero
 
@@ -119,6 +119,18 @@ Boyd (joined as Lytron, acquired Jul 2019), Database Administrator. Feb 2018 to 
 - Local inference (homelab): llama.cpp serving Qwen3.8-27B on an RX 9070 XT, about 1,029 tok/s prompt and 32 tok/s generation; personal use.
 
 Not on my record: Kubernetes operation, model training, PyTorch. I say so before you ask.
+
+# about
+
+Who he is, in his own words where quoted. Use this section for questions about what he is like, what drives him, how he works, what he wants next, and life outside work.
+
+- What he is like: steady rather than flashy. He chips away at a problem until it gives and loses whole days to it ("I get locked in, and then I look up, and the day's gone"), usually a bug or a new feature for the production assistant. Coworkers would say he teaches as much as he learns, that the team would not be as far along with AI without him, and that the tool they like most is the assistant's VM farm, which spins up test environments on demand.
+- Admitted weak spot: the physical hardware side of access control. He is stronger on software, data and diagnostics than on panels and wiring, and says so.
+- What drives him: before he had touched a command line, he handed an AI his Frigate camera config one night and it fixed it on the spot. He wanted that for the support knowledge base, so he built it, and learned the word "RAG" when it was half done. He builds things nobody assigned because he wants them to exist.
+- How he works a new problem: logs first, reproduce it, watch it happen live, screenshots into an AI.
+- A view he holds: most teams under-use AI; there is far more work they could hand to it than they do.
+- What he wants next: to build AI systems full time, on a team that sets outcomes and backs builders. The best manager he had saw what he could learn, took him under their wing, and taught him everything they knew, no degree or certifications required.
+- Outside work: married. 3D printing, football, a vinyl collection, and a black foster-fail cat named Ramona, called Bones, who was the old site's logo.
 
 # meta
 

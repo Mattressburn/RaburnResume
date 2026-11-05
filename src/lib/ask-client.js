@@ -2,7 +2,8 @@ import { CASE_STUDY } from '../data/site'
 
 export const LIMITS = { maxChars: 500, maxQuestions: 6 }
 
-// The server's fixed vocabulary is system, experience, projects, stack, case-study.
+// The server's fixed vocabulary is system, experience, projects, stack, case-study, about.
+// `about` has no page section (it comes from an interview), so its chip is plain text, not a link.
 // `contact` exists only so the client can map the pre-written fallback answer that ends "(Contact)".
 export const CITES = {
   system: '#system',
@@ -10,6 +11,7 @@ export const CITES = {
   projects: '#projects',
   stack: '#stack',
   'case-study': CASE_STUDY,
+  about: null,
   contact: '#contact',
 }
 

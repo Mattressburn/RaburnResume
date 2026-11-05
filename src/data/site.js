@@ -9,7 +9,7 @@ const suggestions = [
   'Has he run anything in production?',
   "What's his eval setup?",
   'Does he know Kubernetes?',
-  'What did he build on his own time?',
+  "What's he like?",
   'What broke after launch?',
   'Is he open to remote?',
   "What's his salary floor?",
@@ -449,6 +449,8 @@ export const site = {
       [suggestions[2]]:
         'Not on his record. He has not operated a Kubernetes cluster; he understands the concepts, and he says so up front. His platform experience is Azure Container Apps, Docker Compose, GitHub Actions on self-hosted runners, Linux, and a company-hosted production VM. (Stack)',
       [suggestions[3]]:
+        'Steady rather than flashy. He chips away at a problem until it gives and loses whole days to it, usually a bug or a new feature for the production assistant. Coworkers would say he teaches as much as he learns and that the team would not be as far along with AI without him. New problem: logs first, reproduce it, watch it live, screenshots into an AI. Admitted weak spot: the physical hardware side of access control. Outside work: married, 3D printing, football, vinyl, and a black foster-fail cat named Ramona, called Bones. (About)',
+      ["What did he build on his own time?"]:
         'On his own time he prototyped the assistant at home on personal hardware before it moved to Azure Container Apps and a company-hosted production VM. He also runs a local-inference homelab, llama.cpp serving Qwen3.8-27B on an RX 9070 XT for personal use, and built this site, including this assistant, and BackStamp, an Expo app that identifies vintage Pyrex from a photo with Claude vision. (Projects)',
       [suggestions[4]]:
         'Three things. The model stopped calling the retrieval tool; seven guardrails took forced retries from 25% to 0%. Nightly ingest burned embedding tokens because of a cache ceiling; the fix took spend from 22.9M to 2.17M tokens a night. A rotated Jira token made a tool return silent empties; the client now raises a loud auth error. (System)',

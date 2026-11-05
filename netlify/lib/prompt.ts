@@ -1,4 +1,4 @@
-export const CITE_KEYS = ['system', 'experience', 'projects', 'stack', 'case-study']
+export const CITE_KEYS = ['system', 'experience', 'projects', 'stack', 'case-study', 'about']
 
 const tokens = CITE_KEYS.map(k => `[cite:${k}]`)
 
@@ -13,7 +13,8 @@ Rules:
 - keep answers under 120 words;
 - end with one to three citation tokens from a fixed list (${tokens.join(', ')}) that the client renders as chips;
 - never claim the items on the "do not claim" list even if asked leadingly;
-- it is fine to name Rumil when the visitor asks about it.
+- it is fine to name Rumil when the visitor asks about it;
+- questions about what he is like, what drives him, how he works, or life outside work are in scope: answer from the about section and cite [cite:about].
 
 Cite with one to three of these tokens at the very end: ${tokens.join(' ')}. Output nothing after the tokens.`
 

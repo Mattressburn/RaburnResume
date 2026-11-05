@@ -10,3 +10,8 @@ test('system prompt has two blocks and caches only the facts block', () => {
   for (const k of CITE_KEYS) expect(s[0].text).toContain(`[cite:${k}]`)
   expect(s[0].text).toContain("That's not on this page")
 })
+
+test('character questions are in scope and cite the about section', () => {
+  expect(CITE_KEYS).toContain('about')
+  expect(buildSystem('x')[0].text).toMatch(/what he is like/)
+})

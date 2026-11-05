@@ -76,3 +76,11 @@ test('closing the panel aborts the request and drops the unanswered turn', async
   expect(client.ask.mock.calls[1][0]).toEqual([{ role: 'user', content: 'again' }])
   expect(screen.getByText('1 of 6')).toBeInTheDocument()
 })
+
+test('an about cite is a plain chip, not a link, since there is no about section on the page', async () => {
+  client.ask.mockResolvedValue({ status: 'ok', text: 'Steady. [cite:about]' })
+  render(<Ask />)
+  askQ("What's he like?")
+  await waitFor(() => expect(screen.getByText('About Matt')).toBeInTheDocument())
+  expect(screen.queryByRole('link', { name: 'About Matt' })).toBeNull()
+})

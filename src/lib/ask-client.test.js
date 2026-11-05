@@ -27,3 +27,7 @@ test('streams chunks and returns the full text', async () => {
   const r = await ask([{ role: 'user', content: 'hi' }], { fetchImpl: async () => res(200, 'Hel' + 'lo [cite:system]', 'text/plain'), onChunk: (t) => chunks.push(t) })
   expect(r.status).toBe('ok'); expect(r.text).toBe('Hello [cite:system]'); expect(chunks.at(-1)).toBe('Hello [cite:system]')
 })
+
+test('splitCites accepts the about token', () => {
+  expect(splitCites('Steady. [cite:about]')).toEqual({ body: 'Steady. ', cites: ['about'] })
+})

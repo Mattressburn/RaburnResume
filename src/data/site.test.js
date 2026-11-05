@@ -27,3 +27,9 @@ test('experience names it exactly once per JCI bullet set', () => {
   const jci = site.experience[0]
   expect(jci.bullets.join(' ')).toContain('Rumil')
 })
+
+test('facts has an about section and the suggested character question falls back to it', () => {
+  expect(facts).toMatch(/^# about$/m)
+  expect(site.ask.suggestions).toContain("What's he like?")
+  expect(site.ask.fallback["What's he like?"]).toMatch(/\(About\)$/)
+})
