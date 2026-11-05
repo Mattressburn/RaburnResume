@@ -37,6 +37,37 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+@keyframes flow {
+  to {
+    stroke-dashoffset: -186;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Request-path pulse: a 6-unit amber dash travelling each edge. */
+.pulse {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 180;
+  animation: flow 2.6s linear infinite;
+}
+
+/* SVG groups do not draw outlines reliably; mark focus and hover on the node's box instead. */
+.node:focus-visible {
+  outline: none;
+}
+
+.node:focus-visible rect,
+.node:hover rect {
+  stroke: var(--accent);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html,
   body {

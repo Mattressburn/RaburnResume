@@ -4,6 +4,9 @@ import MaskedLines from '../components/MaskedLines'
 import CountUp from '../components/CountUp'
 import { heroTimings } from '../lib/motion'
 import { btn } from '../components/buttonClass'
+import Card from '../components/Card'
+import RequestPath from '../components/RequestPath'
+import TraceLog from '../components/TraceLog'
 
 export default function Hero() {
   const { hero } = site
@@ -48,7 +51,19 @@ export default function Hero() {
           </Reveal>
         </div>
         <Reveal delay={heroTimings.diagram} className="order-last">
-          <div data-slot="diagram" />
+          <Card>
+            <div data-slot="diagram">
+              <div className="flex justify-between font-mono text-[10px] text-fg3 mb-3">
+                <span>REQUEST PATH</span>
+                <span>trace 7f3a…</span>
+              </div>
+              <RequestPath size="card" animate />
+              <div className="border-t border-line mt-4 pt-3">
+                <TraceLog lines={site.trace} animate />
+              </div>
+              <p className="font-mono text-[10px] text-fg3 mt-2">example trace</p>
+            </div>
+          </Card>
         </Reveal>
       </div>
       <div id="hero-end" aria-hidden="true" />

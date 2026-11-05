@@ -3,6 +3,9 @@ import Card from '../components/Card'
 import Reveal from '../components/Reveal'
 import CountUp from '../components/CountUp'
 import Eyebrow from '../components/Eyebrow'
+import RequestPath from '../components/RequestPath'
+import Sparkline from '../components/Sparkline'
+import BarStrip from '../components/BarStrip'
 
 const BARE = /^(\d[\d,]*(?:\.\d+)?)(.*)$/
 
@@ -42,7 +45,13 @@ export default function System() {
       </div>
       <p className="font-mono text-[11px] text-fg3 mt-3">{s.numbersCaption}</p>
 
-      <div data-slot="system-diagram" />
+      <Reveal className="mt-10">
+        <Card>
+          <div data-slot="system-diagram">
+            <RequestPath size="full" animate />
+          </div>
+        </Card>
+      </Reveal>
 
       <div className="mt-6 max-w-[68ch]">
         {s.infra.map((i) => (
@@ -51,6 +60,24 @@ export default function System() {
             <p className="text-fg2 text-[14px] mt-2">{i.why}</p>
           </details>
         ))}
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4 mt-10">
+        <Reveal>
+          <Card className="h-full">
+            <h3 className="font-mono text-[11px] tracking-[.1em] uppercase text-fg3 mb-3">Growth</h3>
+            <Sparkline labels={s.growth.labels} values={s.growth.values} animate />
+            <p className="font-mono text-[13px] text-fg2 mt-3">
+              {s.growth.values.map((v) => `around ${v.toLocaleString('en-US')}`).join(' → ')} questions, August to October
+            </p>
+          </Card>
+        </Reveal>
+        <Reveal delay={0.06}>
+          <Card className="h-full">
+            <h3 className="font-mono text-[11px] tracking-[.1em] uppercase text-fg3 mb-3">Tool mix, 30 days</h3>
+            <BarStrip items={s.toolMix} animate />
+          </Card>
+        </Reveal>
       </div>
 
       <div className="grid md:grid-cols-3 gap-4 mt-10">
