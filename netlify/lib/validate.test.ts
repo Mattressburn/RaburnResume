@@ -15,3 +15,18 @@ test('rejects oversize, empty, wrong order and too many turns', () => {
   expect(validateBody({}).ok).toBe(false)
   expect(validateBody('nope').ok).toBe(false)
 })
+
+test('returns trimmed, whitelisted messages', () => {
+  const r = validateBody({ messages: [{ role: 'user', content: '  hi  ', extra: 1 }, { role: 'assistant', content: ' yes ', x: 2 }, u('q')] })
+  expect(r).toEqual({ ok: true, messages: [u('hi'), a('yes'), u('q')] })
+})
+test('user length boundary is 500', () => {
+  expect(validateBody({ messages: [u('x'.repeat(500))] }).ok).toBe(true)
+  expect(validateBody({ messages: [u('x'.repeat(501))] }).ok).toBe(false)
+})
+test('rejects 13 entries, a wrong role and numeric content', () => {
+  const thirteen = Array.from({ length: 13 }, (_, i) => (i % 2 ? a('r') : u('q')))
+  expect(validateBody({ messages: thirteen }).ok).toBe(false)
+  expect(validateBody({ messages: [{ role: 'system', content: 'x' }] }).ok).toBe(false)
+  expect(validateBody({ messages: [{ role: 'user', content: 5 }] }).ok).toBe(false)
+})
