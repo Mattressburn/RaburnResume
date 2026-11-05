@@ -19,7 +19,7 @@
 - Never claim: Kubernetes operation, model training or fine-tuning, PyTorch, ML research, people management, SOW authorship. Production model is Azure OpenAI GPT-5.1; Claude is the build tool and the site assistant only.
 - No Education section. No em-dashes anywhere in copy or code comments. No analytics, no cookies, no stored questions.
 - Keep internal (never in any file): production commit hash, hypervisor names and VM counts, "Case Radar", operator aliases, brand usage split, user role split, the business-unit acronym, the case-tool vendor name next to the head-to-head numbers.
-- Assistant model default `claude-opus-5-5` (the claude-api skill's default; the candidate may set `ASK_MODEL=claude-haiku-5-5` in Netlify to cut cost). Streaming, `max_tokens: 600`, `output_config: {effort: "low"}`, server-side refusal fallbacks on.
+- Assistant model: the candidate chose `claude-haiku-5-5` (set as `ASK_MODEL` in `.env`, imported into Netlify). The function's code default stays `claude-opus-5-5` so an unset variable still works. Streaming, `max_tokens: 600`, `output_config: {effort: "low"}`; server-side refusal fallbacks only when the resolved model is an Opus model (Haiku has none).
 - Tokens (§9): `--bg #0A0C10`, `--bg-2 #0E1117`, `--line #1C2129`, `--line-2 #2A2F38`, `--fg #E6E8EC`, `--fg-2 #9AA0AA`, `--fg-3 #777E8A`, `--accent #FFB020`, `--ok #5BD38A`. Fonts: Inter 400/500, Inter Tight 800, JetBrains Mono 400/500 from `@fontsource`.
 - Performance gate: Lighthouse (PageSpeed Insights mobile) performance 95+, accessibility 100 on the Netlify preview. JS under 150 kB gzipped.
 
