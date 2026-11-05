@@ -1,6 +1,6 @@
 # hireraburn.com "Signal" redesign — design
 
-Date: 2026-11-04. Status: revision 2 after the builder check (three independent reads: frontend, backend, fact-check). Supersedes the 2026-05-18 brutalist spec entirely. Items marked **[call]** are the author's decisions made during the builder check; items marked **[open]** are listed in §15 and need the candidate's answer.
+Date: 2026-11-04. Status: revision 3, candidate answered the §15 questions on 2026-11-04. Supersedes the 2026-05-18 brutalist spec entirely. Items marked **[call]** are the author's decisions made during the builder check; items marked **[answered]** record the candidate's decisions; the one remaining **[open]** item is in §15.
 
 ## 1. Intent
 
@@ -36,7 +36,7 @@ Primary reader: a hiring manager or technical recruiter at an AI product company
 
 The path they should take:
 1. Hero headline and status line: production RAG, in daily use, enterprise support org.
-2. Metric row: 1.0M chunks, 8 brands indexed, 1,059 questions in 30 days, 4.4x growth.
+2. Metric row: over 1M chunks, 8 brands indexed, over 1,000 questions in 30 days, over 4x growth.
 3. Diagram (desktop; below the fold on phones): the architecture is real and non-trivial (planner, agent loop, hybrid retrieval, rerank, citations).
 4. One of three actions: case study, resume PDF, email. The "Ask about Matt" box is the fourth, for the curious.
 
@@ -45,8 +45,9 @@ Secondary readers: engineers doing a pre-interview look (they get the flagship s
 ## 4. Constraints
 
 - **Facts.** The only sources are: the production stats dump the candidate pasted on 2026-11-04 (reproduced in Appendix A), the public case study at github.com/Mattressburn/rumil-case-study, and the candidate profile in the ai-job-search workspace (`.claude/skills/job-application-assistant/01-candidate-profile.md`, which also lists the "do not claim" items). If a number is not in one of those, it does not go on the page. Where the spec's copy and the profile differ in wording, the spec is the copy and the profile is the fact check. **[call]**
-- **Case study currency.** The public case study still states the August 2026 figures (about 310,000 chunks, seven sources, about 6,000 tests). The hero links to it as proof, so the two must agree before launch. See §15 question 1. Until it is updated, every November figure on the page carries "as of Nov 2026" in its label or caption. **[open]**
-- **Keep internal.** Do not publish: the production commit hash, Proxmox host names or VM counts, the "Case Radar" feature name, operator aliases, internal URLs, customer names, the business-unit acronym (say "the support organization for Johnson Controls security products"), the case-tool vendor's name next to the head-to-head comparison, or anything from the Rumil repo that the case study does not already state. Per-source record counts, approved-account counts and VM-pipeline counts are held pending §15 question 2. **[open]**
+- **Case study currency.** The public case study still states the August 2026 figures (about 310,000 chunks, seven sources, about 6,000 tests). The hero links to it as proof, so the two must agree before launch. **[answered]** The case study (README.md and ARCHITECTURE.md in github.com/Mattressburn/rumil-case-study) is updated to the November figures, under the same rounding rule below, in the same change set; the candidate pushes that repo himself. Both documents carry a "figures as of November 2026" line.
+- **Rounding rule.** **[answered]** Every production figure on the page, in `shared/facts.md`, and in the updated case study is a ballpark introduced with "over" or "around" (for example "over 1M chunks", "around 250k documents", "over 1,000 questions in the last 30 days", "around 50 of around 75 approved accounts"). Exact values live only in Appendix A of this document. Measured quality figures from the case study (recall@10 0.82, 48 of 50 vs 26 of 50, 25% to 0%, 22.9M to 2.17M tokens) stay exact because they are measurements, not volumes. Small counts (8 brands, 17 tools) stay exact.
+- **Keep internal.** Do not publish: the production commit hash, Proxmox host names or VM counts on the hypervisor, the "Case Radar" feature name, operator aliases, internal URLs, customer names, the brand usage split, the role split of active users, the business-unit acronym (say "the support organization for Johnson Controls security products"), the case-tool vendor's name next to the head-to-head comparison, or anything from the Rumil repo that the case study does not already state. Per-source record counts, approved-account counts and the VM-pipeline count are published in rounded form. **[answered]**
 - **Production model.** The assistant in production runs on Azure OpenAI GPT-5.1 (GPT-4.1 earlier). Claude Code is the build tool. The page must never imply Claude is the runtime of the employer's system. The site's own "Ask about Matt" box runs on Claude, and the page says so plainly there.
 - **No Education section** anywhere on the page. Work history and projects only.
 - **No em-dashes** in any copy.
@@ -81,10 +82,12 @@ Two columns on desktop (text 52%, diagram 48%). On phones the order is: status l
 
   | Value | Label | Source row (Appendix A) |
   |---|---|---|
-  | 1.0M | chunks indexed | Chunks in the index: 1,011,268 |
+  | 1M+ | chunks indexed | Chunks in the index: 1,011,268 |
   | 8 | product brands indexed | Brands covered: 8 |
-  | 1,059 | questions, last 30 days | Questions, last 30 days: 1,059 |
-  | 4.4x | last 90 days vs the 90 before | 2,353 vs 540 questions |
+  | 1,000+ | questions, last 30 days | Questions, last 30 days: 1,059 |
+  | 4x+ | last 90 days vs the 90 before | 2,353 vs 540 questions |
+
+  The count-up animates to the rounded value; the "+" is a static suffix.
 
 - **Actions**: primary amber button "Read the case study" (links to the GitHub case study, new tab), secondary "Resume PDF" (download), secondary "GitHub".
 - **Ask about Matt** entry: a single input beneath the actions, placeholder "Ask about Matt: has he run anything in production?" with three suggestion chips. Submitting opens the assistant panel (§7).
@@ -98,19 +101,18 @@ Heading: `A production RAG assistant for a multi-brand enterprise support organi
 
 **What it does** (two sentences): "Ask in natural language, optionally upload an install-log bundle. The agent plans a tool path, retrieves across the whole corpus with hybrid BM25 and vector search, reranks with a cross-encoder, calls Jira, Salesforce, Snowflake and licensing tools when it needs them, and answers with citations back to the source documents, in under two minutes."
 
-**Numbers** (grid of small cards, counted up when scrolled into view; the grid carries one caption: `production figures as of Nov 4, 2026; quality figures from the public case study`). Rows marked *held* are not built until §15 question 2 is answered; the builder lays the grid out so they can be added without reflow.
+**Numbers** (grid of small cards, counted up when scrolled into view; the grid carries one caption: `production figures as of November 2026, rounded; quality figures from the public case study`). All values follow the §4 rounding rule; the exact source rows are in Appendix A.
 
-| Group | Values | Status |
-|---|---|---|
-| Corpus | 1,011,268 chunks (26 GB) · 250,527 unique documents · 8 product brands indexed | publish |
-| Sources | 106,243 Jira issues · 64,245 Salesforce cases · 59,910 worklogs · 10,567 KB articles · 4,376 Confluence pages · 181,652 closed-case resolution records | *held* (§15 q2) |
-| Usage | 3,117 questions answered since Apr 14, 2026 · 1,059 in the last 30 days (854 the 30 before, +24%) · 48 questions and 10 people on an average weekday · peak 120 questions in a day | publish |
-| Usage, people | 54 of 74 approved accounts have asked · 35 active in the last 30 days | *held* (§15 q2) |
-| Growth | Aug 302 → Sep 862 → Oct 1,091 questions (three-point sparkline) · 2,353 vs 540 questions, last 90 days vs the 90 before (4.4x) · 44 vs 20 people | publish |
-| Tool mix, 30 days | 1,332 tool calls: KB search 706 · Jira 212 · Salesforce 211 · Snowflake case lookup 130 (four-bar strip) | publish |
-| Quality | recall@10 0.82 on a 50-question golden set, measured Aug 2026 on the then 310k-chunk corpus (case study) · 48 of 50 correct vs 26 of 50 for the vendor assistant bundled with the case tool, unrehearsed head-to-head (candidate, 2026-09-14) · forced retries on ungrounded answers 25% → 0% (case study) | publish |
-| Engineering | 17 agent tools (case study) · 19,705 automated tests (17,244 backend + 2,461 frontend) · 1,070 merged PRs and 2,130 commits since Apr 16, 2026 (current repository) · 194k lines of Python + 122k TypeScript | publish |
-| Engineering, infra | 129 test environments built by the VM pipeline since Sep 1 | *held* (§15 q2) |
+| Group | Values as displayed |
+|---|---|
+| Corpus | over 1M chunks (around 26 GB) · around 250k unique documents · 8 product brands indexed |
+| Sources | over 100k Jira issues · around 64k Salesforce cases · around 60k worklogs · over 10k KB articles · around 4,400 Confluence pages · over 180k closed-case resolution records |
+| Usage | over 3,000 questions answered since April 2026 · over 1,000 in the last 30 days, around a quarter more than the 30 before · around 50 questions from around 10 people on an average weekday · peak over 100 questions in a day |
+| Usage, people | around 50 of around 75 approved accounts have asked · around 35 active in the last 30 days |
+| Growth | around 300 → around 850 → around 1,100 questions, August to October (three-point sparkline) · over 2,300 questions in the last 90 days against around 540 in the 90 before, over 4x · more than double the people |
+| Tool mix, 30 days | over 1,300 tool calls: around 700 KB search · around 210 Jira · around 210 Salesforce · around 130 Snowflake case lookups (four-bar strip, bars drawn from the rounded values) |
+| Quality | recall@10 0.82 on a 50-question golden set, measured August 2026 on the then 310k-chunk corpus (case study) · 48 of 50 correct vs 26 of 50 for the vendor assistant bundled with the case tool, unrehearsed head-to-head (candidate, 2026-09-14) · forced retries on ungrounded answers 25% → 0% (case study) |
+| Engineering | 17 agent tools (case study) · around 19,700 automated tests · over 1,000 merged PRs and over 2,000 commits since April 2026 · around 190k lines of Python and 120k of TypeScript · around 130 test environments built by an automated VM pipeline since September |
 
 **Architecture**: the hero diagram again at full width, same node set (§8.3), sized by a prop. Nodes that map to a case-study component row get a click-to-reveal "why" sentence from the ARCHITECTURE.md component table: hybrid retrieval (search backend + embeddings rows), rerank (reranker row), model box (agent models row); planner and agent loop get one sentence each from the README's Agent row. The five infrastructure components that are not diagram nodes (Postgres 16; Entra ID with approval gate; deferred jobs with a 180 s deadline; golden-set harness gating feature flags; GitHub Actions on self-hosted runners) render under the diagram as a mono caption list, each expandable to its "why" sentence. **[call]**
 
@@ -125,8 +127,8 @@ Closing line with the case-study link: "Full write-up, architecture diagram and 
 Eyebrow `02 · EXPERIENCE`. Four entries, each: company, title, dates, location, three to five bullets. Bullets are action + metric. Rumil may be named here. Wording below is final copy; the candidate profile is the fact check.
 
 - **Johnson Controls** · L3 Technical Support Engineer, Security Products · Sep 2025 to present · Westford, MA (hybrid)
-  - Designed and built Rumil, the RAG assistant and 17-tool agent described above, from a homelab prototype to a production system the security-products support organization uses every weekday; 1.0M-chunk Elasticsearch corpus across eight brands, Azure OpenAI GPT-5.1, Python/FastAPI and Next.js. Link: public case study.
-  - Won director sponsorship, moved it to Azure Container Apps and then to a company-hosted production VM with GitHub Actions CI/CD and about 19,700 automated tests.
+  - Designed and built Rumil, the RAG assistant and 17-tool agent described above, from a homelab prototype to a production system the security-products support organization uses every weekday; an Elasticsearch corpus of over a million chunks across eight brands, Azure OpenAI GPT-5.1, Python/FastAPI and Next.js. Link: public case study.
+  - Won director sponsorship, moved it to Azure Container Apps and then to a company-hosted production VM with GitHub Actions CI/CD and around 19,700 automated tests.
   - Measured it: golden-set recall@10 0.82; 48 of 50 correct in an unrehearsed head-to-head against the vendor assistant bundled with the case tool (26 of 50); seven guardrails took ungrounded answers from 25% to 0%; an embed-cache fix cut nightly spend from 22.9M to 2.17M tokens.
   - Resolve L3 escalations for enterprise access-control deployments; built LogDump and AI-driven log and crash-dump triage that cut time to resolution. (The "works customer cases with Claude Code in half the time" clause is **not** published; it describes customer-data handling and is an unmeasured estimate. **[call]**)
 - **Pall Corporation** · Senior Engineering Systems Analyst · Jan 2021 to Aug 2025 · Remote
@@ -172,7 +174,7 @@ Eyebrow `05 · CONTACT`. Large line: "Hiring for applied AI, forward-deployed, o
 ### 6.7 Head, meta, Open Graph
 
 - `<title>`: `Matthew Raburn · Applied AI Engineer`
-- Meta description: "Built and shipped a production RAG assistant and agent over an eight-brand enterprise support corpus: 1.0M chunks, 1,000+ questions a month as of October 2026, measured on a golden set. Python, Azure OpenAI, Elasticsearch, Claude Code. Boston, remote or hybrid."
+- Meta description: "Built and shipped a production RAG assistant and agent over an eight-brand enterprise support corpus: over a million chunks, over 1,000 questions a month, measured on a golden set. Python, Azure OpenAI, Elasticsearch, Claude Code. Boston, remote or hybrid."
 - Open Graph image: a 1200×630 render of the hero (static PNG in `public/og.png`, generated once from the built page with Playwright; no runtime rendering). Regenerate whenever hero numbers change.
 - `robots.txt` allows all. No analytics.
 
@@ -284,15 +286,17 @@ Light mode: none. The page is dark only, with `color-scheme: dark` declared.
 
 ## 11. Generated media (optional, last, does not block)
 
-The candidate has an ArtCraft account and wants to use generated media. The Signal direction is typographic and does not need imagery; a generated asset is an optional polish step after launch:
+**[answered]** The candidate wants the loop generated now, as part of this build, not after launch. It remains non-blocking: the page must look finished with the slot empty, and the asset lands in the last task of the plan.
 
 - **Slot:** a looping ambient texture behind the hero at 6 to 8% opacity (slow drifting amber and slate light on black, no recognizable objects, no text), WebM + MP4 + a poster PNG, muted, `playsinline`, paused under reduced motion and on `prefers-reduced-data`, lazy-loaded after LCP. Under 1.5 MB.
 - **Prompt (for ArtCraft, Veo 3.1 Fast or Kling 2.6):** "Abstract slow-motion loop, near-black background, faint amber and slate light trails drifting diagonally like data moving along fiber, very low contrast, seamless loop, no text, no objects, 16:9, 8 seconds."
-- If the ArtCraft API key is available in the environment, the builder may script generation; otherwise the candidate generates it in the app and drops the files in `public/media/`. The page must look finished with the slot empty.
+- Generation path **[open, §15]**: ArtCraft's Omni API needs an account-gated API key (`artcraft_api_…`, see the ArtCraft repo's `_docs/artcraft_omni_api.md`); the desktop app needs a display session. If the candidate provides the key as `ARTCRAFT_API_KEY`, the builder scripts the generation (Veo 3.1 Fast or Kling 2.6, 8 s, 16:9, 1080p) and the poster extraction with ffmpeg. Otherwise the candidate runs the prompt above in the app and drops `hero-loop.webm`, `hero-loop.mp4` and `hero-poster.jpg` into `public/media/`.
 
 ## 12. Resume PDF
 
-The site serves one PDF at `public/Matthew_Raburn_Resume.pdf`, linked from the hero, the top bar and the contact section, with `download` and a stable filename. Which PDF ships is §15 question 3; the builder wires the link and leaves a placeholder file named in the README.
+The site serves one PDF at `public/Matthew_Raburn_Resume.pdf`, linked from the hero, the top bar and the contact section, with `download` and a stable filename.
+
+**[answered]** A general resume is rebuilt with the November figures in the ai-job-search workspace (`cv/main_general_applied_ai.tex` from the `resume.cls` template, compiled with lualatex, run through that workspace's full verification checklist: exactly two pages, no orphaned headings, ATS text-layer check, no Education section, Claude Code named). Its figures follow the same rounding rule as the page. The compiled PDF is copied into `public/` as the last content task before the PR.
 
 ## 13. Acceptance
 
@@ -300,7 +304,7 @@ The redesign is done when all of these hold on the Netlify preview of the `signa
 
 1. On a 1440×900 desktop the hero, metric row, diagram and three actions are visible without scrolling. On a 390×844 phone the status line, headline, lede, metric row and three actions are visible without scrolling; the diagram follows below the fold.
 2. No "Rumil" in text content above the Experience section; test passes.
-3. Every number on the page matches Appendix A (publish rows) or the case study; a reviewer checks them against `shared/facts.md` line by line. The case study and the page agree (§15 q1 resolved).
+3. Every number on the page is the §4 rounding of an Appendix A row or an exact case-study measurement; a reviewer checks them against `shared/facts.md` line by line. The updated case study and the page agree.
 4. The assistant answers the eight suggestion questions correctly with citations, refuses an off-topic question politely, falls back to static answers when the key is removed, shows the per-visit limit copy on the 11th question in an hour from one address, and the global cap returns the static fallback.
 5. Reduced-motion mode shows the complete page with nothing pending.
 6. Lighthouse on the preview (mobile preset): performance 95+, accessibility 100, no console errors.
@@ -317,40 +321,46 @@ The redesign is done when all of these hold on the Netlify preview of the `signa
 - The OG image render script.
 - Commit granularity on the branch; one PR at the end.
 
-## 15. Questions for the candidate (open)
+## 15. Questions for the candidate
 
-1. **Case study currency.** The hero's proof link still says 310k chunks, seven sources and about 6,000 tests. Update the public case study to the November figures in the same change set (recommended; the author drafts the PR), or keep it as an August snapshot and date every November figure on the page?
-2. **What is public.** Three groups from the dump are the employer's internal volumes and are held until cleared: per-source record counts (Jira, Salesforce, worklogs, resolution records), "54 of 74 approved accounts / 35 monthly active", and "129 test environments built by the VM pipeline". Publish all, some, or none? Default if unanswered: none; aggregates only.
-3. **Resume PDF.** Ship an existing September variant, or rebuild a general one with the November numbers?
-4. **ArtCraft loop.** Generate now, later, or skip?
-5. **Deploy secrets.** Confirm `ANTHROPIC_API_KEY` (and a random `RATE_SALT`) will be added to Netlify at deploy time.
+Answered 2026-11-04:
+
+1. **Case study currency:** update the public case study to the November figures in the same change set. **[answered]**
+2. **What is public:** publish the held groups, generalized with "over" or "around" (the §4 rounding rule). **[answered]**
+3. **Resume PDF:** rebuild a general resume with the November figures. **[answered]**
+4. **ArtCraft loop:** generate now. **[answered]**
+5. **Deploy secrets:** the candidate adds `ANTHROPIC_API_KEY` and `RATE_SALT` to Netlify at deploy time. **[answered]**
+
+Still open:
+
+6. **ArtCraft generation path.** Provide an ArtCraft API key (`ARTCRAFT_API_KEY`) so the build can script the loop, or run the §11 prompt in the ArtCraft app and drop the three files into `public/media/`. **[open]**
 
 ## Appendix A. Production stats dump, 2026-11-04 (provenance)
 
-Pasted by the candidate on 2026-11-04 ("all live as of today, team-only; operator aliases, QA and test users excluded"). Rows marked *held* are not published until §15 q2 is answered; rows marked *internal* are never published.
+Pasted by the candidate on 2026-11-04 ("all live as of today, team-only; operator aliases, QA and test users excluded"). Exact values stay in this appendix only; the page shows the rounded form in the last column. Rows marked *internal* are never published.
 
-| Row | Value | Status |
+| Row | Exact value | Published as |
 |---|---|---|
-| Questions answered all-time (since 2026-04-14) | 3,117 | publish |
-| People who have asked | 54 of 74 approved accounts (73%) | held |
-| Questions, last 30 days | 1,059 (prior 30: 854, +24%) | publish |
-| Active users, last 30 days | 35 (16 L3, 12 Support, 5 Managers) | held (role split internal) |
-| Weekday average, last 30 days | 48 questions / 10 distinct people per day | publish |
-| Peak day | 120 questions (Oct 14); 16 people (Nov 2) | publish (questions only) |
-| 90 days vs the 90 before | 2,353 vs 540 questions, 4.4×; 44 vs 20 people | publish |
-| Monthly growth | Aug 302 → Sep 862 → Oct 1,091 questions | publish |
+| Questions answered all-time (since 2026-04-14) | 3,117 | over 3,000 since April 2026 |
+| People who have asked | 54 of 74 approved accounts (73%) | around 50 of around 75 approved accounts |
+| Questions, last 30 days | 1,059 (prior 30: 854, +24%) | over 1,000; around a quarter more than the 30 before |
+| Active users, last 30 days | 35 (16 L3, 12 Support, 5 Managers) | around 35 (role split internal) |
+| Weekday average, last 30 days | 48 questions / 10 distinct people per day | around 50 questions from around 10 people |
+| Peak day | 120 questions (Oct 14); 16 people (Nov 2) | peak over 100 questions in a day (people count not shown) |
+| 90 days vs the 90 before | 2,353 vs 540 questions, 4.4×; 44 vs 20 people | over 2,300 vs around 540, over 4x; more than double the people |
+| Monthly growth | Aug 302 → Sep 862 → Oct 1,091 questions | around 300 → around 850 → around 1,100 |
 | Brand split, 30 d | Software House 75%, Kantech 23% | internal |
-| Tool calls, 30 d | 1,332: KB search 706, Jira 212, Salesforce 211, Snowflake case lookup 130 | publish |
-| Chunks in the index | 1,011,268 (26 GB) | publish |
-| Unique documents | 250,527 | publish |
-| Jira issues / Salesforce cases / worklogs | 106,243 / 64,245 / 59,910 | held |
-| KB portal articles + Confluence pages | 10,567 + 4,376 | held |
-| Brands covered | 8 (Software House, Kantech, SES, American Dynamics, CEM, Cloudvue, Exacq, Illustra), 5 portal brands ingested nightly | publish the count only |
-| Closed-case resolution records | 181,652 across 8 brands | held |
+| Tool calls, 30 d | 1,332: KB search 706, Jira 212, Salesforce 211, Snowflake case lookup 130 | over 1,300: around 700 / 210 / 210 / 130 |
+| Chunks in the index | 1,011,268 (26 GB) | over 1M (around 26 GB); hero shows `1M+` |
+| Unique documents | 250,527 | around 250k |
+| Jira issues / Salesforce cases / worklogs | 106,243 / 64,245 / 59,910 | over 100k / around 64k / around 60k |
+| KB portal articles + Confluence pages | 10,567 + 4,376 | over 10k + around 4,400 |
+| Brands covered | 8 (Software House, Kantech, SES, American Dynamics, CEM, Cloudvue, Exacq, Illustra), 5 portal brands ingested nightly | 8 (count only; brand names and the nightly split not shown) |
+| Closed-case resolution records | 181,652 across 8 brands | over 180k |
 | Open L3 cases tracked | 272 | internal (feature name) |
-| VMs built by the pipeline since Sep 1 | 129 | held |
+| VMs built by the pipeline since Sep 1 | 129 | around 130 test environments since September |
 | VMs on the hypervisor now | 107 (75 running) | internal |
-| Merged PRs / commits since 2026-04-16 | 1,070 / 2,130 | publish |
-| Lines of code | 194k Python + 122k TypeScript | publish |
-| Automated tests | 17,244 backend + 2,461 frontend | publish |
+| Merged PRs / commits since 2026-04-16 | 1,070 / 2,130 | over 1,000 PRs, over 2,000 commits since April 2026 |
+| Lines of code | 194k Python + 122k TypeScript | around 190k Python and 120k TypeScript |
+| Automated tests | 17,244 backend + 2,461 frontend | around 19,700 |
 | Production commit hash | (omitted) | internal |
