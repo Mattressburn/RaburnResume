@@ -94,7 +94,7 @@ test('keeps a two-hour-old ip key and prunes a three-hour-old one', async () => 
   expect(keys.some(k => k.includes('T17'))).toBe(false)
   expect(keys.some(k => k.includes('T18'))).toBe(true)
 })
-test('corrupt counters and a missing etag fail closed', async () => {
+test('corrupt counters fail closed', async () => {
   for (const bad of ['abc', '-1', 'Infinity', '']) {
     const store = memStore()
     const ipKey = `test/ip/2026-11-04T20/${await hashIp('1.2.3.4', 's')}`
@@ -102,11 +102,18 @@ test('corrupt counters and a missing etag fail closed', async () => {
     expect(await checkAndCount(store, { ...base, ip: '1.2.3.4' })).toEqual({ allowed: false, reason: 'ip' })
     expect(store.map.get(ipKey)).toBe(bad)
   }
+})
+test('a store without etags counts unconditionally and still enforces the limit', async () => {
   const store = memStore()
   const g = store.getWithMetadata
   store.getWithMetadata = async k => { const r = await g(k); return r && { data: r.data } }
-  store.map.set(`test/ip/2026-11-04T20/${await hashIp('1.2.3.4', 's')}`, '1')
+  const ipKey = `test/ip/2026-11-04T20/${await hashIp('1.2.3.4', 's')}`
+  store.map.set(ipKey, '1')
+  expect(await checkAndCount(store, { ...base, ip: '1.2.3.4' })).toEqual({ allowed: true })
+  expect(store.map.get(ipKey)).toBe('2')
+  store.map.set(ipKey, '10')
   expect(await checkAndCount(store, { ...base, ip: '1.2.3.4' })).toEqual({ allowed: false, reason: 'ip' })
+  expect(store.map.get(ipKey)).toBe('10')
 })
 test('a failing prune does not fail a counted request', async () => {
   const store = memStore()

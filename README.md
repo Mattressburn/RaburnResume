@@ -51,7 +51,7 @@ Environment variables (Netlify site settings, never in the repo):
 
 Limits: 10 questions per hour per address and 300 questions per UTC day across all visitors, counted in Netlify Blobs.
 
-Cost: Claude Opus 5.5 costs $4 / $20 per million input / output tokens. With a 2.5k-token system prompt and 400-token answers that is about 1.8 cents a question uncached, so the 300-per-day cap bounds a month at about $160 worst case, and a typical month costs a few dollars. Claude Haiku 5.5 costs $0.10 / $0.50 per million tokens, roughly forty times cheaper, which is why this site runs Haiku through `ASK_MODEL`. The facts block is prompt-cached, so repeat questions within a few minutes pay less for input.
+Cost: the system prompt (instructions plus the facts document) measures about 5,600 tokens. Claude Opus 5.5 costs $4 / $20 per million input / output tokens, so a question is roughly 2.9 cents uncached and the 300-per-day cap bounds a month near $260 worst case. Claude Haiku 5.5 costs $0.10 / $0.50 per million tokens, about 0.07 cents a question and under $7 a month at the cap, which is why this site runs Haiku through `ASK_MODEL`. The facts block is prompt-cached, so questions within a few minutes of each other pay less for input.
 
 ## Design
 

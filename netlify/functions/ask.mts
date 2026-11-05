@@ -22,7 +22,7 @@ function log(model: string, status: number, usage?: Usage) {
 }
 
 export default async (req: Request, context: Context) => {
-  const model = process.env.ASK_MODEL ?? 'claude-opus-5-5'
+  const model = (process.env.ASK_MODEL || '').trim() || 'claude-opus-5-5'
   const json = (status: number, body: object) => {
     log(model, status)
     return Response.json(body, { status })

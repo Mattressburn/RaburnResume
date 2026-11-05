@@ -55,10 +55,13 @@ async function reserve(store: CounterStore, key: string, limit: number): Promise
     let count = 0
     if (got) {
       count = /^\d+$/.test(got.data) ? Number(got.data) : NaN
-      if (!Number.isSafeInteger(count) || !got.etag) return 'refused'
+      if (!Number.isSafeInteger(count)) return 'refused'
     }
     if (count >= limit) return 'refused'
-    const res = await store.set(key, String(count + 1), got ? { onlyIfMatch: got.etag } : { onlyIfNew: true })
+    // A read without an etag degrades to an unconditional, best-effort write. Only stores that return
+    // no etags take this path (the local `netlify dev` Blobs sandbox); production Blobs returns etags
+    // and keeps the conditional write.
+    const res = await store.set(key, String(count + 1), !got ? { onlyIfNew: true } : got.etag ? { onlyIfMatch: got.etag } : {})
     if (res.modified) return got ? 'updated' : 'created'
     if (attempt < MAX_ATTEMPTS - 1) await sleep(10 + Math.random() * 30)
   }
